@@ -1,113 +1,74 @@
+<!-- resources/views/auth/login.blade.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-		 
-		<meta name="description" content="Vista Principal Laravel 2ºDAW">
-		<meta name="author" content="Jorge López">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    
+    <!-- Bootstrap -->
+    <link href="{{ url('bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ url('bootstrap/bootstrap.bundle.min.js') }}"></script>
 
-		<link rel="shortcut icon" href="imagenes/icon.png"/>
-
-		<title>Laravel</title>
-		<link rel="shortcut icon" href="imagenes/icon.png"/>
-
-		<!-- estilo general de la página -->
-		<link href="ficheros/estilo_pagina.css" rel="stylesheet">
-
-		<!-- estilo barra de menú -->
-		<link href="ficheros/barra_menu.css" rel="stylesheet">		
-		
-		<!-- estilo de formularios -->
-		<link href="ficheros/formularios.css" rel="stylesheet">
-		
-		<!-- estilo de tablas -->
-		<link href="ficheros/tablas.css" rel="stylesheet"
-		>
-		<!-- biblioteca de iconos -->
-		<link href="ficheros/all.css" rel="stylesheet">	
-		
-		<!-- bootstrap -->
-		<link href="{{ url('bootstrap/bootstrap.min.css') }}" rel="stylesheet">
-		<script src="{{ url('bootstrap/bootstrap.bundle.min.js') }}"></script>		
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+    </style>
 </head>
+<body>
 
-<body onload="">
-<!-- **************************** CABECERA ************************************************ -->
-<!-- **************************** CABECERA ************************************************ -->
-<!-- **************************** CABECERA ************************************************ -->
-<header>
-		<div class="BarraNavegar">
-		   @if (Route::has('login'))
-				<nav class="-mx-3 flex flex-1 justify-end">
-					@auth
-						<a
-							href="{{ url('/dashboard') }}"
-							class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-						>Principal</a>
-			@else
-						<a
-							href="{{ route('login') }}"
-							class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-						>Log in</a>
+<div class="login-container">
+    <div class="card login-card shadow-lg">
+        <div class="card-body">
+        <img src="{{ asset('imagenes/logo_ENFOKA-sin-fondo.png') }}" alt="Logo" class="img-fluid mx-auto d-block mb-3" style="max-width: 150px;">
 
-						@if (Route::has('register'))
-							<a
-								href="{{ route('register') }}"
-								class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-							>Registro</a>
-						@endif
-					@endauth
-				</nav>
-			@endif			
-		</div>
-</header>
-<!-- **************************** CUERPO ************************************************ -->
-<!-- **************************** CUERPO ************************************************ -->
-<!-- **************************** CUERPO ************************************************ -->
+            <h3 class="text-center mb-4">Iniciar Sesión</h3>
 
-<div class="contenedor1">
-	<img id="imagenlogo" src="imagenes/laravel2.jpg" style="cursor:pointer;max-width: 90%;"></img>
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" name="email" id="email" class="form-control" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label" for="remember">Recordarme</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{{ route('register') }}" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
+                <br>
+                <a href="{{ route('password.request') }}" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
+            </div>
+        </div>
+    </div>
 </div>
-
-<!-- **************************** FOOTER ************************************************ -->
-<!-- **************************** FOOTER ************************************************ -->
-<!-- **************************** FOOTER ************************************************ -->
-<footer class="footer">
-		<img  id="estrella" src="imagenes/estrella.gif"  height="40" width="40" style="visibility:hidden;"/>
-		&nbspLaravel&nbsp&nbsp<i class="fas fa-bolt fa-2x" ></i>
-		<label>&nbsp © 2025 Copyright</label>		
-</footer>
 
 </body>
 </html>
-
-<!-- ***************************************************************-->
-<!-- este código se ejecuta después de cargar la página -->
-<!-- ***************************************************************-->
-<script type="text/javascript">
-//**********************************************************************************
-// función asociada al "click" del menú pequeñito de barras  
-function visualizo_opciones()
-{
-	// navs->es un array compuesto por todos los elementos pertenecientes a la clase "'.Grupo_opciones"
-	// este array tendrá 2 elementos
-	const navs = document.querySelectorAll('.Grupo_opciones');
-	const navs2 = document.querySelectorAll('.Grupo_opciones_derecha');
-	//alert(navs.length);
-	//alert(navs2.length);
-	
-	// con el método ".forEach" me recorro el array y a cada elemento del array le asocio la clase ".visualizo"
-	navs.forEach(nav => {nav.classList.toggle('visualizo');});
-	navs2.forEach(nav => {nav.classList.toggle('visualizo');});
-}
-//***********************************************************************************
-// código
-//***********************************************************************************
-// asocio la función "visualizo_opciones()" al evento "click" sobre el menú de barra para móviles
-document.querySelector('.Opcion_menu_icono').addEventListener('click', visualizo_opciones);
-
-</script>
-
-
-
