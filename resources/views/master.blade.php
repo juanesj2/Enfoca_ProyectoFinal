@@ -46,18 +46,6 @@
                 </li>
                 <li class="nav-item">
                     <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <a class="nav-link active" aria-current="page" href="{{ url('/students') }}">Buscar</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-user"></i>
-                        <a class="nav-link active" aria-current="page" href="{{ url('/students') }}">Perfil</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <div class="d-flex align-items-center">
                         <i class="fa-solid fa-question"></i>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Mas informacion
@@ -72,16 +60,40 @@
                     </div>
                 </li>
             </ul>
+
             <!-- Con esto de aqui añadimos a la 
              nav bar el nombre del usuario y un boton
              para cerrar sesion -->
+             
             <div class="d-flex align-items-center ms-auto">
+                
+
                 <span class="navbar-text me-3">
-                    {{ Auth::user()->name }}
+                    <div class="d-flex align-items-center">
+                        
+
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Dropdown link
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+
+
+
+                        <i class="fa-solid fa-user me-1"></i>
+                        <a class="nav-link active" aria-current="page" href="{{ url('/students') }}">{{ Auth::user()->name }}</a>
+                    </div>
                 </span>
                 <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+                </form>
+                <form class="d-flex ms-auto" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
             </div>
@@ -89,7 +101,6 @@
     </nav>
 
         <div class="container mt-5">
-                <h1 class="text-primary mt-3 mb-4 text-center"><b>Laravel 11 Aplicación Crud</b></h1>
                 @yield('contenido')
         </div>
 </body>
