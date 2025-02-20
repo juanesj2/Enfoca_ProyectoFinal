@@ -71,26 +71,31 @@
                 <span class="navbar-text me-3">
                     <div class="d-flex align-items-center">
                         
-
+                    <i class="fa-solid fa-user me-1"></i>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown link
+                            {{ Auth::user()->name }}
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    <i class="fas fa-user-circle me-2"></i>Mi perfil
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión
+                                    </button>
+                                </form>
+                            </li>
                         </ul>
 
-
-
-                        <i class="fa-solid fa-user me-1"></i>
-                        <a class="nav-link active" aria-current="page" href="{{ url('/students') }}">{{ Auth::user()->name }}</a>
                     </div>
                 </span>
-                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="btn btn-danger btn-sm">Logout</button>
-                </form>
                 <form class="d-flex ms-auto" role="search">
                     <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
                     <button type="submit" class="btn btn-success"><i class="fa-solid fa-magnifying-glass"></i></button>

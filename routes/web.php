@@ -5,12 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
 
 Route::get('/', function () {
-    //return view('welcome');
-    return view('auth.login');
+    //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
+    //Si lo esta entras a la pagina si no te pide que lo hagas
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('students.index');;
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
