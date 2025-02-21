@@ -12,10 +12,14 @@
     <link rel="icon" href="{{ asset('imagenes/logo_ENFOKA-sin-fondo.ico') }}" type="image/x-icon">
 
     <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    
     <!-- Bootstrap CSS -->
     <link href="{{ url('bootstrap/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ url('bootstrap/bootstrap.bundle.min.js') }}"></script>
+
     <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
