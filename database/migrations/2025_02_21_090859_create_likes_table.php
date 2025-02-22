@@ -9,7 +9,7 @@ return new class extends Migration {
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('fotografia_id')->constrained('fotografias')->onDelete('cascade');
-            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->unique(['usuario_id', 'fotografia_id']);
             $table->timestamps();
         });

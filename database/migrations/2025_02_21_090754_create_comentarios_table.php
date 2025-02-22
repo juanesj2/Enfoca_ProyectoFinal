@@ -9,7 +9,7 @@ return new class extends Migration {
         Schema::create('comentarios', function (Blueprint $table) {
             $table->id();
             $table->foreignId('fotografia_id')->constrained('fotografias')->onDelete('cascade');
-            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->text('contenido');
             $table->timestamp('fecha')->default(now());
             $table->timestamps();
