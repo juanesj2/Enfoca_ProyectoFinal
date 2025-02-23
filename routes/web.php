@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\FotografiaController;
 
 Route::get('/', function () {
     //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
@@ -22,3 +23,5 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 Route::resource('students', StudentController::class);
+
+Route::resource('fotografias', FotografiaController::class);

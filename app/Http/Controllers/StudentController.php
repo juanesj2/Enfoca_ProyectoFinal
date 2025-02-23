@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\estudiante;
+use App\Models\fotografia;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +20,14 @@ class StudentController extends Controller
         {
             // si el usuario está logueado, muestra la vista con los datos.
             $data = Estudiante::latest()->paginate(5);
-            return view('index', compact('data'))->with('i', (request()->input('page', 1) - 1) * 5);
+
+            // Obtener datos de la tabla 'fotografias'
+            $fotografias = Fotografia::paginate(5);
+
+            // Obtener datos de la tabla 'users'
+            $users = User::all();
+
+            return view('index', compact('data', 'fotografias', 'users'))->with('i', (request()->input('page', 1) - 1) * 5);
         }
         else
         {
