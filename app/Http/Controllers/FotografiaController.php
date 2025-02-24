@@ -11,7 +11,10 @@ class FotografiaController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            $fotografias = Fotografia::paginate(5);
+            // si el usuario está logueado, muestra las fotografías
+            // Se pasara el usuario que subio la fotografia y una paginacion de 5 fotografias
+            // la funcion with() se utiliza para cargar las relaciones de manera anticipada
+            $fotografias = Fotografia::with('user', 'likes', 'comentarios')->paginate(5);
             return view('index', compact('fotografias'))->with('i', (request()->input('page', 1) - 1) * 5);
         } else {
             // si el usuario no está logueado, redirige a la vista principal.
