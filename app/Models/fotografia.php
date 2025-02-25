@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+
 
 class Fotografia extends Model
 {
@@ -37,4 +39,34 @@ class Fotografia extends Model
     {
         return $this->comentarios()->count();
     }
+
+    // Método para verificar si el usuario autenticado ha dado like
+    public function comprobarLike()
+    {
+        // Comprueba si el usuario a dado like o no
+        return $this->likes()->where('usuario_id', Auth::id())->exists();
+    }
+
+    // Metodo para dar
+    public function darLike()
+    {
+        if (Auth::check()) { // Verificar si el usuario está autenticado
+            $usuarioId = Auth::id();
+            if (!$this->comprobarLike()) {
+                $this->likes()->create(['usuario_id' => $usuarioId]);
+            }
+        }
+    }
+
+    //Funcion para quitar like
+    public function quitarLike()
+    {
+        if (Auth::check()) { // Verificar si el usuario está autenticado
+            $usuarioId = Auth::id();
+            if ($this->comprobarLike()) {
+                $this->likes()->where('usuario_id', $usuarioId)->delete();
+            }
+        }
+    }
+
 }

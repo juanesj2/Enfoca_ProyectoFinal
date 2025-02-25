@@ -57,23 +57,37 @@
         </table><br> 
         -->
 
-        <div class="container mt-3">
+        <div class="container mt-3 d-flex flex-column align-items-center">
             @if(count($fotografias) > 0)
                 @foreach($fotografias as $fotografia)
-                    <table class="table table-bordered text-center">
+                    <table class="table table-bordered text-center" style="width: 50%;">
                         <tr>
-                            <td colspan="4" class="bg-light" style="height: 150px;">
+                            <td colspan="4" class="bg-light align-middle" style="height: 150px;">
                                 <img id="laimagen" style="border-radius:6px;" src="{{ asset('images/' . $fotografia->direccion_imagen) }}" width="75" />
                             </td>
                         </tr>
                         <tr>
                             <td class="bg-primary text-white" style="width: 50px;">
-                                <div class="d-flex flex-column align-items-center">
-                                    <button class="btn">
-                                        <i class="fa-solid fa-heart"></i>
-                                    </button>
-                                    <span class="small text-dark">{{ $fotografia->likesCount() }}</span>
-                                </div>
+                            <div class="d-flex flex-column align-items-center">
+
+                            @if($fotografia->comprobarLike())
+                                        <form method="POST" action="{{ route('fotografias.unlike', $fotografia->id) }}">
+                                            @csrf
+                                            <button type="submit" class="btn like-btn" data-foto-id="{{ $fotografia->id }}">
+                                                <i class="fa-solid fa-heart" id="heart-{{ $fotografia->id }}" style="color: red;"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form method="POST" action="{{ route('fotografias.like', $fotografia->id) }}">
+                                            @csrf
+                                            <button type="submit" class="btn like-btn" data-foto-id="{{ $fotografia->id }}">
+                                                <i class="fa-solid fa-heart" id="heart-{{ $fotografia->id }}"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                            <span id="contadorLikes-{{ $fotografia->id }}">{{ $fotografia->likesCount() }}</span>
+
+                            </div>
                             </td>
                             <td class="bg-info text-white" style="width: 50px;">
                                 <div class="d-flex flex-column align-items-center">
@@ -113,6 +127,30 @@
         {!! $fotografias->links() !!}
     </div>
 </div><br><br>
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function darQuitarLike(laImagen) {
+        const fotoId = laImagen.getAttribute('data-foto-id');
+        const contadorLikes = document.getElementById('contadorLikes-' + fotoId);
+
+        $.post("/fotografias/" + fotoId + "/like", {
+            _token: '{{ csrf_token() }}'  // Necesario para Laravel
+        }, function(datos) {
+            if (datos.liked) {
+                laImagen.classList.add('active');
+                laImagen.setAttribute('data-liked', 'true');
+            } else {
+                laImagen.classList.remove('active');
+                laImagen.setAttribute('data-liked', 'false');
+            }
+            contadorLikes.textContent = datos.likesCount;
+        }).fail(function() {
+            alert("Error: No puedes dar like si no estás autenticado.");
+        });
+    }
+</script> -->
+
 
 @endsection
 

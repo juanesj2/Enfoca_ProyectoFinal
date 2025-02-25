@@ -15,6 +15,7 @@ class FotografiaController extends Controller
             // Se pasara el usuario que subio la fotografia y una paginacion de 5 fotografias
             // la funcion with() se utiliza para cargar las relaciones de manera anticipada
             $fotografias = Fotografia::with('user', 'likes', 'comentarios')->paginate(5);
+
             return view('index', compact('fotografias'))->with('i', (request()->input('page', 1) - 1) * 5);
         } else {
             // si el usuario no está logueado, redirige a la vista principal.
@@ -96,4 +97,27 @@ class FotografiaController extends Controller
         return redirect()->route('fotografias.index')
                         ->with('success', 'Fotografía eliminada con éxito.');
     }
+
+    public function darLike(Fotografia $fotografia)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'No autenticado');
+        }
+
+        $fotografia->darLike();
+
+        return redirect()->back()->with('success', 'Has dado like a la fotografía');
+    }
+
+    public function quitarLike(Fotografia $fotografia)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'No autenticado');
+        }
+
+        $fotografia->quitarLike();
+
+        return redirect()->back()->with('success', 'Has quitado el like de la fotografía');
+    }
+    
 }

@@ -25,3 +25,11 @@ require __DIR__.'/auth.php';
 Route::resource('students', StudentController::class);
 
 Route::resource('fotografias', FotografiaController::class);
+
+Route::post('/fotografias/{fotografia}/like', [FotografiaController::class, 'darLike'])
+    ->middleware('auth')
+    ->name('fotografias.like');
+
+Route::post('/fotografias/{fotografia}/unlike', [FotografiaController::class, 'quitarLike'])
+    ->middleware('auth')
+    ->name('fotografias.unlike');
