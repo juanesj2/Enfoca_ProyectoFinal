@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StudentController;
+
 use App\Http\Controllers\FotografiaController;
+use App\Http\Controllers\ComentariosController;
 
 Route::get('/', function () {
     //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
@@ -12,7 +13,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return redirect()->route('students.index');;
+    return redirect()->route('fotografias.index');;
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -22,10 +23,17 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-Route::resource('students', StudentController::class);
 
 Route::resource('fotografias', FotografiaController::class);
 
+// Rutas para los comentarios
+Route::resource('comentarios', ComentariosController::class);
+
+Route::get('/comentar', [ComentariosController::class, 'index'])->name('comentar.index');
+Route::post('/comentar', [ComentariosController::class, 'store'])->name('comentar.store');
+
+
+// Rutas para dar y quitar likes
 Route::post('/fotografias/{fotografia}/like', [FotografiaController::class, 'darLike'])
     ->middleware('auth')
     ->name('fotografias.like');

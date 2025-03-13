@@ -19,7 +19,7 @@
 		<div class="row">
 			<div class="col col-md-6"><b>Modificación de Estudiante:</b></div>
 			<div class="col col-md-6">
-				<a href="{{ route('students.index') }}" class="btn btn-success btn-sm float-end">Volver</a>
+				<a href="{{ route('fotografias.index') }}" class="btn btn-success btn-sm float-end">Volver</a>
 			</div>
 		</div>
 	</div>

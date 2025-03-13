@@ -101,23 +101,29 @@ class FotografiaController extends Controller
     public function darLike(Fotografia $fotografia)
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'No autenticado');
+            return response()->json(['error' => 'No autenticado'], 401);
         }
 
         $fotografia->darLike();
 
-        return redirect()->back()->with('success', 'Has dado like a la fotografía');
+        return response()->json([
+            'liked' => true,
+            'likesCount' => $fotografia->likes()->count()
+        ]);
     }
 
     public function quitarLike(Fotografia $fotografia)
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'No autenticado');
+            return response()->json(['error' => 'No autenticado'], 401);
         }
 
         $fotografia->quitarLike();
 
-        return redirect()->back()->with('success', 'Has quitado el like de la fotografía');
+        return response()->json([
+            'liked' => false,
+            'likesCount' => $fotografia->likes()->count()
+        ]);
     }
     
 }

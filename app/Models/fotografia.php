@@ -40,6 +40,14 @@ class Fotografia extends Model
         return $this->comentarios()->count();
     }
 
+
+    //**************************************************************/
+    //**************************************************************/
+    //                      Control de likes
+    //**************************************************************/
+    //**************************************************************/
+
+
     // Método para verificar si el usuario autenticado ha dado like
     public function comprobarLike()
     {
@@ -69,4 +77,39 @@ class Fotografia extends Model
         }
     }
 
+
+    //**************************************************************/
+    //**************************************************************/
+    //                      Control de comentarios
+    //**************************************************************/
+    //**************************************************************/
+
+    // Método para verificar si el usuario autenticado ha hecho un comentario en la fotografia
+    public function comprobarComent()
+    {
+        // Comprueba si el usuario a dado like o no
+        return $this->likes()->where('usuario_id', Auth::id())->exists();
+    }
+
+    // Metodo para dar
+    public function darComent()
+    {
+        if (Auth::check()) { // Verificar si el usuario está autenticado
+            $usuarioId = Auth::id();
+            if (!$this->comprobarLike()) {
+                $this->likes()->create(['usuario_id' => $usuarioId]);
+            }
+        }
+    }
+
+    //Funcion para quitar like
+    public function quitarComent()
+    {
+        if (Auth::check()) { // Verificar si el usuario está autenticado
+            $usuarioId = Auth::id();
+            if ($this->comprobarLike()) {
+                $this->likes()->where('usuario_id', $usuarioId)->delete();
+            }
+        }
+    }
 }
