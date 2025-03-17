@@ -4,7 +4,11 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\FotografiaController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ComentariosController;
+
+
+Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
 
 Route::get('/', function () {
     //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
@@ -26,18 +30,28 @@ require __DIR__.'/auth.php';
 
 Route::resource('fotografias', FotografiaController::class);
 
-// Rutas para los comentarios
-Route::resource('comentarios', ComentariosController::class);
-
-Route::get('/comentar', [ComentariosController::class, 'index'])->name('comentar.index');
-Route::post('/comentar', [ComentariosController::class, 'store'])->name('comentar.store');
-
+Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create');
 
 // Rutas para dar y quitar likes
-Route::post('/fotografias/{fotografia}/like', [FotografiaController::class, 'darLike'])
+Route::post('/fotografias/{fotografia}/like', [LikeController::class, 'darLike'])
     ->middleware('auth')
     ->name('fotografias.like');
 
-Route::post('/fotografias/{fotografia}/unlike', [FotografiaController::class, 'quitarLike'])
+Route::post('/fotografias/{fotografia}/unlike', [LikeController::class, 'quitarLike'])
     ->middleware('auth')
     ->name('fotografias.unlike');
+
+// Rutas para los comentarios
+Route::resource('comentarios', ComentariosController::class)->except(['show']);
+
+Route::get('/comentar', [ComentariosController::class, 'index'])->name('comentar.index');
+
+// Vamos a crear el metodo delete para eliminar el comentario
+Route::delete('/comentarios/{comentarioId}', [ComentariosController::class, 'destroy'])->name('comentarios.destroy');
+
+Route::post('/comentar', [ComentariosController::class, 'store'])->name('comentar.store');
+
+// Vamos a obtener los comentarios de cada foto
+Route::get('/fotografias/{id}/comentarios', [ComentariosController::class, 'getComentarios'])->name('comentarios.get');
+
+

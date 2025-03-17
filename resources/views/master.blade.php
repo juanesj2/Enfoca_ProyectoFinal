@@ -20,12 +20,12 @@
 <!-- Esto de aqui nos sirve para coger el nombre del usuario que esta logueado en ese momento -->
 <!-- {{ Auth::user()->name }} -->
   
-<body class="d-flex flex-column justify-content-center">
+<body class="d-flex flex-column justify-content-center" style="background-color:#e0e0e0;">
     <!-- Esta es la barra de navegacion de la web -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
         <div class="container-fluid">
 
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{{ url('/fotografias') }}">
                 <img src="{{ asset('imagenes/logo_ENFOKA-sin-fondo.ico') }}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                 Enfoca
             </a>
@@ -40,16 +40,16 @@
                     <li class="nav-item border-end me-2">
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-house"></i>
-                            <a class="nav-link active" aria-current="page" href="{{ url('/students') }}">Inicio</a>
+                            <a class="nav-link active" aria-current="page" href="{{ url('/fotografias') }}">Inicio</a>
                         </div>
                     </li>
                     <li class="nav-item border-end me-2">
                         <div class="d-flex align-items-center">
                             <i class="fa-regular fa-square-plus"></i>
-                            <a class="nav-link active" aria-current="page" href="{{ url('/students') }}">Crear</a>
+                            <a class="nav-link active" aria-current="page" href="{{ route('fotografias.create') }}">Crear</a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown border-end">
+                    <!-- <li class="nav-item dropdown border-end">
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-question"></i>
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,7 +61,7 @@
                                 <li><a class="dropdown-item" href="#">Que es esto?</a></li>
                             </ul>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
 
                 <!-- Con esto de aqui añadimos a la 
@@ -81,7 +81,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    <a class="dropdown-item" href="{{ route('mis.fotografias') }}">
                                         <i class="fa-solid fa-upload"></i> Mis publicaciones
                                     </a>
                                 </li>

@@ -2,128 +2,140 @@
 
 namespace App\Http\Controllers;
 
+// Este es el modelo que usaremos en este controlador
 use App\Models\Fotografia;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Http\Request; // Esto nos permitira interactuar con los datos enviados desde un formulario
+use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autenticaciones del usuario
 
 class FotografiaController extends Controller
 {
+
+    //**************************************************************/
+    //**************************************************************/
+    //                Visualizamos las fotografias
+    //**************************************************************/
+    //**************************************************************/
+
+    // Funcion para mostrar la vista de comentarios
     public function index()
     {
+        // La funcion check() se usa para comprobar si el usuario esta logueado
         if (Auth::check()) {
-            // si el usuario está logueado, muestra las fotografías
-            // Se pasara el usuario que subio la fotografia y una paginacion de 5 fotografias
-            // la funcion with() se utiliza para cargar las relaciones de manera anticipada
-            $fotografias = Fotografia::with('user', 'likes', 'comentarios')->paginate(5);
+            // Obtenemos las fotografias con sus relaciones correspondientes
+            $fotografias = Fotografia::with('user', 'likes', 'comentarios')->paginate(5); // Las paginamos de 5 en 5
 
+            // Devolvemos la vista deseada y con el compact() le pasamos a esta misma vista $fotografias
+            // El request se encarga de calcular el indice para las fotografias
             return view('index', compact('fotografias'))->with('i', (request()->input('page', 1) - 1) * 5);
-        } else {
-            // si el usuario no está logueado, redirige a la vista principal.
-            return redirect('/');
+        } 
+        else {
+            return redirect('/'); // Si el usuario no esta logueado se le manda a la pagina de login
         }
     }
 
+    // Funcion que se encarga de devolver solamente las publicaiones del usuario logeado
+    public function misFotos() {
+        // Buscamos las fotografias del usuario logeado y si no tiene devolvemos una coleccion 
+        // Vacia para que la pagina siga funcionando sin dar error
+        // El operador ?? sirve para que php combruebe si el valor pasado el null
+        $misFotografias = Auth::user()->fotografias ?? collect(); 
+        return view('mis_fotografias', compact('misFotografias'));
+    }   
+
+    //**************************************************************/
+    //**************************************************************/
+    //                Crear y guardar fotografias
+    //**************************************************************/
+    //**************************************************************/
+
+    // Esta funcion unicamente nos va a redireccionar a la vista create
     public function create()
     {
-        error_log('ESTOY create');
         return view('create');
     }
 
+    // Esta funcion es la encargada de crear y guardar una nueva fotografia
     public function store(Request $request)
     {
-        // validaciones de los datos que envía el cliente
+        // Usamos la funcion validate() para comprobar que los daton enviados por el $request cumplen los requisitos
         $request->validate([
             'usuario_id' => 'required',
-            'fotografia_image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
-            'fotografia_titulo' => 'required|max:255',
-            'fotografia_descripcion' => 'required'
+            'direccion_imagen' => 'required|image|mimes:jpg,png,jpeg,gif,svg', // Se puede enviar cualquiera de estos tipos de archivo
+            'titulo' => 'required|max:255',
+            'descripcion' => 'required'
         ]);
 
-        // obtiene información de la imagen y la copia
-        $file_name = time() . '.' . $request->fotografia_image->getClientOriginalExtension();
-        $request->fotografia_image->move(public_path('images'), $file_name);
+        // Estamos definiendo el nombre de la variable con la que guardaremos el archivo
+        // Al estar usando el time() nos aseguramos de que cada archivo tiene un nombre diferente
+        // y obtenemos la extension con getClientOriginalExtension()
+        // El nombre del archivo quedaria algo asi "1633105600.jpg"
+        $file_name = time() . '.' . $request->direccion_imagen->getClientOriginalExtension();
 
-        // crea una instancia del objeto -> 'Fotografia'
-        // y lo almacena en la Base de Datos
+        // con move() movemos el archivo a la ruta especificada
+        $request->direccion_imagen->move(public_path('images'), $file_name);
+
+        // Creamos la nueva fotografia con sus datos correspondientes
         $fotografia = new Fotografia;
         $fotografia->usuario_id = $request->usuario_id;
-        $fotografia->fotografia_image = $file_name;
-        $fotografia->fotografia_titulo = $request->fotografia_titulo;
-        $fotografia->fotografia_descripcion = $request->fotografia_descripcion;
+        $fotografia->direccion_imagen = $file_name;
+        $fotografia->titulo = $request->titulo;
+        $fotografia->descripcion = $request->descripcion;
+        // Con la funcion save() se guarda en la base de datos nuestra nueva foto
         $fotografia->save();
 
-        // volvemos a llamar a la ruta 'fotografias' con un mensaje
+        // Redirijimos a la vista de todas las fotografias con un mensaje de exito
         return redirect('fotografias')->with('success', 'Se ha subido la imagen con éxito !!');
     }
 
-    public function show(Fotografia $fotografia)
+    //**************************************************************/
+    //**************************************************************/
+    //                  Eliminar una fotografia
+    //**************************************************************/
+    //**************************************************************/
+
+    /*
+    // Con esta funcion eliminamos una foto 
+    public function destroy(Fotografia $fotografia)
     {
-        return view('show', compact('fotografia'));
+        // Con la funcion delete() eliminamos la fotografia que le pasemos
+        $fotografia->delete();
+
+        // Redirijimos a la ruta donde tenemos todas las fotografias con un mensaje de exito
+        return redirect()->route('fotografias.index')
+                        ->with('success', 'Fotografía eliminada con éxito.');
     }
 
+    
     public function edit(Fotografia $fotografia)
     {
         return view('edit', compact('fotografia'));
     }
 
-    public function update(Request $request, Fotografia $fotografia)
+     public function update(Request $request, Fotografia $fotografia)
     {
         $request->validate([
-            'fotografia_titulo' => 'required|max:255',
-            'fotografia_descripcion' => 'required',
-            'fotografia_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
+            'titulo' => 'required|max:255',
+            'descripcion' => 'required',
+            'direccion_imagen' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
         ]);
 
-        $file_name = $fotografia->fotografia_image;
-        if ($request->hasFile('fotografia_image')) {
-            $file_name = time() . '.' . $request->fotografia_image->getClientOriginalExtension();
-            $request->fotografia_image->move(public_path('images'), $file_name);
+        $file_name = $fotografia->direccion_imagen;
+        if ($request->hasFile('direccion_imagen')) {
+            $file_name = time() . '.' . $request->direccion_imagen->getClientOriginalExtension();
+            $request->direccion_imagen->move(public_path('images'), $file_name);
         }
 
         $fotografia->update([
-            'fotografia_titulo' => $request->fotografia_titulo,
-            'fotografia_descripcion' => $request->fotografia_descripcion,
-            'fotografia_image' => $file_name
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+            'direccion_imagen' => $file_name
         ]);
 
         return redirect()->route('fotografias.index')
                         ->with('success', 'Fotografía actualizada con éxito.');
-    }
+    } */
 
-    public function destroy(Fotografia $fotografia)
-    {
-        $fotografia->delete();
 
-        return redirect()->route('fotografias.index')
-                        ->with('success', 'Fotografía eliminada con éxito.');
-    }
 
-    public function darLike(Fotografia $fotografia)
-    {
-        if (!Auth::check()) {
-            return response()->json(['error' => 'No autenticado'], 401);
-        }
-
-        $fotografia->darLike();
-
-        return response()->json([
-            'liked' => true,
-            'likesCount' => $fotografia->likes()->count()
-        ]);
-    }
-
-    public function quitarLike(Fotografia $fotografia)
-    {
-        if (!Auth::check()) {
-            return response()->json(['error' => 'No autenticado'], 401);
-        }
-
-        $fotografia->quitarLike();
-
-        return response()->json([
-            'liked' => false,
-            'likesCount' => $fotografia->likes()->count()
-        ]);
-    }
-    
 }

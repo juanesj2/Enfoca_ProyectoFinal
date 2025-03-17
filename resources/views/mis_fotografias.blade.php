@@ -1,10 +1,10 @@
 <!-- Esta es nuestra navBar -->
 @extends('master')
 
-<!-- Abrimos una secion dende meteremos el contenido que queramos -->
+<!-- Abrimos una sección donde meteremos el contenido que queramos -->
 @section('contenido')
 
-<!-- Aqui mostraremos posibles mensajes de error o de exito -->
+<!-- Mensajes de éxito o error -->
 @if($message = Session::get('success'))
     <div class="alert alert-success">
         {{ $message }}
@@ -20,19 +20,18 @@
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <!-- Comprobamos si En la tabla fotografias existen registros -->
-            @if(count($fotografias) > 0)
-            <!-- Recorremos cada foto y la imprimimos de la forma que queramos -->
-                @foreach($fotografias as $fotografia)
+            <!-- Comprobamos si el usuario tiene fotos subidas -->
+            @if(count($misFotografias) > 0)
+                <!-- Recorremos cada foto del usuario autenticado -->
+                @foreach($misFotografias as $fotografia)
                 <div class="card mb-4">
 
-                    <!-- Imagen del usuario y su nombre (La imagen la añadire mas adelante) -->
+                    <!-- Imagen del usuario y su nombre -->
                     <div class="card-header d-flex align-items-center">
-                        <!-- <img src="{{ asset('images/user.png') }}" class="rounded-circle me-2" width="40" height="40"> -->
-                        <span>Publicaion de: <strong>{{ $fotografia->user->name }}</strong></span>
+                        <span>Publicación de: <strong>{{ Auth::user()->name }}</strong></span>
                     </div>
 
-                    <!-- Aqui metemos la imagen deseada -->
+                    <!-- Imagen publicada -->
                     <div class="d-flex justify-content-center" style="background-color:#e9ecef;">
                         <a href="{{ route('comentar.index', ['fotografia_id' => $fotografia->id]) }}" class="w-100">
                             <img src="{{ asset('images/' . $fotografia->direccion_imagen) }}" class="card-img-top img-fluid tamano-img ">
@@ -41,18 +40,15 @@
 
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-
-                            <!-- Este es el contenedor de los likes -->
+                            <!-- Contenedor de likes -->
                             <div>
-                                <!-- Comprobamos si el usuario a dado o no like y hacemos cosas en funcion -->
                                 <button class="btn p-0" onclick="{{ $fotografia->likes()->where('usuario_id', Auth::id())->exists() ? 'quitarLike(this)' : 'darLike(this)' }}" fotoId="{{ $fotografia->id }}">
                                     <i class="fa-solid fa-heart fs-4" id="corazon-{{ $fotografia->id }}" style="{{ $fotografia->likes()->where('usuario_id', Auth::id())->exists() ? 'color: red;' : '' }}"></i>
                                 </button>
-                                <!-- Aqui aparecera el contador de los likes -->
                                 <span id="contadorLikes-{{ $fotografia->id }}">{{ $fotografia->likesCount() }}</span>
                             </div>
 
-                            <!-- Este es el boton de comentario -->
+                            <!-- Botón de comentario -->
                             <form action="{{ route('comentarios.index') }}" method="GET" class="m-0">
                                 <input type="hidden" name="fotografia_id" value="{{ $fotografia->id }}">
                                 <button type="submit" class="btn p-0">
@@ -61,16 +57,21 @@
                                 <span id="contadorComentarios-{{ $fotografia->id }}">{{ $fotografia->comentariosCount() }}</span>
                             </form>
 
+                            
                         </div>
-                        <p class="mb-1"><strong>{{ $fotografia->user->name }}</strong> {{ $fotografia->titulo }}</p>
+                        <p class="mb-1"><strong>{{ Auth::user()->name }}</strong> {{ $fotografia->titulo }}</p>
                         <p class="text-muted">{{ $fotografia->descripcion }}</p>
+                        
+                        <!-- Botón adicional -->
+                        <button class="btn btn-secondary btn-lg">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </button>
                     </div>
                 </div>
                 @endforeach
             @else
-                <p class="text-center">No se han encontrado datos</p>
+                <p class="text-center">No has subido ninguna fotografía</p>
             @endif
-            {!! $fotografias->links() !!}
         </div>
     </div>
 </div>
@@ -82,7 +83,6 @@
         const contadorLikes = document.getElementById('contadorLikes-' + fotoId);
 
         $.post("/fotografias/" + fotoId + "/like", {
-            // Tengo que usar este token ya que Laravel usa CSRF (Cross-Site Request Forgery) y sin el directamente bloquea cualquier forma de mandar nada 
             _token: '{{ csrf_token() }}'
         }, function(datos) {
             if (datos.liked) {
@@ -130,8 +130,8 @@
         border-bottom: none;
     }
 
-    .btn i {
-        cursor: pointer;
+    .card-img-top {
+        border-radius: 0;
     }
 
     .tamano-img {

@@ -1,102 +1,77 @@
 @extends('master')
 
-<!-- iniciamos SECCIÓN contenido -->
 @section('contenido')
-<!-- iniciamos SECCIÓN contenido -->
 
 @if($errors->any())
-    <div class="alert alert-danger">
-    <ul>
-    @foreach($errors->all() as $error)
-        <li>{{ $error }}</li>
-    @endforeach
-    </ul>
+    <div class="alert alert-danger text-center">
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
 @endif
 
-<div class="card">
-    <div class="card-header">
-        <div class="row">
-            <div class="col col-md-6"><b>Subir una nueva Fotografia</b></div>
-            <div class="col col-md-6">
-                <a href="{{ route('fotografias.index') }}" class="btn btn-success btn-sm float-end">Cancelar</a>
-            </div>
-        </div>    
-    </div>
-    
-    <div class="card-body">
-        <form method="post" action="{{ route('fotografias.store') }}" enctype="multipart/form-data">
-            @csrf
-            @method('POST')
+<div class="d-flex justify-content-center">
+    <div class="card shadow-lg" style="width: 500px; border-radius: 15px;">
+        <div class="card-header bg-white text-center py-3">
+            <h5 class="fw-bold">Subir una nueva fotografía</h5>
+            <a href="{{ route('fotografias.index') }}" class="btn btn-light btn-sm position-absolute top-0 end-0 m-3">Cancelar</a>
+        </div>
 
-            <!-- Campos ocultos para el ID del usuario y su email -->
-            <input type="hidden" id="user_id" name="user_id" value="{{ Auth::user()->id }}">
+        <div class="card-body">
+            <form method="post" action="{{ route('fotografias.store') }}" enctype="multipart/form-data">
+                @csrf
+                @method('POST')
 
-            <br>
-            <div class="row mb-3">
-                <label class="col-12 col-sm-2 col-label-form d-flex justify-content-sm-end justify-content-start align-items-end pe-1">
-                    <b>Titulo:</b>
-                </label>
-                <div class="col-sm-4">
-                    <input type="text" id="fotografia_titulo" name="fotografia_titulo" value="{{ old('fotografia_titulo') }}" class="form-control" />
-                    @error('fotografia_titulo')
-                    <small><li style="color:blue">{{ $message }}</li></small>
+                <input type="hidden" name="usuario_id" value="{{ Auth::user()->id }}">
+
+                <div class="mb-4">
+                    <!-- Si se diera algun error en la validacion el old() nos sirve para que los valores no se borren -->
+                    <input type="text" id="titulo" name="titulo" value="{{ old('titulo') }}" class="form-control" placeholder="Título" />
+                    @error('titulo')
+                    <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-            </div>
 
-            <div class="row mb-3">
-                <label class="col-12 col-sm-2 col-label-form d-flex justify-content-sm-end justify-content-start align-items-end pe-1">
-                    <b>Descripcion:</b>
-                </label>
-                <div class="col-sm-5">
-                    <input type="text" id="fotografia_descripcion" name="fotografia_descripcion" value="{{ old('fotografia_descripcion') }}" class="form-control" />
-                    @error('fotografia_descripcion')
-                    <small><li style="color:blue">{{ $message }}</li></small>
+                <div class="mb-4">
+                    <textarea id="descripcion" name="descripcion" class="form-control" placeholder="Descripción" rows="3">{{ old('descripcion') }}</textarea>
+                    @error('descripcion')
+                    <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-            </div>
-            
-            <div class="row mb-4">
-                <label class="col-12 col-sm-2 col-label-form d-flex justify-content-sm-end justify-content-start align-items-end pe-1">
-                    <b>Imagen:</b>
-                </label>
-                <div class="col-sm-5">
-                    <input type="file" id="fotografia_image" class="btn btn-primary btn-sm" name="fotografia_image">
-                    @error('fotografia_image')
-                    <small><li style="color:blue">{{ $message }}</li></small>
-                    @enderror                    
+
+                <div class="mb-4 text-center">
+                    <input type="file" id="direccion_imagen" name="direccion_imagen" class="form-control-file d-none" accept="image/*" onchange="vistaPreviaImagen(event)"/>
+                    <label for="direccion_imagen" class="btn btn-light border rounded-circle p-4">
+                        <i class="fas fa-camera fa-2x"></i>
+                    </label>
+                    <div class="mt-3" id="vista-previa-imagen"></div>
+                    @error('direccion_imagen')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
-            </div>
 
-            <!-- areglo de foco -->
-
-            @if ($errors->has('fotografia_titulo'))
-                <script>
-                document.getElementById("fotografia_titulo").select();
-                </script>    
-            @elseif ($errors->has('fotografia_descripcion'))
-                <script>
-                document.getElementById("fotografia_descripcion").select();
-                </script>    
-            @elseif ($errors->has('fotografia_image'))
-                <script>
-                document.getElementById("fotografia_image").select();
-                </script>    
-            @else
-                <script>
-                    document.getElementById("fotografia_titulo").select();
-                </script>                
-            @endif
-
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Añadir</button>
-            </div>    
-        </form>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary w-100">Publicar</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-<br><br>
 
-<!-- fin SECCIÓN -->
+<script>
+    function vistaPreviaImagen(event) {
+        const archivo = event.target.files[0];
+        if (archivo) {
+            const lector = new FileReader();
+            lector.onload = function(e) {
+                const salida = document.getElementById('vista-previa-imagen');
+                salida.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="max-height: 300px; margin-top: 10px;"/>`;
+            };
+            lector.readAsDataURL(archivo);
+        }
+    }
+</script>
+
 @endsection
-<!-- fin SECCIÓN -->

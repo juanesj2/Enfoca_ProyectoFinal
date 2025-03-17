@@ -53,7 +53,7 @@ class RegisteredUserController extends Controller
         
         // absolute -> referente a rutas relativas o absolutas
         // return redirect(route('dashboard', absolute: false));
-        return redirect(route('students.index',absolute:false));
+        return redirect(route('fotografias.index',absolute:false));
     }
 }
 

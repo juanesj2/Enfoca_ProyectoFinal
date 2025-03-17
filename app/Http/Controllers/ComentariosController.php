@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers;
 
+// Estos seran los modelos que usaremos en este controlador
 use App\Models\Comentarios;
 use App\Models\Fotografia;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Http\Request; // Esto nos permitira interactuar con los datos enviados desde un formulario
+use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autenticaciones del usuario
 
 class ComentariosController extends Controller
 {
-    // Método para mostrar la vista de comentarios
+    //**************************************************************/
+    //**************************************************************/
+    //                Visualizamos los comentarios
+    //**************************************************************/
+    //**************************************************************/
+
+    // Funcion para mostrar la vista de comentarios
     public function index(Request $request)
     {
+        // La funcion check() se usa para comprobar si el usuario esta logueado
         if (Auth::check()) {
             // Obtener el ID de la fotografía desde la solicitud
             $fotografiaId = $request->input('fotografia_id');
@@ -27,24 +36,88 @@ class ComentariosController extends Controller
         }
     }
 
-    // Método para almacenar un nuevo comentario
+
+    //**************************************************************/
+    //**************************************************************/
+    //                Control crear comentarios
+    //**************************************************************/
+    //**************************************************************/
+
+    // Funcion para almacenar un nuevo comentario
     public function store(Request $request)
     {
-        // Validaciones de los datos que envía el cliente
+        // Usamos validate para comprobar que los datos cumplan los requisitos
         $request->validate([
             'fotografia_id' => 'required|exists:fotografias,id',
             'comentario' => 'required|string|max:255',
         ]);
 
-        // Crear y guardar el comentario usando el modelo
+        // Creamos y guardamos el comentario usando la funcion crearComentario que esta en el modelo
         Comentarios::crearComentario([
-            'fotografia_id' => $request->fotografia_id,
+            'fotografia_id' => $request->fotografia_id, // usando el $request estamos sacando la informacion que se envia en el formulario
             'usuario_id' => Auth::id(),
             'comentario' => $request->comentario,
         ]);
 
-        // Redirigir de vuelta a la vista de comentarios con un mensaje de éxito
+        // Redirigimos de nuevo a la vista pero con un mensaje de exito
         return redirect()->route('comentarios.index', ['fotografia_id' => $request->fotografia_id])
                          ->with('success', 'Comentario añadido con éxito.');
+    }
+
+
+    //**************************************************************/
+    //**************************************************************/
+    //                Control comprobar comentario
+    //**************************************************************/
+    //**************************************************************/
+
+    // En esta funcion comprobamos si el usuario a comentado o no en la foto seleccionada
+    public function comprobarComentario(Request $request)
+    {
+        // Usando la funcion del controlador lo comprobamos
+        $comentado = Comentarios::comprobarComentario($request->fotografia_id);
+
+        // Devolvemos al cliente la informacion en tipo json
+        return response()->json(['comentado' => $comentado]);
+    }
+
+    //**************************************************************/
+    //**************************************************************/
+    //                   Devolver los comentarios
+    //**************************************************************/
+    //**************************************************************/
+
+    // Con esta funcion obtenemos todos los comentarios que tiene una fotografia
+    public function getComentarios($id)
+    {
+        // Usamos el modelo para conectar a la base de datos y buscar los comentarios de esa fotografia
+        // Al usar el with estamos recuperando de forma anticipada los datos de los usuarios y asi se ahorra tiempo de carga
+        // Con el el get() estamos ejecutando la consulta 
+        $comentarios = Comentarios::where('fotografia_id', $id)->with('user')->get();
+
+        // devolvemos al cliente los datos en formato json
+        return response()-> json($comentarios);
+    }
+
+    //**************************************************************/
+    //**************************************************************/
+    //                   Eliminar un comentario
+    //**************************************************************/
+    //**************************************************************/
+
+    // Asi es como eliminas un comentario seleccionado
+    public function destroy($comentarioId)
+    {
+        // Buscamos en la base de datos el comentario que tenga el id selecionado
+        $comentario = Comentarios::find($comentarioId);
+    
+        if ($comentario) {
+            $comentario->delete(); // Eliminamos el comentario con delete()
+            // Devolvemos al cliente el mensaje existoso y un codigo de exito
+            return response()->json(['message' => 'Comentario eliminado con éxito.'], 200);
+        }
+        
+        // Si por lo que sea no se encuentra el comentario entonces devolvemos el mensaje y el codigo 404
+        return response()->json(['message' => 'Comentario no encontrado.'], 404);
     }
 }
