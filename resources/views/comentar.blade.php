@@ -36,16 +36,14 @@
                 </div>
 
                 <!-- Botón de comentarios (Derecha) -->
-                <form action="{{ route('comentarios.index') }}" method="GET" class="m-0">
-                    <input type="hidden" name="fotografia_id" value="{{ $fotografia->id }}">
-
+                <div>
                     <!-- Comprobamos si el usuario ha hecho un comentario o no -->
-                    <button type="submit" class="btn p-0">
+                    <button type="submit" class="btn p-0" style="cursor: default;">
                         <i class="fa-solid fa-comment fs-4" style="{{ \App\Models\Comentarios::comprobarComentario($fotografia->id) ? 'color: #FFD700;' : '' }}"></i>
                     </button>
                     <!-- Contador de comentarios -->
                     <span id="contadorComentarios-{{ $fotografia->id }}">{{ $fotografia->comentariosCount() }}</span>
-                </form>
+                </div>
             </div>
 
             <!-- Descripción y título debajo -->
@@ -62,13 +60,32 @@
                 </div>
 
                 <!-- Formulario para crear un nuevo comentario -->
-                <form action="{{ route('comentarios.store') }}" method="POST" class="mt-auto">
+                <form action="{{ route('comentarios.store') }}" method="POST" class="mt-auto d-flex flex-column">
+                    @csrf  <!-- Token CSRF obligatorio en Laravel -->
                     <input type="hidden" name="fotografia_id" value="{{ $fotografia->id }}">
+                    
                     <div class="form-group">
                         <textarea name="comentario" id="comentario" class="form-control" rows="4" placeholder="Añade un comentario..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Enviar Comentario</button>
+
+                    <div class="d-flex justify-content-between mt-3">
+
+                        <!-- Botón de Enviar Comentario -->
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-paper-plane"></i> Enviar Comentario
+                        </button>
+
+                        
+                        <!-- Botón de Volver -->
+                        <a href="{{ url('/fotografias') }}">
+                            <button type="button" class="btn btn-secondary">
+                                <i class="fa-solid fa-arrow-left"></i> Volver
+                            </button>
+                        </a>
+                    </div>
                 </form>
+
+                
             </div>
         </div>
     </div>

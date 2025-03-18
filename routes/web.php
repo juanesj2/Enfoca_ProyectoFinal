@@ -6,9 +6,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotografiaController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ComentariosController;
+use App\Http\Controllers\PDFController;
+use App\Http\Controllers\CorreoElectronicoController;
+
+Route::get('/fotografia/{id}/pdf', [PDFController::class, 'generarPDF'])->name('generar.pdf');
+
+Route::get('/enviar-correo', [CorreoElectronicoController::class, 'enviarCorreo'])->name('generar.correo');
+Route::post('/enviar-correo', [CorreoElectronicoController::class, 'enviarCorreo'])->name('generar.correo');
 
 
-Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
 
 Route::get('/', function () {
     //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
@@ -31,6 +37,8 @@ require __DIR__.'/auth.php';
 Route::resource('fotografias', FotografiaController::class);
 
 Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create');
+
+Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
 
 // Rutas para dar y quitar likes
 Route::post('/fotografias/{fotografia}/like', [LikeController::class, 'darLike'])

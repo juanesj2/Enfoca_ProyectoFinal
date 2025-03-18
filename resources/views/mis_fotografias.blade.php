@@ -62,10 +62,16 @@
                         <p class="mb-1"><strong>{{ Auth::user()->name }}</strong> {{ $fotografia->titulo }}</p>
                         <p class="text-muted">{{ $fotografia->descripcion }}</p>
                         
-                        <!-- Botón adicional -->
-                        <button class="btn btn-secondary btn-lg">
+                        <!-- Botón para generar un PDF -->
+                        <a href="{{ route('generar.pdf', ['id' => $fotografia->id]) }}" target="_blank" class="btn btn-secondary btn-lg">
                             <i class="fa-solid fa-file-pdf"></i>
-                        </button>
+                        </a>
+
+                        <!-- Botón para enviar correo -->
+                        <a href="#" class="btn btn-secondary btn-lg enviarCorreo" data-foto-id="{{ $fotografia->id }}">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+
                     </div>
                 </div>
                 @endforeach
@@ -111,6 +117,36 @@
             alert("Error: No puedes quitar like si no estás autenticado.");
         });
     }
+
+    $(document).ready(function() {
+    $('.enviarCorreo').on('click', function(e) {
+        e.preventDefault(); // Evita recargar la página
+
+        const fotoId = $(this).data('foto-id'); // Obtiene el ID de la foto
+
+        $.ajax({
+            url: '{{ route('generar.correo') }}',
+            method: 'POST', // Cambia a POST
+            data: {
+                _token: '{{ csrf_token() }}',
+                fotografia_id: fotoId
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('.alert').remove();
+                    $('body').prepend('<div class="alert alert-success">' + response.message + '</div>');
+                }
+            },
+            error: function(xhr) {
+                $('.alert').remove();
+                $('body').prepend('<div class="alert alert-danger">Error al enviar el correo</div>');
+            }
+        });
+    });
+});
+
+
+
 </script>
 
 @endsection
