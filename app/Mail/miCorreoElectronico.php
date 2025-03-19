@@ -1,5 +1,9 @@
 <?php
 
+// Esto es lo que usamos para manejar el envio de nuestro correo, 
+// gracias a la clase Mailable de Laravel se pueden enviar correos 
+// de forma ordenada y compartir el contenido de una vista
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -29,6 +33,7 @@ class miCorreoElectronico extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            // Este es el asunto del correo
             subject: 'Datos de la fotografia seleccionada',
         );
     }
@@ -39,6 +44,7 @@ class miCorreoElectronico extends Mailable
     public function content(): Content
     {
         return new Content(
+            // Aqui mandamos los datos del correo en este caso le vamos a pasar nuestra vista correo
             view: 'correo',
         );
     }

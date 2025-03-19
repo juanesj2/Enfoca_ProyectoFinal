@@ -52,7 +52,7 @@ class Fotografia extends Model
     //**************************************************************/
     //**************************************************************/
 
-    // Método para contar los likes
+    // Funcion para contar los likes
     public function likesCount()
     {
         return $this->likes()->count();
@@ -64,7 +64,7 @@ class Fotografia extends Model
     //**************************************************************/
     //**************************************************************/
 
-    // Método para contar los comentarios
+    // Funcion para contar los comentarios
     public function comentariosCount()
     {
         return $this->comentarios()->count();

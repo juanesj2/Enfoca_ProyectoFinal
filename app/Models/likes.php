@@ -59,7 +59,7 @@ class Likes extends Model
     //**************************************************************/
     //**************************************************************/
 
-    // Método para dar like
+    // Funcion para dar like
     public static function darLike($fotografiaId)
     {
         // Lo primer oque comprobamos es si el usuario esta loguado
@@ -73,7 +73,7 @@ class Likes extends Model
         }
     }
 
-    // Método para quitar like
+    // Funcion para quitar like
     public static function quitarLike($fotografiaId)
     {
         if (Auth::check()) {

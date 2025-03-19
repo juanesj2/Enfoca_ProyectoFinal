@@ -1,3 +1,4 @@
+<!-- No hacer caso a esta vista la usare mas adelante -->
 @extends('master')
 
 <!-- iniciamos SECCIÓN contenido -->

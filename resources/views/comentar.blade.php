@@ -1,3 +1,4 @@
+<!-- Esta el la vista para ver los comentarios de la imagen -->
 @extends('master')
 
 @section('contenido')
@@ -84,30 +85,44 @@
                         </a>
                     </div>
                 </form>
-
-                
             </div>
         </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    // Definir la función cargarComentarios globalmente
+
+    //**************************************************************/
+    //**************************************************************/
+    //                        Comentarios
+    //**************************************************************/
+    //**************************************************************/
+
+    // Con esta funcion cargaremos los comentarios 
     function cargarComentarios() {
-        const fotoId = '{{ $fotografia->id }}';
-        const userId = '{{ Auth::id() }}';  // ID del usuario autenticado
+        const fotoId = '{{ $fotografia->id }}'; // ID de la fotografia
+        const userId = '{{ Auth::id() }}';  // ID del usuario logueado
+
+        // Usamos JQuery para hacer una solicitud GET la URL es "/fotografias/" + fotoId + "/comentarios"
         $.get("/fotografias/" + fotoId + "/comentarios", function(comentarios) {
+
+            // En esta variable es donde almacenamos los comentarios de la foto
             let comentariosHtml = '';
+
+            // Recorremos los comentarios y los vamos metiendo en su contenedor
             comentarios.forEach(function(comentario) {
                 comentariosHtml += `
                     <div class="mb-2 d-flex justify-content-between">
+                        <!-- Aqui aparecen los datos de cada comentario -->
                         <div>
                             <strong>${comentario.user.name}</strong>
                             <p>${comentario.contenido}</p>
                             <small class="text-muted">${comentario.fecha}</small>
                         </div>
 
+                        <!-- Comprobamos si el usuario logeado es el dueño del comentario para poner el boton para eliminarlo -->
                         ${comentario.user.id == userId ? 
                         `
                         <button class="btn" onclick="eliminarComentario(${comentario.id})">
@@ -117,71 +132,108 @@
                     </div>
                 `;
             });
+
+            // Ahora que ya tenemos los comentarios cargados reemplazamos el contenido de #comentarios por comentariosHtml
             $('#comentarios').html(comentariosHtml);
-        }).fail(function() {
+        }).fail(function() { // Si por cualquier cosa da un error al cargar los comentarios sacamos un error
             alert("Error al cargar los comentarios.");
         });
     }
 
-    // Función para eliminar comentario
+    // Función para eliminar el comentario
+    // Definimos la funcion dentro de window para poder acceder a ella desde otras partes del codigo
     window.eliminarComentario = function(comentarioId) {
-        if (confirm('¿Estás seguro de que deseas eliminar este comentario?')) {
-            console.log('Eliminando comentario con ID:', comentarioId); // Verifica el comentario ID
 
+        // Al usar la funcion confirm es como un alert pero con dos botonos aceptar y continuar
+        if (confirm('Estás seguro de que deseas eliminar este comentario?')) {
+
+            // Usamos ajax para hacer una peticion DELETE al servidor
             $.ajax({
                 url: '/comentarios/' + comentarioId,
                 method: 'DELETE',
+                // Si no le añadimos este token Laravel bloquea cualquier interaccion con el servidor menos un GET
                 data: {
                     _token: '{{ csrf_token() }}'
                 },
+                // Si todo a salido bien 
                 success: function() {
-                    cargarComentarios();  // Recargar comentarios después de eliminar
-                    location.reload();
+                    cargarComentarios();  // Recargamos los comentarios después de eliminar uno
+                    
+                    //*******************************************************************************
+                    //location.reload(); Tengo que actualizar el boton de comentar de forma asincrona
+                    //*******************************************************************************
                 },
-                error: function(xhr) {
+                // Si algo no a salido bien
+                error: function(xhr) { // xhr es una variable de JQuery que contiene informacion sobre los errores
                     alert("Error al eliminar el comentario: " + xhr.responseText);
                 }
             });
         }
     };
 
+    // Esto se ejecuta cuando la pagina cargue
     $(document).ready(function() {
-        cargarComentarios();  // Llamamos a cargar los comentarios cuando la página esté lista
+        // Cargamos los comentarios 
+        cargarComentarios();  
     });
+
+
+    //**************************************************************/
+    //**************************************************************/
+    //                            Likes
+    //**************************************************************/
+    //**************************************************************/
 
     // Función para dar like
     function darLike(button) {
-        const fotoId = button.getAttribute('fotoId');
-        const contadorLikes = document.getElementById('contadorLikes-' + fotoId);
+        const fotoId = button.getAttribute('fotoId'); // ID de la fotografia
+        const contadorLikes = document.getElementById('contadorLikes-' + fotoId); // Contador de los likes
 
+        // Usamos JQuery para hacer una solicitud POST la URL es "/fotografias/" + fotoId + "/like"
         $.post("/fotografias/" + fotoId + "/like", {
-            _token: '{{ csrf_token() }}'
-        }, function(datos) {
+            _token: '{{ csrf_token() }}' // Este es un token que usa Laravel
+        }, 
+        function(datos) {
+            // La variable datos nos devuelve informacion de los likes desde el servidor
+
+            // Si el like esta dado entonces hacemos cosas
             if (datos.liked) {
-                button.querySelector('i').style.color = 'red';
-                button.setAttribute('onclick', 'quitarLike(this)');
+                button.querySelector('i').style.color = 'red'; // Cambiamos el color del icono de corazon a rojo
+                button.setAttribute('onclick', 'quitarLike(this)'); // Tambien cambiamos la funcionalidad del boton para que al volver a darle quite ellike
             }
+
+            // En el contador de likes metemos el conteo de los likes de esa foto
             contadorLikes.textContent = datos.likesCount;
-        }).fail(function() {
-            alert("Error: No puedes dar like si no estás autenticado.");
+        })
+        // Si algo salio mal damos un error
+        .fail(function() {
+            alert("Error al dar like.");
         });
     }
 
     // Función para quitar like
     function quitarLike(button) {
-        const fotoId = button.getAttribute('fotoId');
-        const contadorLikes = document.getElementById('contadorLikes-' + fotoId);
+        const fotoId = button.getAttribute('fotoId'); // ID de la fotografia
+        const contadorLikes = document.getElementById('contadorLikes-' + fotoId); // Contador de los likes
 
+        // Usamos JQuery para hacer una solicitud POST la URL es "/fotografias/" + fotoId + "/unlike"
         $.post("/fotografias/" + fotoId + "/unlike", {
-            _token: '{{ csrf_token() }}'
+            _token: '{{ csrf_token() }}' // Este es un token que usa Laravel
         }, function(datos) {
+            // La variable datos nos devuelve informacion de los likes desde el servidor
+
+            // Si el like no esta dado entonces hacemos cosas
             if (!datos.liked) {
                 button.querySelector('i').style.color = '';
                 button.setAttribute('onclick', 'darLike(this)');
             }
+
+            // En el contador de likes metemos el conteo de los likes de esa foto
             contadorLikes.textContent = datos.likesCount;
-        }).fail(function() {
-            alert("Error: No puedes quitar like si no estás autenticado.");
+        })
+        // Si algo salio mal damos un error
+        .fail(function() {
+            alert("Error al quitar el like.");
         });
     }
 </script>

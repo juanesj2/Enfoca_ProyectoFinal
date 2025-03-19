@@ -9,57 +9,87 @@ use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\CorreoElectronicoController;
 
-Route::get('/fotografia/{id}/pdf', [PDFController::class, 'generarPDF'])->name('generar.pdf');
+    //**************************************************************/
+    //**************************************************************/
+    //               Rutas para Login y cosas del usuario
+    //**************************************************************/
+    //**************************************************************/
 
-Route::get('/enviar-correo', [CorreoElectronicoController::class, 'enviarCorreo'])->name('generar.correo');
-Route::post('/enviar-correo', [CorreoElectronicoController::class, 'enviarCorreo'])->name('generar.correo');
+    Route::get('/', function () {
+        //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
+        //Si lo esta entras a la pagina si no te pide que lo hagas
+        return redirect()->route('login');
+    });
 
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
+    
+    Route::get('/dashboard', function () {
+        return redirect()->route('fotografias.index');;
+    })->middleware(['auth', 'verified'])->name('dashboard');
 
+    //**************************************************************/
+    //**************************************************************/
+    //                  Rutas para fotografias
+    //**************************************************************/
+    //**************************************************************/
+    
+    Route::resource('fotografias', FotografiaController::class);
 
-Route::get('/', function () {
-    //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
-    //Si lo esta entras a la pagina si no te pide que lo hagas
-    return redirect()->route('login');
-});
+    Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create');
+    Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
 
-Route::get('/dashboard', function () {
-    return redirect()->route('fotografias.index');;
-})->middleware(['auth', 'verified'])->name('dashboard');
+    //**************************************************************/
+    //**************************************************************/
+    //                  Rutas para los likes
+    //**************************************************************/
+    //**************************************************************/
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-require __DIR__.'/auth.php';
-
-Route::resource('fotografias', FotografiaController::class);
-
-Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create');
-
-Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
-
-// Rutas para dar y quitar likes
-Route::post('/fotografias/{fotografia}/like', [LikeController::class, 'darLike'])
+    Route::post('/fotografias/{fotografia}/like', [LikeController::class, 'darLike'])
     ->middleware('auth')
     ->name('fotografias.like');
 
-Route::post('/fotografias/{fotografia}/unlike', [LikeController::class, 'quitarLike'])
+    Route::post('/fotografias/{fotografia}/unlike', [LikeController::class, 'quitarLike'])
     ->middleware('auth')
     ->name('fotografias.unlike');
 
-// Rutas para los comentarios
-Route::resource('comentarios', ComentariosController::class)->except(['show']);
+    //**************************************************************/
+    //**************************************************************/
+    //                Rutas para los comentarios
+    //**************************************************************/
+    //**************************************************************/
 
-Route::get('/comentar', [ComentariosController::class, 'index'])->name('comentar.index');
+    Route::resource('comentarios', ComentariosController::class)->except(['show']);
 
-// Vamos a crear el metodo delete para eliminar el comentario
-Route::delete('/comentarios/{comentarioId}', [ComentariosController::class, 'destroy'])->name('comentarios.destroy');
+    // Obtenemos todos los comentarios
+    Route::get('/comentar', [ComentariosController::class, 'index'])->name('comentar.index');
 
-Route::post('/comentar', [ComentariosController::class, 'store'])->name('comentar.store');
+    // Obtenemos las fotos de una foto seleccionada
+    Route::get('/fotografias/{id}/comentarios', [ComentariosController::class, 'getComentarios'])->name('comentarios.get');
 
-// Vamos a obtener los comentarios de cada foto
-Route::get('/fotografias/{id}/comentarios', [ComentariosController::class, 'getComentarios'])->name('comentarios.get');
+    // Ruta para almacenar un nuevo comentario
+    Route::post('/comentar', [ComentariosController::class, 'store'])->name('comentar.store');
 
+    // Ruta para eliminar un comentario seleccionado
+    Route::delete('/comentarios/{comentarioId}', [ComentariosController::class, 'destroy'])->name('comentarios.destroy');
 
+    //**************************************************************/
+    //**************************************************************/
+    //                       Rutas para los PDFs
+    //**************************************************************/
+    //**************************************************************/
+
+    Route::get('/fotografia/{id}/pdf', [PDFController::class, 'generarPDF'])->name('generar.pdf');
+
+    //**************************************************************/
+    //**************************************************************/
+    //                       Rutas para los correos
+    //**************************************************************/
+    //**************************************************************/
+
+    Route::post('/enviar-correo', [CorreoElectronicoController::class, 'enviarCorreo'])->name('generar.correo');
+
+    require __DIR__.'/auth.php';

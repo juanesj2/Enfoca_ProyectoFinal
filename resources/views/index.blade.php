@@ -1,7 +1,7 @@
 <!-- Esta es nuestra navBar -->
 @extends('master')
 
-<!-- Abrimos una secion dende meteremos el contenido que queramos -->
+<!-- Abrimos una secion donde meteremos el contenido que queramos -->
 @section('contenido')
 
 <!-- Aqui mostraremos posibles mensajes de error o de exito -->
@@ -17,14 +17,14 @@
     </div>
 @endif
 
-<div class="container mt-4">
+<div class="container-fluid mt-4"> <!-- Se cambió a container-fluid para mejor responsividad -->
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-sm-10 col-md-8 col-lg-6">
             <!-- Comprobamos si En la tabla fotografias existen registros -->
             @if(count($fotografias) > 0)
             <!-- Recorremos cada foto y la imprimimos de la forma que queramos -->
                 @foreach($fotografias as $fotografia)
-                <div class="card mb-4">
+                <div class="card mb-4 w-100 w-md-75 w-lg-50 mx-auto">
 
                     <!-- Imagen del usuario y su nombre (La imagen la añadire mas adelante) -->
                     <div class="card-header d-flex align-items-center">
@@ -35,7 +35,7 @@
                     <!-- Aqui metemos la imagen deseada -->
                     <div class="d-flex justify-content-center" style="background-color:#e9ecef;">
                         <a href="{{ route('comentar.index', ['fotografia_id' => $fotografia->id]) }}" class="w-100">
-                            <img src="{{ asset('images/' . $fotografia->direccion_imagen) }}" class="card-img-top img-fluid tamano-img ">
+                            <img src="{{ asset('images/' . $fotografia->direccion_imagen) }}" class="card-img-top img-fluid tamano-img">
                         </a>
                     </div>
 
@@ -44,11 +44,11 @@
 
                             <!-- Este es el contenedor de los likes -->
                             <div>
-                                <!-- Comprobamos si el usuario a dado o no like y hacemos cosas en funcion -->
+                                <!-- Comprobamos si el usuario ha dado o no like y hacemos cosas en funcion -->
                                 <button class="btn p-0" onclick="{{ $fotografia->likes()->where('usuario_id', Auth::id())->exists() ? 'quitarLike(this)' : 'darLike(this)' }}" fotoId="{{ $fotografia->id }}">
                                     <i class="fa-solid fa-heart fs-4" id="corazon-{{ $fotografia->id }}" style="{{ $fotografia->likes()->where('usuario_id', Auth::id())->exists() ? 'color: red;' : '' }}"></i>
                                 </button>
-                                <!-- Aqui aparecera el contador de los likes -->
+                                <!-- Aqui aparece el contador de los likes -->
                                 <span id="contadorLikes-{{ $fotografia->id }}">{{ $fotografia->likesCount() }}</span>
                             </div>
 
@@ -56,12 +56,16 @@
                             <form action="{{ route('comentarios.index') }}" method="GET" class="m-0">
                                 <input type="hidden" name="fotografia_id" value="{{ $fotografia->id }}">
                                 <button type="submit" class="btn p-0">
+                                    <!-- Combrobamos si el usuario logeado ya ha comentado en la foto -->
                                     <i class="fa-solid fa-comment fs-4" style="{{ \App\Models\Comentarios::comprobarComentario($fotografia->id) ? 'color: #FFD700;' : '' }}"></i>
                                 </button>
+                                <!-- Aqui aparece el contador de los comentarios -->
                                 <span id="contadorComentarios-{{ $fotografia->id }}">{{ $fotografia->comentariosCount() }}</span>
                             </form>
 
                         </div>
+
+                        <!-- Datos de la foto -->
                         <p class="mb-1"><strong>{{ $fotografia->user->name }}</strong> {{ $fotografia->titulo }}</p>
                         <p class="text-muted">{{ $fotografia->descripcion }}</p>
                     </div>
@@ -70,6 +74,8 @@
             @else
                 <p class="text-center">No se han encontrado datos</p>
             @endif
+
+            <!-- Con esto Laravel se encarga de generar la paginacion -->
             {!! $fotografias->links() !!}
         </div>
     </div>
@@ -77,38 +83,63 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function darLike(button) {
-        const fotoId = button.getAttribute('fotoId');
-        const contadorLikes = document.getElementById('contadorLikes-' + fotoId);
 
+    //**************************************************************/
+    //**************************************************************/
+    //                            Likes
+    //**************************************************************/
+    //**************************************************************/
+
+    // Función para dar like
+    function darLike(button) {
+        const fotoId = button.getAttribute('fotoId'); // ID de la fotografia
+        const contadorLikes = document.getElementById('contadorLikes-' + fotoId); // Contador de los likes
+
+        // Usamos JQuery para hacer una solicitud POST la URL es "/fotografias/" + fotoId + "/like"
         $.post("/fotografias/" + fotoId + "/like", {
-            // Tengo que usar este token ya que Laravel usa CSRF (Cross-Site Request Forgery) y sin el directamente bloquea cualquier forma de mandar nada 
-            _token: '{{ csrf_token() }}'
-        }, function(datos) {
+            _token: '{{ csrf_token() }}' // Este es un token que usa Laravel
+        }, 
+        function(datos) {
+            // La variable datos nos devuelve informacion de los likes desde el servidor
+
+            // Si el like esta dado entonces hacemos cosas
             if (datos.liked) {
-                button.querySelector('i').style.color = 'red';
-                button.setAttribute('onclick', 'quitarLike(this)');
+                button.querySelector('i').style.color = 'red'; // Cambiamos el color del icono de corazon a rojo
+                button.setAttribute('onclick', 'quitarLike(this)'); // Tambien cambiamos la funcionalidad del boton para que al volver a darle quite el like
             }
+
+            // En el contador de likes metemos el conteo de los likes de esa foto
             contadorLikes.textContent = datos.likesCount;
-        }).fail(function() {
-            alert("Error: No puedes dar like si no estás autenticado.");
+        })
+        // Si algo salio mal damos un error
+        .fail(function() {
+            alert("Error al dar like.");
         });
     }
 
+    // Función para quitar like
     function quitarLike(button) {
-        const fotoId = button.getAttribute('fotoId');
-        const contadorLikes = document.getElementById('contadorLikes-' + fotoId);
+        const fotoId = button.getAttribute('fotoId'); // ID de la fotografia
+        const contadorLikes = document.getElementById('contadorLikes-' + fotoId); // Contador de los likes
 
+        // Usamos JQuery para hacer una solicitud POST la URL es "/fotografias/" + fotoId + "/unlike"
         $.post("/fotografias/" + fotoId + "/unlike", {
-            _token: '{{ csrf_token() }}'
+            _token: '{{ csrf_token() }}' // Este es un token que usa Laravel
         }, function(datos) {
+            // La variable datos nos devuelve informacion de los likes desde el servidor
+
+            // Si el like no esta dado entonces hacemos cosas
             if (!datos.liked) {
                 button.querySelector('i').style.color = '';
                 button.setAttribute('onclick', 'darLike(this)');
             }
+
+            // En el contador de likes metemos el conteo de los likes de esa foto
             contadorLikes.textContent = datos.likesCount;
-        }).fail(function() {
-            alert("Error: No puedes quitar like si no estás autenticado.");
+        })
+        // Si algo salio mal damos un error
+        .fail(function() {
+            alert("Error al quitar el like.");
         });
     }
 </script>
@@ -119,25 +150,21 @@
 <style>
     .card {
         max-width: 80%;
-        margin: 0 auto;
-        border: none;
         border-radius: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        margin: 0 auto;
     }
 
-    .card-header {
-        background-color: white;
-        border-bottom: none;
+    @media (min-width: 768px) {
+        .card {
+            max-width: 80%;
+        }
     }
 
-    .btn i {
-        cursor: pointer;
+    @media (min-width: 1024px) {
+        .card {
+            max-width: 65%;
+        }
     }
-
-    .tamano-img {
-        max-width: 100%;
-        height: auto;
-    }
-
 </style>
 @endsection

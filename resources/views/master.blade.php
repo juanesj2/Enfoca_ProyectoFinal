@@ -100,7 +100,7 @@
                         </div>
                     </span>
 
-                    <!-- Esta barra de busqueda se implementara mas adelante -->
+                    <!-- Esta barra de busqueda la implementare mas adelante -->
                     <!-- <form class="d-flex ms-auto" role="search">
                         <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
                         <button type="submit" class="btn btn-success"><i class="fa-solid fa-magnifying-glass"></i></button>

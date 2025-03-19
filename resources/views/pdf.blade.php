@@ -1,3 +1,4 @@
+<!-- Esta el la vista con la que generamos el PDF -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
