@@ -73,8 +73,6 @@ use App\Http\Controllers\CorreoElectronicoController;
     // Ruta para almacenar un nuevo comentario
     Route::post('/comentar', [ComentariosController::class, 'store'])->name('comentar.store');
 
-    // Ruta para eliminar un comentario seleccionado
-    Route::delete('/comentarios/{comentarioId}', [ComentariosController::class, 'destroy'])->name('comentarios.destroy');
 
     //**************************************************************/
     //**************************************************************/
