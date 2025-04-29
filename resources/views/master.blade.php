@@ -49,6 +49,15 @@
                             <a class="nav-link active" aria-current="page" href="{{ route('fotografias.create') }}">Crear</a>
                         </div>
                     </li>
+
+                    @if (Auth::user()->rol == 'admin')
+                    <li class="nav-item border-end me-2">
+                        <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-crown"></i>
+                            <a class="nav-link active" aria-current="page" href="{{ url('/admin') }}">Admin</a>
+                        </div>
+                    </li>
+                    @endif
                     <!-- <li class="nav-item dropdown border-end">
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-question"></i>

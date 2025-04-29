@@ -8,6 +8,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\CorreoElectronicoController;
+use App\Http\Controllers\AdminController;
 
     //**************************************************************/
     //**************************************************************/
@@ -30,6 +31,23 @@ use App\Http\Controllers\CorreoElectronicoController;
     Route::get('/dashboard', function () {
         return redirect()->route('fotografias.index');;
     })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+    //**************************************************************/
+    //**************************************************************/
+    //                  Rutas para el Admin
+    //**************************************************************/
+    //**************************************************************/
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    });
+
+    Route::get('/admin/controlUsuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios')->middleware('auth');
+
+    Route::get('/admin/controlFotografias', [AdminController::class, 'usuarios'])->name('admin.fotografias')->middleware('auth');
+    
+    
 
     //**************************************************************/
     //**************************************************************/

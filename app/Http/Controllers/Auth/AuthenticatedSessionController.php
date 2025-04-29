@@ -37,7 +37,16 @@ class AuthenticatedSessionController extends Controller
         // de seguridad para prevenir ataques de fijación de sesión (session fixation).        
         $request->session()->regenerate();
 
-        //return redirect()->intended(route('dashboard', absolute: false));
+        // Vamos a verificar el rol del usuario para redirigirlo a un lado o a otro
+        $user = Auth::user();
+
+        // Si el usuario es un administrador, lo redirigimos a la página de administración
+        if($user->rol == 'admin'){
+            //return redirect()->intended(route('dashboard', absolute: false));
+            return redirect(route('fotografias.index',absolute:false));
+        }
+
+        // Si el usuario no es un administrador, lo redirigimos a la página de inicio
         return redirect(route('fotografias.index',absolute:false));
     }
 

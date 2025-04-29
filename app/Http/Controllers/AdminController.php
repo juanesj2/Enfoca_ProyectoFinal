@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers;
+
+// Estos seran los modelos que usaremos en este controlador
+use App\Models\Fotografia;
+use App\Models\User;
+
+use Illuminate\Http\Request;
+
+
+
+class AdminController extends Controller
+{
+    public function dashboard()
+    {
+        // Verificamos si el usuario es un admin
+        if (auth()->user()->rol !== 'admin') {
+            return redirect()->route('fotografias.index'); // Redirige si no es admin
+        }
+
+        // Obtenemos todas las fotografias
+        $fotografias = Fotografia::with('user', 'likes', 'comentarios')->orderBy('id', 'desc')->paginate(5); // Las paginamos de 5 en 5
+
+        return view('admin', compact('fotografias'));
+    }
+
+    public function usuarios()
+    {
+        if (auth()->user()->rol !== 'admin') {
+            return redirect()->route('fotografias.index');
+        }
+
+        $usuarios = User::all(); // Si queremos usar paginacion lo ponemos aqui
+        return view('ControlUsuarios', compact('usuarios'));
+    }
+}
