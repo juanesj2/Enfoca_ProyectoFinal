@@ -24,7 +24,7 @@
                     <i class="fa-solid fa-camera fa-3x mb-3 text-warning"></i>
                     <h5 class="card-title mb-3 text-dark">Control de Fotografías</h5>
                     <p class="card-text text-muted mb-4">Gestiona todas las fotografías subidas. Puedes ver, editar o eliminar fotos.</p>
-                    <a href="{{ route('fotografias.index') }}" class="btn btn-warning w-100 py-2">IR AL CONTROL DE FOTOGRAFIAS</a>
+                    <a href="{{ route('admin.fotografias') }}" class="btn btn-warning w-100 py-2">IR AL CONTROL DE FOTOGRAFIAS</a>
                 </div>
             </div>
         </div>

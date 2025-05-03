@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->text('direccion_imagen');
             $table->string('titulo', 255);
             $table->text('descripcion')->nullable();
+            $table->boolean('vetada')->default(false);
             $table->timestamps();
         });
     }

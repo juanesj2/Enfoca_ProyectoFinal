@@ -27,11 +27,23 @@ class AdminController extends Controller
 
     public function usuarios()
     {
+        // Verificamos si el usuario es un admin
         if (auth()->user()->rol !== 'admin') {
             return redirect()->route('fotografias.index');
         }
 
         $usuarios = User::all(); // Si queremos usar paginacion lo ponemos aqui
-        return view('ControlUsuarios', compact('usuarios'));
+        return view('ControlUsuarios.ControlUsuarios', compact('usuarios'));
+    }
+
+    public function fotografias()
+    {
+        // Verificamos si el usuario es un admin
+        if (auth()->user()->rol !== 'admin') {
+            return redirect()->route('fotografias.index');
+        }
+        $fotografias = Fotografia::paginate(5);
+
+        return view('Controlfotografias.index', compact('fotografias'));
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\CorreoElectronicoController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UsuarioController;
 
     //**************************************************************/
     //**************************************************************/
@@ -43,11 +44,35 @@ use App\Http\Controllers\AdminController;
         Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     });
 
+    // Control de usuarios
+
+    // Entrar a control de usuarios
     Route::get('/admin/controlUsuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios')->middleware('auth');
 
-    Route::get('/admin/controlFotografias', [AdminController::class, 'usuarios'])->name('admin.fotografias')->middleware('auth');
+    // Mostrar el formulario de edición
+    Route::get('/usuarios/{id}/editar', [UsuarioController::class, 'edit'])->name('usuarios.edit');
+
+    // Actualizar los datos del usuario
+    Route::put('/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
+
+    //Eliminar un usuario
+    Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy'])->name('usuarios.eliminar');
+
+    // Control de fotografias
+
+    // Entrar a control de fotografias
+    Route::get('/admin/ControlFotografias', [AdminController::class, 'fotografias'])->name('admin.fotografias')->middleware('auth');
     
-    
+    // Eliminar fotografia
+    Route::delete('/fotografias/{id}', [FotografiaController::class, 'destroy'])->name('fotografias.destroy');
+
+    // Mostrar el formulario de edición
+    Route::get('/fotografias/{id}/edit', [FotografiaController::class, 'edit'])->name('Controlfotografias.edit');
+
+    // Actualizar los datos de la fotografia
+    Route::put('/admin/fotografias/{id}', [AdminController::class, 'actualizarFoto'])->name('admin.fotografias.update');
+
+
 
     //**************************************************************/
     //**************************************************************/

@@ -23,8 +23,11 @@ class FotografiaController extends Controller
         // La funcion check() se usa para comprobar si el usuario esta logueado
         if (Auth::check()) {
             // Obtenemos las fotografias con sus relaciones correspondientes
-            $fotografias = Fotografia::with('user', 'likes', 'comentarios')->orderBy('id', 'desc')->paginate(5); // Las paginamos de 5 en 5
-
+            $fotografias = Fotografia::with('user', 'likes', 'comentarios')
+                ->where('vetada', false)
+                ->orderBy('id', 'desc')
+                ->paginate(5); // Las paginamos de 5 en 5
+                
             // Devolvemos la vista deseada y con el compact() le pasamos a esta misma vista $fotografias
             // El request se encarga de calcular el indice para las fotografias
             return view('index', compact('fotografias'))->with('i', (request()->input('page', 1) - 1) * 5);
@@ -87,4 +90,42 @@ class FotografiaController extends Controller
         // Redirijimos a la vista de todas las fotografias con un mensaje de exito
         return redirect('fotografias')->with('success', 'Se ha subido la imagen con éxito !!');
     }
+
+    // Método para mostrar el formulario de edición de la fotografía
+    public function edit($id)
+    {
+        $fotografia = Fotografia::findOrFail($id);
+        return view('Controlfotografias.edit', compact('fotografia'));
+    }
+
+    // Método para eliminar una fotografía
+    public function destroy($id)
+    {
+        $fotografia = Fotografia::findOrFail($id);
+        $fotografia->delete();
+
+        // Redirige con mensaje de éxito
+        return redirect()->route('fotografias.index')->with('success', 'Foto eliminada correctamente.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $fotografia = Fotografia::findOrFail($id);
+
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+        ]);
+
+        $fotografia->titulo = $request->titulo;
+        $fotografia->descripcion = $request->descripcion;
+
+        // Aquí asignamos true si está vetado y false si no
+        $fotografia->vetada = $request->has('vetada');
+
+        $fotografia->save();
+
+        return redirect()->route('admin.fotografias')->with('success', 'Fotografía actualizada correctamente.');
+    }
+
 }
