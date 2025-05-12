@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autentica
 
 class FotografiaController extends Controller
 {
-
+    
     //**************************************************************/
     //**************************************************************/
     //                Visualizamos las fotografias
@@ -20,22 +20,21 @@ class FotografiaController extends Controller
     // Funcion para mostrar la vista de comentarios
     public function index()
     {
-        // La funcion check() se usa para comprobar si el usuario esta logueado
-        if (Auth::check()) {
-            // Obtenemos las fotografias con sus relaciones correspondientes
-            $fotografias = Fotografia::with('user', 'likes', 'comentarios')
-                ->where('vetada', false)
-                ->orderBy('id', 'desc')
-                ->paginate(5); // Las paginamos de 5 en 5
-                
-            // Devolvemos la vista deseada y con el compact() le pasamos a esta misma vista $fotografias
-            // El request se encarga de calcular el indice para las fotografias
-            return view('index', compact('fotografias'))->with('i', (request()->input('page', 1) - 1) * 5);
-        } 
-        else {
-            return redirect('/'); // Si el usuario no esta logueado se le manda a la pagina de login
+        // 1) Si está autenticado y vetado, lo mando a /vetado
+        if (Auth::check() && Auth::user()->estaVetado()) {
+            return redirect()->route('vetado');
         }
+
+        // 2) Si no está vetado, muestro normalmente
+        $fotografias = Fotografia::with('user', 'likes', 'comentarios')
+            ->where('vetada', false)
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+
+        return view('index', compact('fotografias'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
     }
+
 
     // Funcion que se encarga de devolver solamente las publicaiones del usuario logeado
     public function misFotos() {
@@ -55,6 +54,10 @@ class FotografiaController extends Controller
     // Esta funcion unicamente nos va a redireccionar a la vista create
     public function create()
     {
+        if (Auth::check() && Auth::user()->estaVetado()) {
+            return redirect()->route('vetado');
+        }
+        
         return view('create');
     }
 

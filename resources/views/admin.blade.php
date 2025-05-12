@@ -36,7 +36,7 @@
                     <i class="fa-solid fa-flag fa-3x mb-3 text-danger"></i>
                     <h5 class="card-title mb-3 text-dark">Gestión de Reportes</h5>
                     <p class="card-text text-muted mb-4">Revisa los reportes de contenido inapropiado o problemas con la plataforma.</p>
-                    <a href="{{ route('fotografias.index') }}" class="btn btn-danger w-100 py-2">IR AL GESTIÓN DE REPORTES</a>
+                    <a href="{{ route('admin.reportes') }}" class="btn btn-danger w-100 py-2">IR AL GESTIÓN DE REPORTES</a>
                 </div>
             </div>
         </div>

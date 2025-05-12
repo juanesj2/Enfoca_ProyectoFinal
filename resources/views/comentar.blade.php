@@ -51,6 +51,12 @@
             <p class="ms-2"><strong>{{ $fotografia->user->name }}</strong> {{ $fotografia->titulo }}</p>
             <p class="text-muted ms-2">{{ $fotografia->descripcion }}</p>
 
+            <!-- Reportar esta foto -->
+            <div class="ms-2 mb-2">
+                <a href="{{ route('reportes.create', ['id' => $fotografia->id]) }}" class="btn">
+                    <i class="fa-solid fa-triangle-exclamation" style="color:red; cursor: pointer;"></i>
+                </a>
+            </div>
         </div>
 
         <!-- Card de los comentarios -->

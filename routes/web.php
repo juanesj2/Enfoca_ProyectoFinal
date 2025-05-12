@@ -10,6 +10,13 @@ use App\Http\Controllers\PDFController;
 use App\Http\Controllers\CorreoElectronicoController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ReporteController;
+
+// página de avisos para usuarios vetados
+Route::get('/vetado', function(){
+    return view('vetado');
+})->name('vetado');
+
 
     //**************************************************************/
     //**************************************************************/
@@ -44,7 +51,7 @@ use App\Http\Controllers\UsuarioController;
         Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     });
 
-    // Control de usuarios
+    //****************** Control de usuarios ***********************/
 
     // Entrar a control de usuarios
     Route::get('/admin/controlUsuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios')->middleware('auth');
@@ -58,7 +65,7 @@ use App\Http\Controllers\UsuarioController;
     //Eliminar un usuario
     Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy'])->name('usuarios.eliminar');
 
-    // Control de fotografias
+    //****************** Control de fotografias ***********************/
 
     // Entrar a control de fotografias
     Route::get('/admin/ControlFotografias', [AdminController::class, 'fotografias'])->name('admin.fotografias')->middleware('auth');
@@ -72,7 +79,22 @@ use App\Http\Controllers\UsuarioController;
     // Actualizar los datos de la fotografia
     Route::put('/admin/fotografias/{id}', [AdminController::class, 'actualizarFoto'])->name('admin.fotografias.update');
 
+    //****************** Control de reportes ***********************/
 
+    // Entrar al panel de control de reportes
+    Route::get('/admin/controlReportes', [ReporteController::class, 'index'])->name('admin.reportes')->middleware('auth');
+
+    // Ver detalles de los reportes de una foto específica
+    Route::get('/admin/controlReportes/{foto_id}', [ReporteController::class, 'detalle'])->name('reportes.detalle')->middleware('auth');
+
+    // Crear un nuevo reporte
+    Route::get('/reportes/create/{id}', [ReporteController::class, 'create'])->name('reportes.create');
+
+    // Guardar un nuevo reporte
+    Route::post('/reportes', [ReporteController::class, 'store'])->name('reportes.store');
+
+    // Eliminar los reportes de una foto
+    Route::delete('/reportes/foto/{foto_id}', [ReporteController::class, 'eliminarPorFoto'])->name('reportes.eliminarPorFoto');
 
     //**************************************************************/
     //**************************************************************/
@@ -84,6 +106,8 @@ use App\Http\Controllers\UsuarioController;
 
     Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create');
     Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
+
+    Route::delete('/fotos/{foto}', [FotografiaController::class, 'destroy'])->name('fotos.destroy');
 
     //**************************************************************/
     //**************************************************************/
