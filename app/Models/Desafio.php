@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Desafio extends Model
 {
-    use HasFactory;
 
     protected $table = 'desafios';
 
@@ -14,7 +14,9 @@ class Desafio extends Model
     {
         return $this->belongsToMany(User::class, 'desafio_usuario', 'desafio_id', 'usuario_id')
                     ->withTimestamps()
-                    ->withPivot('conseguido_en');
+                    // Pivot es una tabla intermedia que relaciona dos tablas muchos a muchos 
+                    // que laravel crea automaticamente y con whichPivot podemos acceder a los campos de esa tabla
+                    ->withPivot('created_at');
     }
 
 }

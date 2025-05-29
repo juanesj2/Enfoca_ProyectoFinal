@@ -1,5 +1,19 @@
 <?php
 
+/* 
+Al crear un recurso con Route::resource, se generan automáticamente estas rutas:
+
+| Verbo HTTP | URI                 | Acción del controlador | Nombre de la ruta |
+| ---------- | ------------------- | ---------------------- | ----------------- |
+| GET        | /recurso            | index                  | recurso.index     |
+| GET        | /recurso/create     | create                 | recurso.create    |
+| POST       | /recurso            | store                  | recurso.store     |
+| GET        | /recurso/{id}       | show                   | recurso.show      |
+| GET        | /recurso/{id}/edit  | edit                   | recurso.edit      |
+| PUT/PATCH  | /recurso/{id}       | update                 | recurso.update    |
+| DELETE     | /recurso/{id}       | destroy                | recurso.destroy   |
+ */
+
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +25,7 @@ use App\Http\Controllers\CorreoElectronicoController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\DesafioController;
 
 // página de avisos para usuarios vetados
 Route::get('/vetado', function(){
@@ -102,9 +117,10 @@ Route::get('/vetado', function(){
     //**************************************************************/
     //**************************************************************/
     
+    // Al usar Route::resource() se crean las rutas de index, create, store, show, edit, update y destroy
     Route::resource('fotografias', FotografiaController::class);
 
-    Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create');
+    /* Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create'); */
     Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
 
     Route::delete('/fotos/{foto}', [FotografiaController::class, 'destroy'])->name('fotos.destroy');
@@ -140,6 +156,17 @@ Route::get('/vetado', function(){
     // Ruta para almacenar un nuevo comentario
     Route::post('/comentar', [ComentariosController::class, 'store'])->name('comentar.store');
 
+    //**************************************************************/
+    //**************************************************************/
+    //                  Rutas para desafios
+    //**************************************************************/
+    //**************************************************************/
+    
+    Route::resource('desafios', DesafioController::class);
+
+    Route::get('/mis-desafios', [DesafioController::class, 'misDesafios'])->name('desafios.mis-desafios')->middleware('auth');
+    
+    /* Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth'); */
 
     //**************************************************************/
     //**************************************************************/
