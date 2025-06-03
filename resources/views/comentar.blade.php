@@ -51,11 +51,16 @@
             <p class="ms-2"><strong>{{ $fotografia->user->name }}</strong> {{ $fotografia->titulo }}</p>
             <p class="text-muted ms-2">{{ $fotografia->descripcion }}</p>
 
-            <!-- Reportar esta foto -->
-            <div class="ms-2 mb-2">
+            <!-- Reportar esta foto y metadatos -->
+            <div class="ms-2 me-3 mb-3 d-flex justify-content-between">
+                <!-- Botón para reportar la foto -->
                 <a href="{{ route('reportes.create', ['id' => $fotografia->id]) }}" class="btn">
                     <i class="fa-solid fa-triangle-exclamation" style="color:red; cursor: pointer;"></i>
                 </a>
+                <!-- Metadatos de la foto -->
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalMapa">
+                    Mas info
+                </button>
             </div>
         </div>
 
@@ -92,10 +97,77 @@
                         </a>
                     </div>
                 </form>
+
+            <!-- Modal de Bootstrap -->
+            <div class="modal fade" id="modalMapa" tabindex="-1" aria-labelledby="modalMapaLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalMapaLabel">Metadatos de la foto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p class="ms-2"><strong>ISO: </strong> {{ $fotografia->ISO }}</p>
+                            <p class="ms-2"><strong>Velocidad de obturacion: </strong> {{ $fotografia->velocidad_obturacion }}</p>
+                            <p class="ms-2"><strong>Apertura: </strong> {{ $fotografia->apertura }}</p>
+                        </div>
+
+                        @if($fotografia->latitud && $fotografia->longitud)
+                            <div>
+                                <p class="ms-2"><strong>Donde se hizo esta foto? </strong> </p>
+                                <div id="map" style="height: 400px; width: 100%; border-radius: 10px;"></div>
+                            </div>
+                        @endif
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                                <i class="fa-solid fa-xmark"></i> Cerrar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
+
+<!-- Carga Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+let mapa;
+let marcador;
+
+// Inicializamos el mapa cuando se abre el modal
+document.getElementById('modalMapa').addEventListener('shown.bs.modal', function () {
+    if (!mapa) {
+        // Usa las coordenadas de la fotografía si existen, si no, centra en España
+        const lat = {{ $fotografia->latitud}};
+        const lng = {{ $fotografia->longitud}};
+        const zoom = {{ ($fotografia->latitud && $fotografia->longitud) ? 8 : 4 }};
+
+        mapa = L.map('map').setView([lat, lng], zoom);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(mapa);
+
+        // Si hay coordenadas, muestra un marcador
+        @if($fotografia->latitud && $fotografia->longitud)
+            marcador = L.marker([{{ $fotografia->latitud }}, {{ $fotografia->longitud }}]).addTo(mapa);
+        @endif
+    }
+
+    // Forzamos el redibujo del mapa cuando el modal se muestra
+    setTimeout(() => {
+        mapa.invalidateSize();
+    }, 200);
+});
+</script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

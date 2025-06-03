@@ -9,7 +9,7 @@
     @else
         <div class="list-group">
             @foreach($misDesafios as $desafio)
-                <div class="list-group-item d-flex align-items-center">
+                <div class="list-group-item d-flex align-items-center" >
                     @if($desafio->icono)
                         <img src="{{ asset('icons/' . $desafio->icono) }}" alt="{{ $desafio->titulo }}" width="40" height="40" class="me-3">
                     @endif

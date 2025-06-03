@@ -13,6 +13,14 @@ return new class extends Migration {
             $table->string('titulo', 255);
             $table->text('descripcion')->nullable();
             $table->boolean('vetada')->default(false);
+
+            // Metadatos de la fotografía
+            $table->unsignedInteger('ISO')->nullable();
+            $table->string('velocidad_obturacion', 20)->nullable();
+            $table->decimal('apertura', 4, 1)->nullable();
+            $table->decimal('latitud', 10, 7)->nullable();
+            $table->decimal('longitud', 10, 7)->nullable();
+
             $table->timestamps();
         });
     }

@@ -26,6 +26,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\DesafioController;
+use App\Http\Controllers\GruposController;
 
 // página de avisos para usuarios vetados
 Route::get('/vetado', function(){
@@ -164,9 +165,17 @@ Route::get('/vetado', function(){
     
     Route::resource('desafios', DesafioController::class);
 
-    Route::get('/mis-desafios', [DesafioController::class, 'misDesafios'])->name('desafios.mis-desafios')->middleware('auth');
+    Route::get('/mis-desafios', [DesafioController::class, 'misDesafios'])->name('mis.desafios')->middleware('auth');
+
+    //**************************************************************/
+    //**************************************************************/
+    //                  Rutas para grupos
+    //**************************************************************/
+    //**************************************************************/
     
-    /* Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth'); */
+    Route::resource('grupos', GruposController::class);
+
+    Route::get('/mis-desafios', [DesafioController::class, 'misDesafios'])->name('mis.desafios')->middleware('auth');
 
     //**************************************************************/
     //**************************************************************/

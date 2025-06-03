@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // Estos seran los modelos que usaremos en este controlador
 use App\Models\Comentarios;
 use App\Models\Fotografia;
+use App\Models\Desafio;
 
 use Illuminate\Http\Request; // Esto nos permitira interactuar con los datos enviados desde un formulario
 use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autenticaciones del usuario
@@ -58,6 +59,29 @@ class ComentariosController extends Controller
             'usuario_id' => Auth::id(),
             'comentario' => $request->comentario,
         ]);
+
+
+        /******************** DESAFIO ********************/
+        // Comprobamos si el usuario a hecho 10 comentarios en fotos de otros usuarios
+        $autor = Auth::user();
+
+        // Calculamos la suma total de comentarios que ha hecho en las fotos de otros usuarios
+        $comentariosEnFotosDeOtros = \App\Models\Comentarios::where('usuario_id', $autor->id)
+            ->whereHas('fotografia', function ($query) use ($autor) {
+                $query->where('usuario_id', '!=', $autor->id);
+            })
+            ->count();
+
+        if ($comentariosEnFotosDeOtros >= 10) {
+            $desafio = Desafio::where('titulo', 'Social')->first();
+
+            if ($desafio && !$autor->desafios->contains($desafio->id)) {
+                $autor->desafios()->attach($desafio->id, ['conseguido_en' => now()]);
+                $user->verificarColeccionista(); // Verificamos si el usuario tiene el desafio de coleccionista
+            }
+        }
+
+        /******************** FIN DESAFIO ********************/
 
         // Redirigimos de nuevo a la vista pero con un mensaje de exito
         return redirect()->route('comentarios.index', ['fotografia_id' => $request->fotografia_id])

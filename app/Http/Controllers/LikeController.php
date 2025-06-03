@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fotografia;
 use App\Models\Likes;
+use App\Models\Desafio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,6 +26,40 @@ class LikeController extends Controller
 
         // Mediante la funcion darLike del modelo damos de alta el like
         Likes::darLike($fotografia->id);
+
+        /******************** DESAFIO ********************/
+        // Comprobamos si el usuario a recibido su primer like en alguna de sus fotos
+        $autor = $fotografia->user;
+
+        // Calculamos la suma total de likes recibidos en TODAS las fotos
+        $likesTotales = Fotografia::where('usuario_id', $autor->id)
+            ->withCount('likes')
+            ->get()
+            ->sum('likes_count');
+
+        // Si es el primer like que recibe en todas sus fotos
+        if ($likesTotales === 1) {
+            $desafio = Desafio::where('titulo', 'Me gusta esto')->first();
+
+            if ($desafio && !$autor->desafios->contains($desafio->id)) {
+                $autor->desafios()->attach($desafio->id, ['conseguido_en' => now()]);
+                $user->verificarColeccionista(); // Verificamos si el usuario tiene el desafio de coleccionista
+            }
+        }
+
+        // Comprobamos si alguna de las fotos a recibido mas de 25 likes
+        $likesActuales = $fotografia->likes()->count();
+        
+        if ($likesActuales >= 25) {
+            $desafio25Likes = Desafio::where('titulo', 'Popular')->first();
+            if ($desafio25Likes && !$autor->desafios->contains($desafio25Likes->id)) {
+                // attach() nos permite asociar el desafio al usuario en la tabla pivote(La relacion muchos a muchos)
+                $autor->desafios()->attach($desafio25Likes->id, ['conseguido_en' => now()]);
+                $user->verificarColeccionista(); // Verificamos si el usuario tiene el desafio de coleccionista
+            }
+        }
+
+        /******************** FIN DESAFIO ********************/
 
         // Le devolvemos al cliente estos datos en formato json para poder hacer cosas en js
         return response()->json([

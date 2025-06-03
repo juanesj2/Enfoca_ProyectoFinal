@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use App\Models\Desafio;
 
 class User extends Authenticatable
 {
@@ -57,6 +58,22 @@ class User extends Authenticatable
         return $this->belongsToMany(Desafio::class, 'desafio_usuario', 'usuario_id', 'desafio_id')
                     ->withTimestamps()
                     ->withPivot('conseguido_en');
+    }
+
+    /* Esta funcion se encarga de dar el logro de Coleccionista */
+    public function verificarColeccionista()
+    {
+        $coleccionista = Desafio::where('titulo', 'Coleccionista')->first();
+
+        if ($this->desafios()->count() >= 5 && $coleccionista && !$this->desafios->contains($coleccionista->id)) {
+            $this->desafios()->attach($coleccionista->id, ['conseguido_en' => now()]);
+        }
+    }
+
+    /* Comprobamos si el usaurio tiene ya el desafio */
+    public function hasDesafio($desafioId)
+    {
+        return $this->desafios->contains('id', $desafioId);
     }
 
     /**

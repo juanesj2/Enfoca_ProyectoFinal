@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 // Este es el modelo que usaremos en este controlador
 use App\Models\Fotografia;
+use App\Models\Desafio;
 
 use Illuminate\Http\Request; // Esto nos permitira interactuar con los datos enviados desde un formulario
 use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autenticaciones del usuario
@@ -69,7 +70,13 @@ class FotografiaController extends Controller
             'usuario_id' => 'required',
             'direccion_imagen' => 'required|image|mimes:jpg,png,jpeg,gif,svg', // Se puede enviar cualquiera de estos tipos de archivo
             'titulo' => 'required|max:255',
-            'descripcion' => 'required'
+            'descripcion' => 'required',
+            // Metadatos de la fotografía
+            'ISO' => 'required|integer|min:50|max:51200',
+            'velocidad_obturacion' => 'required|string|max:20',
+            'apertura' => 'required|numeric|min:0.7|max:32',
+            'latitud' => 'nullable|numeric',
+            'longitud' => 'nullable|numeric',
         ]);
 
         // Estamos definiendo el nombre de la variable con la que guardaremos el archivo
@@ -87,9 +94,42 @@ class FotografiaController extends Controller
         $fotografia->direccion_imagen = $file_name;
         $fotografia->titulo = $request->titulo;
         $fotografia->descripcion = $request->descripcion;
+        // Metadatos de la fotografía
+        $fotografia->ISO = $request->ISO;
+        $fotografia->velocidad_obturacion = $request->velocidad_obturacion;
+        $fotografia->apertura = $request->apertura;
+        $fotografia->latitud = $request->latitud;
+        $fotografia->longitud = $request->longitud;
         // Con la funcion save() se guarda en la base de datos nuestra nueva foto
         $fotografia->save();
 
+        /******************** DESAFIO ********************/
+        // Comprobamos si es la primera fotografia del usuario
+        $user = Auth::user();
+        $numFotos = $user->fotografias()->count();
+
+        // Si es la primera foto, le daremos el desafio de primera fotografia"
+        if ($numFotos === 1) {
+            $desafio = Desafio::where('titulo', 'Primer paso')->first();
+
+            if ($desafio && !$user->desafios->contains($desafio->id)) {
+                // attach() nos permite asociar el desafio al usuario en la tabla pivote(La relacion muchos a muchos)
+                $user->desafios()->attach($desafio->id, ['conseguido_en' => now()]);
+                $user->verificarColeccionista(); // Verificamos si el usuario tiene el desafio de coleccionista
+            }
+        }
+
+        // Si es la quinta fotografia del usuario le damos otro desafio
+        if ($numFotos === 5) {
+            $desafio = Desafio::where('titulo', 'Cinco capturas')->first();
+
+            if ($desafio && !$user->desafios->contains($desafio->id)) {
+                $user->desafios()->attach($desafio->id, ['conseguido_en' => now()]);
+                $user->verificarColeccionista(); // Verificamos si el usuario tiene el desafio de coleccionista
+            }
+        }
+
+        /****************** FIN DESAFIO ******************/
         // Redirijimos a la vista de todas las fotografias con un mensaje de exito
         return redirect('fotografias')->with('success', 'Se ha subido la imagen con éxito !!');
     }

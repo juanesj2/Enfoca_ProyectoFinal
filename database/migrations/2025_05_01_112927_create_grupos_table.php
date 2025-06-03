@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('descripcion')->nullable();
-            $table->boolean('es_privado')->default(false);
+            $table->string('codigo_invitacion')->unique();
+            $table->text('ubicacion_icono')->nullable();
             $table->foreignId('creado_por')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

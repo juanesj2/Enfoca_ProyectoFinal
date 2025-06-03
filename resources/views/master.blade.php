@@ -55,6 +55,12 @@
                             <a class="nav-link active" aria-current="page" href="{{ route('desafios.index') }}">Desafios</a>
                         </div>
                     </li>
+                    <li class="nav-item border-end me-2">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-user-group"></i>
+                            <a class="nav-link active" aria-current="page" href="{{ route('desafios.index') }}">Grupos</a>
+                        </div>
+                    </li>
 
                     @if (Auth::user()->rol == 'admin')
                     <li class="nav-item border-end me-2">
@@ -101,7 +107,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('mis.fotografias') }}">
+                                    <a class="dropdown-item" href="{{ route('mis.desafios') }}">
                                         <i class="fa-solid fa-medal"></i> Mis desafios
                                     </a>
                                 </li>
