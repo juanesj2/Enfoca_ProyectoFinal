@@ -17,12 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // Aquí Llamamos a los seeders que queramos ejecutar
             DesafioSeeder::class,
+            UsersSeeder::class,
         ]);
-        // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
     }
 }

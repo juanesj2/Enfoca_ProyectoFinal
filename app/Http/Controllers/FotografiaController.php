@@ -8,6 +8,7 @@ use App\Models\Desafio;
 
 use Illuminate\Http\Request; // Esto nos permitira interactuar con los datos enviados desde un formulario
 use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autenticaciones del usuario
+use Intervention\Image\Facades\Image; // Esta libreria nos permitira redimensionar y optimizar las imagenes
 
 class FotografiaController extends Controller
 {
@@ -83,15 +84,31 @@ class FotografiaController extends Controller
         // Al estar usando el time() nos aseguramos de que cada archivo tiene un nombre diferente
         // y obtenemos la extension con getClientOriginalExtension()
         // El nombre del archivo quedaria algo asi "1633105600.jpg"
-        $file_name = time() . '.' . $request->direccion_imagen->getClientOriginalExtension();
+        $extension = $request->direccion_imagen->getClientOriginalExtension();
+        $nombreArchivo = time() . '.' . $extension;
 
         // con move() movemos el archivo a la ruta especificada
-        $request->direccion_imagen->move(public_path('images'), $file_name);
+        $rutaOriginal = public_path('images/original/' . $nombreArchivo);
+        $request->direccion_imagen->move(public_path('images/original'), $nombreArchivo);
+
+        // Creamos una copia optimizada de la imagen
+        // Usamos la libreria Intervention Image para redimensionar y optimizar la imagen
+        // La ruta de la imagen optimizada sera "public/images/optimizadas/1633105600.jpg"
+        $rutaOptimizada = public_path('images/optimizadas/' . $nombreArchivo);
+
+        Image::make($rutaOriginal)
+            ->resize(800, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })
+            ->encode($extension, 75)
+            ->save($rutaOptimizada);
 
         // Creamos la nueva fotografia con sus datos correspondientes
         $fotografia = new Fotografia;
         $fotografia->usuario_id = $request->usuario_id;
-        $fotografia->direccion_imagen = $file_name;
+        $fotografia->direccion_imagen = 'original/' . $nombreArchivo; // ORIGINAL
+        $fotografia->direccion_optimizada = 'optimizadas/' . $nombreArchivo; // OPTIMIZADA
         $fotografia->titulo = $request->titulo;
         $fotografia->descripcion = $request->descripcion;
         // Metadatos de la fotografía
@@ -130,6 +147,7 @@ class FotografiaController extends Controller
         }
 
         /****************** FIN DESAFIO ******************/
+        
         // Redirijimos a la vista de todas las fotografias con un mensaje de exito
         return redirect('fotografias')->with('success', 'Se ha subido la imagen con éxito !!');
     }

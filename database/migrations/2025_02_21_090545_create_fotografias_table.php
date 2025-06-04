@@ -10,6 +10,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->text('direccion_imagen');
+            $table->text('direccion_optimizada')->nullable();
             $table->string('titulo', 255);
             $table->text('descripcion')->nullable();
             $table->boolean('vetada')->default(false);
