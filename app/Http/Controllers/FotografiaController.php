@@ -8,7 +8,10 @@ use App\Models\Desafio;
 
 use Illuminate\Http\Request; // Esto nos permitira interactuar con los datos enviados desde un formulario
 use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autenticaciones del usuario
-use Intervention\Image\Facades\Image; // Esta libreria nos permitira redimensionar y optimizar las imagenes
+
+use Intervention\Image\ImageManager; // La libreria Intervention Image nos permitira redimensionar y optimizar las imagenes
+use Intervention\Image\Drivers\Gd\Driver; 
+use Intervention\Image\Encoders\AutoEncoder;
 
 class FotografiaController extends Controller
 {
@@ -96,13 +99,23 @@ class FotografiaController extends Controller
         // La ruta de la imagen optimizada sera "public/images/optimizadas/1633105600.jpg"
         $rutaOptimizada = public_path('images/optimizadas/' . $nombreArchivo);
 
-        Image::make($rutaOriginal)
+        // Creamos una instancia de ImageManager con el driver Gd
+        $manager = new ImageManager(new Driver());
+
+        // Creamos un encoder de imagenes con una calidad del 65%
+        $encoder = new AutoEncoder(quality: 65);
+
+        // Leemos la imagen original, la redimensionamos a un ancho de 800px
+        $image = $manager->read($rutaOriginal)
             ->resize(800, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
-            })
-            ->encode($extension, 75)
-            ->save($rutaOptimizada);
+            });
+
+        // Guardamos la imagen optimizada en la ruta que queremos
+        $encodedImage = $image->encode($encoder);
+        file_put_contents($rutaOptimizada, $encodedImage);
+
 
         // Creamos la nueva fotografia con sus datos correspondientes
         $fotografia = new Fotografia;

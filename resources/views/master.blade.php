@@ -55,12 +55,14 @@
                             <a class="nav-link active" aria-current="page" href="{{ route('desafios.index') }}">Desafios</a>
                         </div>
                     </li>
-                    <li class="nav-item border-end me-2">
+
+                    <!-- Mas adelante pestaña de prupos -->
+                    <!-- <li class="nav-item border-end me-2">
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-user-group"></i>
                             <a class="nav-link active" aria-current="page" href="{{ route('desafios.index') }}">Grupos</a>
                         </div>
-                    </li>
+                    </li> -->
 
                     @if (Auth::user()->rol == 'admin')
                     <li class="nav-item border-end me-2">
