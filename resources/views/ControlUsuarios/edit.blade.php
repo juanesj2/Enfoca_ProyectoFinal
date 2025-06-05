@@ -7,7 +7,7 @@
     {{-- Alerta si el usuario está vetado --}}
     @if ($usuario->estaVetado())
         <div class="alert alert-warning text-center">
-            ⚠️ Este usuario está vetado hasta <strong>{{ $usuario->vetado_hasta->format('H:i:s') }}</strong>
+            Este usuario está vetado hasta <strong>{{ $usuario->vetado_hasta->format('H:i:s') }}</strong>
             (faltan <strong>{{ $usuario->tiempoRestanteVeto() }}</strong>)
         </div>
     @endif
@@ -28,21 +28,25 @@
         @csrf
         @method('PUT')
 
+        <!-- ID -->
         <div class="mb-3">
             <label for="id" class="form-label">ID</label>
             <input type="text" class="form-control" id="id" value="{{ $usuario->id }}" disabled>
         </div>
 
+        <!-- Nombre -->
         <div class="mb-3">
             <label for="name" class="form-label">Nombre</label>
             <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $usuario->name) }}" required>
         </div>
 
+        <!-- Email -->
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $usuario->email) }}" required>
         </div>
 
+        <!-- Rol -->
         <div class="mb-3">
             <label for="rol" class="form-label">Rol</label>
             <select class="form-select" id="rol" name="rol" required>
@@ -51,6 +55,7 @@
             </select>
         </div>
 
+        <!-- Vetado -->
         <div class="mb-3">
             <label for="vetado" class="form-label">Tiempo de Veto (en minutos)</label>
             <input type="number" class="form-control" id="vetado" name="vetado" value="0" min="0" required>

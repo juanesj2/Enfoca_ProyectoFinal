@@ -17,7 +17,6 @@ class DesafioController extends Controller
     //**************************************************************/
     //**************************************************************/
 
-    // Funcion para mostrar la vista de comentarios
     public function index()
     {
         // 1) Si está autenticado y vetado, lo mando a /vetado
@@ -31,8 +30,12 @@ class DesafioController extends Controller
         return view('desafios.index', compact('desafios'));
     }
 
+    //**************************************************************/
+    //**************************************************************/
+    //                Visualizamos mis desafios
+    //**************************************************************/
+    //**************************************************************/
 
-    // Funcion que se encarga de devolver solamente los desafios del usuario logeado
     public function misDesafios()
     {
         $usuario = Auth::user();

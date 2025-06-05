@@ -4,8 +4,10 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Reportes de Fotografías</h2>
 
+    <!-- Mostrar mensajes de éxito o error -->
     @if($reportes->count() > 0)
         <div class="table-responsive">
+            <!-- En esta tabla mostraremos los reportes de cada foto -->
             <table class="table table-hover text-center align-middle">
                 <thead class="table-dark">
                     <tr>

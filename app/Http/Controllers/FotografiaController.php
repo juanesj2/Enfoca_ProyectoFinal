@@ -10,8 +10,8 @@ use Illuminate\Http\Request; // Esto nos permitira interactuar con los datos env
 use Illuminate\Support\Facades\Auth; // Este nos servira para realizar autenticaciones del usuario
 
 use Intervention\Image\ImageManager; // La libreria Intervention Image nos permitira redimensionar y optimizar las imagenes
-use Intervention\Image\Drivers\Gd\Driver; 
-use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Drivers\Gd\Driver; // Es uno de los moteres graficos que usa laravel para trabajar con imagenes
+use Intervention\Image\Encoders\AutoEncoder; // Esto nos permite codificar las imagenes de forma automatica
 
 class FotografiaController extends Controller
 {

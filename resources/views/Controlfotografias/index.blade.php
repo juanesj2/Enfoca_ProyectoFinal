@@ -18,6 +18,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-10 col-md-8 col-lg-6">
             @if(count($fotografias) > 0)
+                <!-- Mostramos las fotografias -->
                 @foreach($fotografias as $fotografia)
                 <div class="card mb-4 w-100 w-md-75 w-lg-50 mx-auto">
 

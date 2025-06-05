@@ -5,14 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Reporte;
 use App\Models\Fotografia;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB; // Nos permite insertar consultar directamente a la base de datos
 use Illuminate\Support\Facades\Auth;
 
 class ReporteController extends Controller
 {
 
+    //**************************************************************/
+    //**************************************************************/
+    //                Mandamos los reportes a la vista
+    //**************************************************************/
+    //**************************************************************/
+
     public function index()
     {
+        // 1) Si está autenticado y vetado, lo mando a /vetado
+        if (Auth::check() && Auth::user()->estaVetado()) {
+            return redirect()->route('vetado');
+        }
+
+        // 2) Si no está vetado, muestro normalmente
         $reportes = Reporte::select('foto_id', DB::raw('count(*) as total_reportes'))
             ->with('foto')
             ->groupBy('foto_id')
@@ -20,6 +32,12 @@ class ReporteController extends Controller
 
         return view('ControlReportes.index', compact('reportes'));
     }
+
+    //**************************************************************/
+    //**************************************************************/
+    //           Nos muestra los detalles de un reporte
+    //**************************************************************/
+    //**************************************************************/
 
     public function detalle($foto_id)
     {
@@ -32,11 +50,23 @@ class ReporteController extends Controller
         return view('ControlReportes.detalles', compact('foto', 'reportes'));
     }
 
+    //**************************************************************/
+    //**************************************************************/
+    //                Visualizamos las fotografias
+    //**************************************************************/
+    //**************************************************************/
+
     public function create($id)
     {
         $fotografia = Fotografia::findOrFail($id);
         return view('ControlReportes.create', compact('fotografia'));
     }
+
+    //**************************************************************/
+    //**************************************************************/
+    //                   guardamos un reporte
+    //**************************************************************/
+    //**************************************************************/
 
     public function store(Request $request)
     {
@@ -53,6 +83,12 @@ class ReporteController extends Controller
 
         return redirect()->route('fotografias.index')->with('success', '¡Reporte enviado con éxito!');
     }
+
+    //**************************************************************/
+    //**************************************************************/
+    //              Eliminamos los reportes de una foto
+    //**************************************************************/
+    //**************************************************************/
 
     public function eliminarPorFoto($foto_id)
     {

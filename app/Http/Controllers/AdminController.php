@@ -12,6 +12,13 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+
+    //**************************************************************/
+    //**************************************************************/
+    //                Cargamos la vista del dashboard
+    //**************************************************************/
+    //**************************************************************/
+
     public function dashboard()
     {
         // Verificamos si el usuario es un admin
@@ -25,6 +32,12 @@ class AdminController extends Controller
         return view('admin', compact('fotografias'));
     }
 
+    //**************************************************************/
+    //**************************************************************/
+    //                Cargamos los usuarios
+    //**************************************************************/
+    //**************************************************************/
+
     public function usuarios()
     {
         // Verificamos si el usuario es un admin
@@ -36,6 +49,11 @@ class AdminController extends Controller
         return view('ControlUsuarios.ControlUsuarios', compact('usuarios'));
     }
 
+    //**************************************************************/
+    //**************************************************************/
+    //                Cargamos las fotografias
+    //**************************************************************/
+    //**************************************************************/
     public function fotografias()
     {
         // Verificamos si el usuario es un admin

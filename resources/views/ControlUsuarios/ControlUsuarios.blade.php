@@ -13,18 +13,20 @@
 
     @if($usuarios->count() > 0)
         <div class="table-responsive">
+            <!-- En esta tabla mostraremos los usuarios -->
             <table class="table table-hover align-middle text-center">
                 <thead class="table-dark">
                     <tr>
                         <th>Nombre</th>
                         <th>Email</th>
                         <th>Rol</th>
-                        <th>Veto</th> {{-- Nueva columna para mostrar si está vetado --}}
+                        <th>Veto</th>
                         <th>Registro</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Recorremos los usuarios y vemos las acciones que podemos hacer -->
                     @foreach($usuarios as $usuario)
                         <tr>
                             <td>{{ $usuario->name }}</td>

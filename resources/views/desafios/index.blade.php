@@ -18,27 +18,23 @@
         <div class="text-center text-muted">No hay desafíos disponibles en este momento.</div>
     @else
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <!-- Mostramos los desafios -->
             @foreach($desafios as $desafio)
                 <div class="col">
                     <div class="card h-100 shadow-sm border-0" style="@if(Auth::user()->hasDesafio($desafio->id)) background-color:rgb(113, 186, 255); @else background-color: #f8f9fa; @endif">
                         <div class="card-body d-flex flex-column align-items-center text-center">
 
-                            <!-- Icono redondeado -->
+                            <!-- Icono del logro -->
                             <div class="mb-3">
-                                @if($desafio->icono)
-                                    <img src="{{ asset('icons/' . $desafio->icono) }}" 
-                                         alt="{{ $desafio->titulo }}" 
-                                         class="rounded-circle border shadow-sm"
-                                         width="70" height="70">
-                                @else
-                                    <img src="{{ asset('icons/default.png') }}" 
-                                         alt="Icono por defecto" 
-                                         class="rounded-circle border shadow-sm"
-                                         width="70" height="70">
-                                @endif
+                                <img src="{{ asset('icons/' . $desafio->icono) }}" 
+                                    alt="{{ $desafio->titulo }}" 
+                                    class="rounded-circle border shadow-sm"
+                                    width="70" height="70">
                             </div>
 
+                            <!-- Titulo -->
                             <h5 class="card-title">{{ $desafio->titulo ?? 'Nombre no disponible' }}</h5>
+                            <!-- Descripción -->
                             <p class="card-text text-muted">{{ $desafio->descripcion ?? 'Sin descripción' }}</p>
 
                             @if(Auth::user()->hasDesafio($desafio->id)) 
