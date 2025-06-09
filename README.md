@@ -1,14 +1,7 @@
 <p align="center">
   <a href="https://tusitio.com" target="_blank">
-    <img src="TU_LOGO_URL" width="400" alt="Nombre del Proyecto Logo">
+    <img src="https://enfoca.alwaysdata.net/imagenes/logo_ENFOKA-sin-fondo.ico)" width="400" alt="Nombre del Proyecto Logo">
   </a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/tuusuario/tuproject/actions"><img src="https://github.com/tuusuario/tuproject/workflows/tests/badge.svg" alt="Build Status"></a>
-  <a href="https://packagist.org/packages/tuusuario/tuproject"><img src="https://img.shields.io/packagist/dt/tuusuario/tuproject" alt="Total Downloads"></a>
-  <a href="https://packagist.org/packages/tuusuario/tuproject"><img src="https://img.shields.io/packagist/v/tuusuario/tuproject" alt="Latest Stable Version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
 </p>
 
 ## Sobre el Proyecto
@@ -34,4 +27,8 @@ Clona el repositorio e instala las dependencias:
 ```bash
 git clone https://github.com/tuusuario/tuproject.git
 cd tuproject
+cp .env.example .env
+# luego edita el .env con tus variables
+php artisan serve
+# o el comando que aplique
 composer install # o npm install, según el caso
