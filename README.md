@@ -1,24 +1,20 @@
 <p align="center">
-  <a href="https://tusitio.com" target="_blank">
-    <img src="https://raw.githubusercontent.com/juanesj2/proyectoJorge-Laravel/refs/heads/main/public/imagenes/logo_ENFOKA-sin-fondo.ico" width="400" alt="Nombre del Proyecto Logo">
+  <a href="https://enfoca.alwaysdata.net/" target="_blank">
+    <img src="https://raw.githubusercontent.com/juanesj2/proyectoJorge-Laravel/refs/heads/main/public/imagenes/logo_ENFOKA-sin-fondo.ico" width="200" alt="Enfoca logo">
   </a>
 </p>
 
 ## Sobre el Proyecto
 
-**TuProyecto** es una aplicación/web/librería que permite [descripción breve]. El objetivo principal es [problema que soluciona o característica clave].
+**Enfoca** es una web que permite a los fotografos compartir sus trabajos con toda una comunidad especializada en el tema. El objetivo principal es el aprendizaje, un lugar para  compartir y convivir y a nivel personal un proyecto para crecer como desarrollador.
 
 Incluye funcionalidades como:
 
-- ✅ Característica 1
-- ⚡ Característica 2
-- 🔒 Seguridad integrada
-- 🎨 Interfaz moderna (si aplica)
-- 🔧 Fácil de configurar y extender
-
-## Documentación
-
-Encuentra toda la documentación en [https://tusitio.com/docs](https://tusitio.com/docs) o en el archivo `/docs`.
+- ✅ Subir fotografias
+- ⚡ Dar y quitar likes
+- 🔒 Comentar en fotos de otros y recibir comentarios
+- 🎨 Interfaz muy sencilla de usar
+- 🔧 Fácil de mejorar
 
 ## Cómo Empezar
 
