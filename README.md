@@ -6,25 +6,26 @@
 
 ## Sobre el Proyecto
 
-**Enfoca** es una web que permite a los fotografos compartir sus trabajos con toda una comunidad especializada en el tema. El objetivo principal es el aprendizaje, un lugar para  compartir y convivir y a nivel personal un proyecto para crecer como desarrollador.
+**Enfoca** es una aplicación web que permite a fotógrafos compartir sus trabajos con una comunidad especializada. El objetivo principal es fomentar el aprendizaje, la inspiración y el intercambio, en un entorno amigable y colaborativo. A nivel personal, este proyecto representa un espacio para mi crecimiento como desarrollador.
 
-Incluye funcionalidades como:
+### Características principales
 
-- ✅ Subir fotografias
-- ⚡ Dar y quitar likes
-- 🔒 Comentar en fotos de otros y recibir comentarios
-- 🎨 Interfaz muy sencilla de usar
-- 🔧 Fácil de mejorar
-
+- 📷 Subir fotografías y compartir tu trabajo.
+- ❤️‍🔥 Dar y quitar "likes" a otras publicaciones.
+- 💬 Comentar en las fotos de otros y recibir retroalimentación.
+- 🖥️ Interfaz simple, clara y fácil de usar.
+- 🛠️ Base sólida y pensada para ser fácilmente mejorable y extendida.
+  
 ## Cómo Empezar
 
-Clona el repositorio e instala las dependencias:
+Sigue estos pasos para ejecutar el proyecto en tu entorno local:
 
 ```bash
 git clone https://github.com/tuusuario/tuproject.git
 cd tuproject
 cp .env.example .env
-# luego edita el .env con tus variables
+# Luego edita el archivo .env con tus propias variables (DB, MAIL, etc.)
+composer install
+php artisan key:generate
+php artisan migrate
 php artisan serve
-# o el comando que aplique
-composer install # o npm install, según el caso
