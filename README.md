@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://tusitio.com" target="_blank">
-    <img src="https://enfoca.alwaysdata.net/imagenes/logo_ENFOKA-sin-fondo.ico)" width="400" alt="Nombre del Proyecto Logo">
+    <img src="https://raw.githubusercontent.com/juanesj2/proyectoJorge-Laravel/refs/heads/main/public/imagenes/logo_ENFOKA-sin-fondo.ico" width="400" alt="Nombre del Proyecto Logo">
   </a>
 </p>
 
