@@ -16,6 +16,9 @@ Al crear un recurso con Route::resource, se generan automáticamente estas rutas
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 use App\Http\Controllers\FotografiaController;
 use App\Http\Controllers\LikeController;
