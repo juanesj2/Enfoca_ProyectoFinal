@@ -2,45 +2,28 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
-// Controladores
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\FotografiaController;
+use App\Http\Controllers\Api\ComentarioController;
 use App\Http\Controllers\Api\LikeController;
-use App\Http\Controllers\ComentariosController;
-use App\Http\Controllers\DesafioController;
-use App\Http\Controllers\GruposController;
-
+use App\Http\Controllers\Api\GrupoController;
+use App\Http\Controllers\Api\DesafioController;
+use App\Http\Controllers\Api\ReporteController;
+use App\Http\Controllers\Api\UserController;
 
 // ============================
-//       LOGIN / LOGOUT
+//       LOGIN / REGISTER
 // ============================
-Route::post('/login', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json(['error' => 'Credenciales incorrectas'], 401);
-    }
-
-    $user->tokens()->delete();
-    $token = $user->createToken('flutter_token')->plainTextToken;
-
-    return response()->json([
-        'token' => $token,
-        'user'  => $user,
-    ]);
-});
-
-Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
-    $request->user()->currentAccessToken()->delete();
-    return ['message' => 'Logout correcto'];
-});
+// ============================
+//     RUTAS PÚBLICAS (Opcional)
+// ============================
+// Si quieres que se puedan ver fotos sin login, descomenta esto:
+// Route::get('/fotografias', [FotografiaController::class, 'index']);
+// Route::get('/fotografias/{id}', [FotografiaController::class, 'show']);
 
 
 // ============================
@@ -48,32 +31,35 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 // ============================
 Route::middleware('auth:sanctum')->group(function () {
 
+    // ----- AUTH -----
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [UserController::class, 'show']);
+    Route::put('/user', [UserController::class, 'update']);
+
     // ----- FOTOGRAFIAS -----
     Route::get('/fotografias', [FotografiaController::class, 'index']);
+    Route::get('/mis-fotos', [FotografiaController::class, 'misFotos']);
     Route::get('/fotografias/{id}', [FotografiaController::class, 'show']);
-    Route::post('/fotografias', [FotografiaController::class, 'store']);
+    // Route::post('/fotografias', [FotografiaController::class, 'store']); // Implementar si es necesario
     Route::delete('/fotografias/{id}', [FotografiaController::class, 'destroy']);
 
+    // ----- COMENTARIOS -----
+    Route::get('/fotografias/{fotografiaId}/comentarios', [ComentarioController::class, 'index']);
+    Route::post('/fotografias/{fotografiaId}/comentarios', [ComentarioController::class, 'store']);
+    Route::delete('/comentarios/{id}', [ComentarioController::class, 'destroy']);
+
     // ----- LIKES -----
-    Route::post('/fotografias/{id}/like', [LikeController::class, 'darLike']);
-    Route::post('/fotografias/{id}/unlike', [LikeController::class, 'quitarLike']);
-
-/*     // ----- COMENTARIOS -----
-    Route::get('/fotografias/{id}/comentarios', [ComentariosController::class, 'getComentarios']);
-    Route::post('/comentarios',          [ComentariosController::class, 'store']);
-
-    // ----- DESAFÍOS -----
-    Route::get('/desafios',           [DesafioController::class, 'index']);
-    Route::get('/mis-desafios',       [DesafioController::class, 'misDesafios']);
-    Route::post('/desafios',          [DesafioController::class, 'store']);
-    Route::put('/desafios/{id}',      [DesafioController::class, 'update']);
-    Route::delete('/desafios/{id}',   [DesafioController::class, 'destroy']);
+    Route::post('/fotografias/{fotografia}/like', [LikeController::class, 'darLike']);
+    Route::delete('/fotografias/{fotografia}/like', [LikeController::class, 'quitarLike']);
 
     // ----- GRUPOS -----
-    Route::get('/grupos',             [GruposController::class, 'index']);
-    Route::get('/grupos/{id}',        [GruposController::class, 'show']);
-    Route::post('/grupos',            [GruposController::class, 'store']);
-    Route::put('/grupos/{id}',        [GruposController::class, 'update']);
-    Route::delete('/grupos/{id}',     [GruposController::class, 'destroy']);
- */
+    Route::apiResource('grupos', GrupoController::class);
+
+    // ----- DESAFIOS -----
+    Route::apiResource('desafios', DesafioController::class);
+
+    // ----- REPORTES -----
+    Route::post('/reportes', [ReporteController::class, 'store']);
+    Route::get('/reportes', [ReporteController::class, 'index']); // Admin?
+
 });

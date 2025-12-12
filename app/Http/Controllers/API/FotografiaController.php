@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fotografia;
+use App\Http\Resources\FotografiaResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ class FotografiaController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10); // paginación opcional
 
-        return response()->json($fotografias);
+        return FotografiaResource::collection($fotografias);
     }
 
     // Mostrar las fotos de un usuario logueado
@@ -26,7 +27,7 @@ class FotografiaController extends Controller
         $user = $request->user(); // auth:sanctum
         $misFotos = $user ? $user->fotografias()->with('likes', 'comentarios')->get() : collect();
 
-        return response()->json($misFotos);
+        return FotografiaResource::collection($misFotos);
     }
 
     // Mostrar una foto concreta
@@ -38,7 +39,7 @@ class FotografiaController extends Controller
             return response()->json(['error' => 'Foto no encontrada'], 404);
         }
 
-        return response()->json($foto);
+        return new FotografiaResource($foto);
     }
 
     // Eliminar foto (solo dueño o admin)

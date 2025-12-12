@@ -10,6 +10,14 @@ class Grupo extends Model
     // Hacemos referencia a la tabla desafios de la base de datos
     protected $table = 'grupo';
 
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'codigo_invitacion',
+        'ubicacion_icono',
+        'creado_por',
+    ];
+
     //**************************************************************/
     //**************************************************************/
     //               Relaciones con la base de datos
