@@ -65,4 +65,22 @@ class UserController extends Controller
     {
         //
     }
+
+    /**
+     * Search users by name.
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'query' => 'required|string|min:1',
+        ]);
+
+        $query = $request->input('query');
+
+        $users = User::where('name', 'like', "%{$query}%")
+            ->limit(5)
+            ->get();
+
+        return UserResource::collection($users);
+    }
 }

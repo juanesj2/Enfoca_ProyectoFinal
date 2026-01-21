@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
+    Route::get('/users/search', [UserController::class, 'search']);
 
     // ----- FOTOGRAFIAS -----
     Route::get('/fotografias', [FotografiaController::class, 'index']);
@@ -72,5 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // ----- REPORTES -----
     Route::post('/reportes', [ReporteController::class, 'store']);
     Route::get('/reportes', [ReporteController::class, 'index']); // Admin?
+
+    // ----- USUARIOS -----
+    Route::get('/usuarios', [UserController::class, 'index']);
 
 });
