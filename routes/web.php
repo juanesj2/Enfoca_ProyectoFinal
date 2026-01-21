@@ -1,19 +1,5 @@
 <?php
 
-/* 
-Al crear un recurso con Route::resource, se generan automáticamente estas rutas:
-
-| Verbo HTTP | URI                 | Acción del controlador | Nombre de la ruta |
-| ---------- | ------------------- | ---------------------- | ----------------- |
-| GET        | /recurso            | index                  | recurso.index     |
-| GET        | /recurso/create     | create                 | recurso.create    |
-| POST       | /recurso            | store                  | recurso.store     |
-| GET        | /recurso/{id}       | show                   | recurso.show      |
-| GET        | /recurso/{id}/edit  | edit                   | recurso.edit      |
-| PUT/PATCH  | /recurso/{id}       | update                 | recurso.update    |
-| DELETE     | /recurso/{id}       | destroy                | recurso.destroy   |
- */
-
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -39,13 +25,11 @@ Route::get('/vetado', function(){
 
     //**************************************************************/
     //**************************************************************/
-    //               Rutas para Login y cosas del usuario
+    //              Rutas para Login y cosas del usuario
     //**************************************************************/
     //**************************************************************/
 
     Route::get('/', function () {
-        //Esto redirige nuestra pagina al login que comprueba si el usuario esta o no logeado
-        //Si lo esta entras a la pagina si no te pide que lo hagas
         return redirect()->route('login');
     });
 
@@ -89,8 +73,9 @@ Route::get('/vetado', function(){
     // Entrar a control de fotografias
     Route::get('/admin/ControlFotografias', [AdminController::class, 'fotografias'])->name('admin.fotografias')->middleware('auth');
     
-    // Eliminar fotografia
-    Route::delete('/fotografias/{id}', [FotografiaController::class, 'destroy'])->name('fotografias.destroy');
+    // --- CORRECCIÓN 1: COMENTADA PORQUE ESTÁ DUPLICADA ---
+    // Esta ruta ya la genera automáticamente el "Route::resource" de abajo.
+    // Route::delete('/fotografias/{id}', [FotografiaController::class, 'destroy'])->name('fotografias.destroy');
 
     // Mostrar el formulario de edición
     Route::get('/fotografias/{id}/edit', [FotografiaController::class, 'edit'])->name('Controlfotografias.edit');
@@ -124,14 +109,13 @@ Route::get('/vetado', function(){
     // Al usar Route::resource() se crean las rutas de index, create, store, show, edit, update y destroy
     Route::resource('fotografias', FotografiaController::class);
 
-    /* Route::get('/fotografias/create', [FotografiaController::class, 'create'])->name('fotografias.create'); */
     Route::get('/mis-fotografias', [FotografiaController::class, 'misFotos'])->name('mis.fotografias')->middleware('auth');
 
     Route::delete('/fotos/{foto}', [FotografiaController::class, 'destroy'])->name('fotos.destroy');
 
     //**************************************************************/
     //**************************************************************/
-    //                  Rutas para los likes
+    //                Rutas para los likes
     //**************************************************************/
     //**************************************************************/
 
@@ -178,7 +162,10 @@ Route::get('/vetado', function(){
     
     Route::resource('grupos', GruposController::class);
 
-    Route::get('/mis-desafios', [DesafioController::class, 'misDesafios'])->name('mis.desafios')->middleware('auth');
+    // --- CORRECCIÓN 2: ELIMINADA PORQUE ESTABA REPETIDA ---
+    // Aquí tenías copiado otra vez "mis-desafios" debajo de grupos, lo cual daba error.
+    // Si querías hacer "mis-grupos", descomenta y arregla la línea de abajo:
+    // Route::get('/mis-grupos', [GruposController::class, 'misGrupos'])->name('mis.grupos')->middleware('auth');
 
     //**************************************************************/
     //**************************************************************/

@@ -35,7 +35,7 @@
                     <!-- Aqui metemos la imagen deseada -->
                     <div class="d-flex justify-content-center" style="background-color:#e9ecef;">
                         <a href="{{ route('comentar.index', ['fotografia_id' => $fotografia->id]) }}" class="w-100">
-                            <img src="{{ asset('images/' . $fotografia->direccion_optimizada) }}" class="card-img-top img-fluid tamano-img" alt="Imagen del usuario" style="object-fit: cover; max-height: 400px;">
+                            <img src="{{ asset('images/' . $fotografia->direccion_imagen) }}" class="card-img-top img-fluid tamano-img" alt="Imagen del usuario" style="object-fit: cover; max-height: 400px;">
                         </a>
                     </div>
 

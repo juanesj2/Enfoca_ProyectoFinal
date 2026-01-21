@@ -13,15 +13,25 @@ use App\Http\Controllers\Api\ReporteController;
 use App\Http\Controllers\Api\UserController;
 
 // ============================
+//          TEST
+// ============================
+Route::get('/test', function () {
+    return response()->json([
+        'mensaje' => 'API funcionando correctamente',
+        'status' => 200
+    ]);
+});
+
+// ============================
 //       LOGIN / REGISTER
 // ============================
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // ============================
-//     RUTAS PÚBLICAS (Opcional)
+//     RUTAS PÚBLICAS 
 // ============================
-// Si quieres que se puedan ver fotos sin login, descomenta esto:
+// Si quisieramos que se muestrnen sin login, descomentamos esto:
 // Route::get('/fotografias', [FotografiaController::class, 'index']);
 // Route::get('/fotografias/{id}', [FotografiaController::class, 'show']);
 
@@ -40,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/fotografias', [FotografiaController::class, 'index']);
     Route::get('/mis-fotos', [FotografiaController::class, 'misFotos']);
     Route::get('/fotografias/{id}', [FotografiaController::class, 'show']);
-    // Route::post('/fotografias', [FotografiaController::class, 'store']); // Implementar si es necesario
+    Route::post('/fotografias', [FotografiaController::class, 'store']);
     Route::delete('/fotografias/{id}', [FotografiaController::class, 'destroy']);
 
     // ----- COMENTARIOS -----
@@ -53,10 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/fotografias/{fotografia}/like', [LikeController::class, 'quitarLike']);
 
     // ----- GRUPOS -----
-    Route::apiResource('grupos', GrupoController::class);
+    //Route::apiResource('grupos', GrupoController::class);
 
     // ----- DESAFIOS -----
-    Route::apiResource('desafios', DesafioController::class);
+    //Route::apiResource('desafios', DesafioController::class);
 
     // ----- REPORTES -----
     Route::post('/reportes', [ReporteController::class, 'store']);
