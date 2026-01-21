@@ -35,6 +35,14 @@ class FotografiaController extends Controller
         return FotografiaResource::collection($misFotos);
     }
 
+    public function fotografiasUsuario(Request $request, $id)
+    {
+        $user = $id; // Este sera el ID del usuario cuyas fotos queremos ver
+        $fotosusuario = $user ? $user->fotografias()->with('likes', 'comentarios')->get() : collect();
+
+        return FotografiaResource::collection($fotosusuario);
+    }
+
     // Mostrar una foto concreta
     public function show($id)
     {
