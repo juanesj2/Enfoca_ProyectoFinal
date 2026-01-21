@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fotografia;
+use App\Models\User;
 use App\Http\Resources\FotografiaResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +38,7 @@ class FotografiaController extends Controller
 
     public function fotografiasUsuario(Request $request, $id)
     {
-        $user = $id; // Este sera el ID del usuario cuyas fotos queremos ver
+        $user = User::find($id); // Este sera el ID del usuario cuyas fotos queremos ver
         $fotosusuario = $user ? $user->fotografias()->with('likes', 'comentarios')->get() : collect();
 
         return FotografiaResource::collection($fotosusuario);
