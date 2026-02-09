@@ -57,8 +57,18 @@ class ReporteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request, string $id)
     {
-        //
+        if ($request->user()->rol !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $reporte = Reporte::findOrFail($id);
+        $reporte->delete();
+
+        return response()->json(['message' => 'Reporte eliminado correctamente']);
     }
 }

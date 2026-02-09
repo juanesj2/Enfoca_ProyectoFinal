@@ -66,7 +66,8 @@ class FotografiaController extends Controller
         }
 
         $user = $request->user();
-        if ($user->id !== $foto->usuario_id) {
+        // Allow if user is owner OR user is admin
+        if ($user->id !== $foto->usuario_id && $user->rol !== 'admin') {
             return response()->json(['error' => 'No autorizado'], 403);
         }
 

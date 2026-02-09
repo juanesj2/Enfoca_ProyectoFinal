@@ -72,9 +72,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ----- REPORTES -----
     Route::post('/reportes', [ReporteController::class, 'store']);
-    Route::get('/reportes', [ReporteController::class, 'index']); // Admin?
+    // Admin routes
+    Route::get('/admin/reportes', [ReporteController::class, 'index']); 
+    Route::delete('/admin/reportes/{id}', [ReporteController::class, 'destroy']);
 
     // ----- USUARIOS -----
+    // Admin routes
+    Route::get('/admin/usuarios', [UserController::class, 'index']);
+    Route::delete('/admin/usuarios/{id}', [UserController::class, 'destroy']);
+    
+    // Existing user routes (if any needed)
     Route::get('/usuarios', [UserController::class, 'index']);
+
+    // ----- FOTOGRAFIAS (Admin delete) -----
+    Route::delete('/admin/fotografias/{id}', [FotografiaController::class, 'destroy']);
 
 });

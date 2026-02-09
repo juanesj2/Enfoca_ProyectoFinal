@@ -13,9 +13,15 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Admin check should ideally be in middleware, but double check here or just return all
+        if ($request->user()->rol !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $users = User::all();
+        return UserResource::collection($users);
     }
 
     /**
@@ -61,9 +67,16 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        if ($request->user()->rol !== 'admin') {
+           return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return response()->json(['message' => 'Usuario eliminado correctamente']);
     }
 
     /**
