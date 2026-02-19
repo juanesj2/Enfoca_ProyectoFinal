@@ -65,6 +65,27 @@ class UserController extends Controller
     }
 
     /**
+     * Update user details by Admin (Role, Veto).
+     */
+    public function updateAdmin(Request $request, string $id)
+    {
+        if ($request->user()->rol !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $user = User::findOrFail($id);
+
+        $request->validate([
+             'rol' => 'sometimes|in:user,admin',
+             'vetado' => 'sometimes|boolean',
+        ]);
+
+        $user->update($request->only(['rol', 'vetado']));
+
+        return new UserResource($user);
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request, string $id)

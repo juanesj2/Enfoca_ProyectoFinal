@@ -27,6 +27,54 @@ class FotografiaController extends Controller
         return FotografiaResource::collection($fotografias);
     }
 
+    // Listar TODAS las fotos para admin (incluidas vetadas)
+    public function adminIndex(Request $request)
+    {
+        if ($request->user()->rol !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $fotografias = Fotografia::with('user', 'likes', 'comentarios')
+            ->orderBy('id', 'desc')
+            ->get(); // Sin paginacion para el panel de admin por ahora
+        
+        return FotografiaResource::collection($fotografias);
+    }
+
+    // Actualizar foto (Admin edit/veto)
+    public function update(Request $request, $id)
+    {
+        $foto = Fotografia::find($id);
+        if (!$foto) return response()->json(['error' => 'Foto no encontrada'], 404);
+
+        $user = $request->user();
+        
+        // Solo admin o el dueño pueden editar
+        if ($user->id !== $foto->usuario_id && $user->rol !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $request->validate([
+            'titulo' => 'sometimes|string|max:255',
+            'descripcion' => 'sometimes|string',
+            'vetada' => 'sometimes|boolean',
+        ]);
+
+        // Si es admin puede tocar 'vetada', si no es admin, ignoramos ese campo o damos error.
+        // Aquí simplificamos: actualizamos todo lo que venga.
+        // Pero idealmente solo admin debería poder enviar 'vetada=true'.
+        
+        $data = $request->only(['titulo', 'descripcion']);
+
+        if ($user->rol === 'admin' && $request->has('vetada')) {
+            $data['vetada'] = $request->vetada;
+        }
+
+        $foto->update($data);
+
+        return new FotografiaResource($foto);
+    }
+
     // Mostrar las fotos de un usuario logueado
     public function misFotos(Request $request)
     {

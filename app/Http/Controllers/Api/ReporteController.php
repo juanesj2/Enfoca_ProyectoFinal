@@ -71,4 +71,19 @@ class ReporteController extends Controller
 
         return response()->json(['message' => 'Reporte eliminado correctamente']);
     }
+
+    /**
+     * Eliminar todos los reportes de una foto especifica (Indultar).
+     */
+    public function destroyByPhoto(Request $request, string $fotoId)
+    {
+        if ($request->user()->rol !== 'admin') {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        // Eliminar todos los reportes con foto_id = $fotoId
+        Reporte::where('foto_id', $fotoId)->delete();
+
+        return response()->json(['message' => 'Reportes eliminados correctamente']);
+    }
 }

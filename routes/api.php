@@ -54,6 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/fotografias/{id}', [FotografiaController::class, 'show']);
     Route::post('/fotografias', [FotografiaController::class, 'store']);
     Route::delete('/fotografias/{id}', [FotografiaController::class, 'destroy']);
+    Route::put('/fotografias/{id}', [FotografiaController::class, 'update']); // UPDATE A FOTO
+
+    // Admin Fotografia Route (para ver todas incluyendo vetadas)
+    Route::get('/admin/fotografias', [FotografiaController::class, 'adminIndex']); 
 
     // ----- COMENTARIOS -----
     Route::get('/fotografias/{fotografiaId}/comentarios', [ComentarioController::class, 'index']);
@@ -72,19 +76,31 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ----- REPORTES -----
     Route::post('/reportes', [ReporteController::class, 'store']);
-    // Admin routes
+    
+    // Admin routes (Spanish)
     Route::get('/admin/reportes', [ReporteController::class, 'index']); 
-    Route::delete('/admin/reportes/{id}', [ReporteController::class, 'destroy']);
+    Route::delete('/admin/reportes/{id}', [ReporteController::class, 'destroyByPhoto']); // OJO: Flutter llama a esto pasando ID de Foto para borrar reportes
+
+    // Aliases for English routes used in Flutter
+    Route::get('/admin/reports', [ReporteController::class, 'index']);
+    Route::delete('/admin/reports/{id}', [ReporteController::class, 'destroyByPhoto']);
+
 
     // ----- USUARIOS -----
     // Admin routes
     Route::get('/admin/usuarios', [UserController::class, 'index']);
     Route::delete('/admin/usuarios/{id}', [UserController::class, 'destroy']);
+    Route::put('/admin/usuarios/{id}', [UserController::class, 'updateAdmin']);
+
+    // Aliases for English routes used in Flutter
+    Route::get('/users', [UserController::class, 'index']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::put('/users/{id}', [UserController::class, 'updateAdmin']);
     
     // Existing user routes (if any needed)
     Route::get('/usuarios', [UserController::class, 'index']);
 
     // ----- FOTOGRAFIAS (Admin delete) -----
-    Route::delete('/admin/fotografias/{id}', [FotografiaController::class, 'destroy']);
+    // Route::delete('/admin/fotografias/{id}', [FotografiaController::class, 'destroy']); // Ya cubierta por /fotografias/{id}
 
 });
