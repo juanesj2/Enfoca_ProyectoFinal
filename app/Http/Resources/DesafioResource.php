@@ -19,6 +19,9 @@ class DesafioResource extends JsonResource
             'titulo' => $this->titulo,
             'descripcion' => $this->descripcion,
             'puntos' => $this->puntos,
+            'conseguido_en' => $this->whenPivotLoaded('desafio_usuario', function () {
+                return $this->pivot->conseguido_en;
+            }),
         ];
     }
 }

@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('grupos', GrupoController::class);
 
     // ----- DESAFIOS -----
+    Route::get('/desafios/mis-desafios', [DesafioController::class, 'misDesafios']);
     Route::apiResource('desafios', DesafioController::class);
 
     // ----- REPORTES -----

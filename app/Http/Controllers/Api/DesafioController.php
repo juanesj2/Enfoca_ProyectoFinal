@@ -19,6 +19,21 @@ class DesafioController extends Controller
     }
 
     /**
+     * Devuelve los desafíos ya conseguidos por el usuario autenticado.
+     */
+    public function misDesafios(Request $request)
+    {
+        $usuario = $request->user();
+        if (!$usuario) {
+            return response()->json(['message' => 'No autorizado'], 401);
+        }
+
+        // Cargamos la relación pivot 'conseguido_en'
+        $misDesafios = $usuario->desafios()->get();
+        return DesafioResource::collection($misDesafios);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
