@@ -37,7 +37,9 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        return new UserResource($request->user());
+        $user = clone $request->user();
+        $user->verificarTodosLosDesafios();
+        return new UserResource($user);
     }
 
     /**

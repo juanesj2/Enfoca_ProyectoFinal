@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ----- FOTOGRAFIAS -----
     Route::get('/fotografias', [FotografiaController::class, 'index']);
+    Route::get('/fotografias/buscar', [FotografiaController::class, 'buscar']);
     Route::get('/mis-fotos', [FotografiaController::class, 'misFotos']);
     Route::get('/fotografias-usuario/{id}', [FotografiaController::class, 'fotografiasUsuario']);
     Route::get('/fotografias/{id}', [FotografiaController::class, 'show']);
@@ -69,10 +70,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/fotografias/{fotografia}/like', [LikeController::class, 'quitarLike']);
 
     // ----- GRUPOS -----
-    //Route::apiResource('grupos', GrupoController::class);
+    Route::get('/grupos/mis-grupos', [GrupoController::class, 'misGrupos']);
+    Route::post('/grupos/unirse', [GrupoController::class, 'unirse']);
+    Route::delete('/grupos/{id}/salir', [GrupoController::class, 'salir']);
+    Route::apiResource('grupos', GrupoController::class);
 
     // ----- DESAFIOS -----
-    //Route::apiResource('desafios', DesafioController::class);
+    Route::apiResource('desafios', DesafioController::class);
 
     // ----- REPORTES -----
     Route::post('/reportes', [ReporteController::class, 'store']);

@@ -9,6 +9,9 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Volver') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('grupos.index')" :active="request()->routeIs('grupos.*')">
+                        {{ __('Grupos') }}
+                    </x-nav-link>
                 </div>
             </div>
 

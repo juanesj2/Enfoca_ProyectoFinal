@@ -13,6 +13,13 @@ class Fotografia extends Model
     // las columnas created_at y updated_at en la base de datos
     public $timestamps = false;
 
+    // Campos que se pueden rellenar de forma masiva
+    protected $fillable = [
+        'titulo',
+        'descripcion',
+        'vetada',
+    ];
+
     // Hacemos referencia a la la tabla fotografias de la base de datos
     protected $table = 'fotografias';
 

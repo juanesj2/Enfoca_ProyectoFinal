@@ -15,7 +15,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\DesafioController;
-use App\Http\Controllers\GruposController;
+use App\Http\Controllers\GrupoController;
 
 // página de avisos para usuarios vetados
 Route::get('/vetado', function(){
@@ -160,12 +160,12 @@ Route::get('/vetado', function(){
     //**************************************************************/
     //**************************************************************/
     
-    Route::resource('grupos', GruposController::class);
-
-    // --- CORRECCIÓN 2: ELIMINADA PORQUE ESTABA REPETIDA ---
-    // Aquí tenías copiado otra vez "mis-desafios" debajo de grupos, lo cual daba error.
-    // Si querías hacer "mis-grupos", descomenta y arregla la línea de abajo:
-    // Route::get('/mis-grupos', [GruposController::class, 'misGrupos'])->name('mis.grupos')->middleware('auth');
+    Route::middleware('auth')->group(function () {
+        Route::get('/grupos/unirse', [GrupoController::class, 'joinForm'])->name('grupos.joinForm');
+        Route::post('/grupos/unirse', [GrupoController::class, 'join'])->name('grupos.join');
+        Route::delete('/grupos/{id}/salir', [GrupoController::class, 'leave'])->name('grupos.leave');
+        Route::resource('grupos', GrupoController::class);
+    });
 
     //**************************************************************/
     //**************************************************************/

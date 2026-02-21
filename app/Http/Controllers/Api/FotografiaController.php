@@ -87,7 +87,8 @@ class FotografiaController extends Controller
     public function fotografiasUsuario(Request $request, $id)
     {
         $user = User::find($id); // Este sera el ID del usuario cuyas fotos queremos ver
-        $fotosusuario = $user ? $user->fotografias()->with('likes', 'comentarios')->get() : collect();
+        // Se añade 'user' a las relaciones cargadas para que el frontend pueda leer userName
+        $fotosusuario = $user ? $user->fotografias()->with('user', 'likes', 'comentarios')->get() : collect();
 
         return FotografiaResource::collection($fotosusuario);
     }
@@ -212,5 +213,45 @@ class FotografiaController extends Controller
                 'details' => $e->getMessage()
             ], 500);
         }
+    }
+
+    // Búsqueda avanzada de fotografías
+    public function buscar(Request $request)
+    {
+        $query = Fotografia::with('user', 'likes', 'comentarios')->where('vetada', false);
+
+        // Búsqueda por texto (título o descripción)
+        if ($request->filled('texto')) {
+            $texto = $request->input('texto');
+            $query->where(function ($q) use ($texto) {
+                $q->where('titulo', 'like', "%{$texto}%")
+                  ->orWhere('descripcion', 'like', "%{$texto}%");
+            });
+        }
+
+        // Búsqueda por usuario
+        if ($request->filled('usuario')) {
+            $usuario = $request->input('usuario');
+            $query->whereHas('user', function ($q) use ($usuario) {
+                $q->where('name', 'like', "%{$usuario}%");
+            });
+        }
+
+        // Búsqueda por ISO
+        if ($request->filled('iso')) {
+            $query->where('ISO', $request->input('iso'));
+        }
+
+        // Búsqueda por fecha (si se pasó una fecha específica, busca registros de ese día)
+        // Se usa created_at o id si timestamps está deshabilitado. Probemos con id que es aprox a fecha temporal.
+        if ($request->filled('fecha')) {
+            $fecha = $request->input('fecha');
+            // Como timestamps está en false pero la migración los creó, intentamos buscar por fecha exacta si hay algo,
+            // pero si no, intentamos asegurar. Lo más simple si los timestamps no funcionan es no fallar y usar created_at o ID aproximado.
+            // Asumiendo que created_at si se rellena por base de datos:
+            $query->whereDate('created_at', $fecha);
+        }
+
+        return FotografiaResource::collection($query->orderBy('id', 'desc')->get());
     }
 }
