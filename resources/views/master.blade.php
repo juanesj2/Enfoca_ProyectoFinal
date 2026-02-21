@@ -56,13 +56,19 @@
                         </div>
                     </li>
 
-                    <!-- Mas adelante pestaña de prupos -->
-                    <!-- <li class="nav-item border-end me-2">
+                    <li class="nav-item dropdown border-end me-2">
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-user-group"></i>
-                            <a class="nav-link active" aria-current="page" href="{{ route('desafios.index') }}">Grupos</a>
+                            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Grupos
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('grupos.index') }}"><i class="fa-solid fa-users me-2"></i>Mis grupos</a></li>
+                                <li><a class="dropdown-item" href="{{ route('grupos.create') }}"><i class="fa-solid fa-plus me-2"></i>Crear grupo</a></li>
+                                <li><a class="dropdown-item" href="{{ route('grupos.joinForm') }}"><i class="fa-solid fa-right-to-bracket me-2"></i>Unirse a grupo</a></li>
+                            </ul>
                         </div>
-                    </li> -->
+                    </li>
 
                     @if (Auth::user()->rol == 'admin')
                     <li class="nav-item border-end me-2">
@@ -111,6 +117,11 @@
                                 <li>
                                     <a class="dropdown-item" href="{{ route('mis.desafios') }}">
                                         <i class="fa-solid fa-medal"></i> Mis desafios
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('grupos.index') }}">
+                                        <i class="fa-solid fa-user-group"></i> Mis grupos
                                     </a>
                                 </li>
                                 <li>
