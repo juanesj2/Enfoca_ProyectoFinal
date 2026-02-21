@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('master')
 
-@section('content')
+@section('contenido')
 <div class="container mt-5">
     <div class="mb-4">
         <a href="{{ route('grupos.index') }}" class="text-decoration-none text-secondary">
