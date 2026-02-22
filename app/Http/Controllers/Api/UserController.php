@@ -89,11 +89,12 @@ class UserController extends Controller
 
         if ($request->has('vetado')) {
             if ($request->vetado) {
-                // Si mandan fecha de veto específica, la usamos, si no, 100 años permanentes.
+                // Si mandan fecha de veto específica, la usamos
                 if ($request->has('fecha_veto') && $request->fecha_veto != null) {
                     $user->vetado_hasta = \Carbon\Carbon::parse($request->fecha_veto)->endOfDay();
                 } else {
-                    $user->vetado_hasta = now()->addYears(100);
+                    // Limite máximo seguro para columnas TIMESTAMP en MySQL (Problema del año 2038)
+                    $user->vetado_hasta = \Carbon\Carbon::create(2037, 12, 31, 23, 59, 59);
                 }
             } else {
                 // Si le quitan el veto
