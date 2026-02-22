@@ -80,6 +80,7 @@ class UserController extends Controller
         $request->validate([
              'rol' => 'sometimes|in:usuario,admin',
              'vetado' => 'sometimes|boolean',
+             'fecha_veto' => 'sometimes|nullable|date',
         ]);
 
         if ($request->has('rol')) {
@@ -88,8 +89,12 @@ class UserController extends Controller
 
         if ($request->has('vetado')) {
             if ($request->vetado) {
-                // Si lo vetan desde el panel admin, pongámosle 100 años (o lo que se defina)
-                $user->vetado_hasta = now()->addYears(100);
+                // Si mandan fecha de veto específica, la usamos, si no, 100 años permanentes.
+                if ($request->has('fecha_veto') && $request->fecha_veto != null) {
+                    $user->vetado_hasta = \Carbon\Carbon::parse($request->fecha_veto)->endOfDay();
+                } else {
+                    $user->vetado_hasta = now()->addYears(100);
+                }
             } else {
                 // Si le quitan el veto
                 $user->vetado_hasta = null;
