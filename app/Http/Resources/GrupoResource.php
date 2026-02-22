@@ -18,6 +18,9 @@ class GrupoResource extends JsonResource
             'id' => $this->id,
             'nombre' => $this->nombre,
             'descripcion' => $this->descripcion,
+            'codigo_invitacion' => $this->codigo_invitacion,
+            'creado_por' => $this->creado_por,
+            'created_at' => $this->created_at ? $this->created_at->toIso8601String() : null,
             'usuarios' => UserResource::collection($this->whenLoaded('usuarios')),
         ];
     }

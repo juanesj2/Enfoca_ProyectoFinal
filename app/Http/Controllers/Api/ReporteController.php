@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Reporte;
 use App\Http\Resources\ReporteResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
@@ -15,8 +16,19 @@ class ReporteController extends Controller
      */
     public function index()
     {
-        $reportes = Reporte::with('usuario', 'foto')->get();
-        return ReporteResource::collection($reportes);
+        $fotosReportadas = Reporte::with('foto')
+            ->select('foto_id', DB::raw('count(*) as total_reportes'))
+            ->groupBy('foto_id')
+            ->get()
+            ->map(function ($reporte) {
+                return [
+                    'foto_id' => $reporte->foto_id,
+                    'total_reportes' => $reporte->total_reportes,
+                    'foto_url' => $reporte->foto ? $reporte->foto->direccion_imagen : '',
+                ];
+            });
+
+        return response()->json(['data' => $fotosReportadas]);
     }
 
     /**
@@ -28,6 +40,14 @@ class ReporteController extends Controller
             'foto_id' => 'required|exists:fotografias,id',
             'motivo' => 'required|string|max:255',
         ]);
+
+        $existe = Reporte::where('foto_id', $request->foto_id)
+            ->where('usuario_id', Auth::id())
+            ->exists();
+
+        if ($existe) {
+            return response()->json(['error' => 'Ya has reportado esta fotografía previamente.'], 409);
+        }
 
         $reporte = Reporte::create([
             'usuario_id' => Auth::id(),

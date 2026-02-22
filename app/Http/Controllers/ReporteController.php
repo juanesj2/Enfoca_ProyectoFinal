@@ -75,6 +75,14 @@ class ReporteController extends Controller
             'motivo' => 'required|string|max:1000',
         ]);
 
+        $existe = Reporte::where('foto_id', $request->fotografia_id)
+            ->where('usuario_id', Auth::id())
+            ->exists();
+
+        if ($existe) {
+            return redirect()->back()->with('error', 'Ya has reportado esta fotografía previamente.');
+        }
+
         Reporte::create([
             'foto_id' => $request->fotografia_id,
             'usuario_id' => Auth::id(),
