@@ -78,7 +78,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-             'rol' => 'sometimes|in:user,admin',
+             'rol' => 'sometimes|in:usuario,admin',
              'vetado' => 'sometimes|boolean',
         ]);
 
