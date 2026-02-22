@@ -82,7 +82,21 @@ class UserController extends Controller
              'vetado' => 'sometimes|boolean',
         ]);
 
-        $user->update($request->only(['rol', 'vetado']));
+        if ($request->has('rol')) {
+            $user->rol = $request->rol;
+        }
+
+        if ($request->has('vetado')) {
+            if ($request->vetado) {
+                // Si lo vetan desde el panel admin, pongámosle 100 años (o lo que se defina)
+                $user->vetado_hasta = now()->addYears(100);
+            } else {
+                // Si le quitan el veto
+                $user->vetado_hasta = null;
+            }
+        }
+
+        $user->save();
 
         return new UserResource($user);
     }

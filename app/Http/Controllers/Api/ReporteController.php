@@ -16,19 +16,8 @@ class ReporteController extends Controller
      */
     public function index()
     {
-        $fotosReportadas = Reporte::with('foto')
-            ->select('foto_id', DB::raw('count(*) as total_reportes'))
-            ->groupBy('foto_id')
-            ->get()
-            ->map(function ($reporte) {
-                return [
-                    'foto_id' => $reporte->foto_id,
-                    'total_reportes' => $reporte->total_reportes,
-                    'foto_url' => $reporte->foto ? $reporte->foto->direccion_imagen : '',
-                ];
-            });
-
-        return response()->json(['data' => $fotosReportadas]);
+        $reportes = Reporte::with('foto')->get();
+        return response()->json(['data' => $reportes]);
     }
 
     /**
