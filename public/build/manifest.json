@@ -1,0 +1,267 @@
+{
+  "_MainLayout-DxXuNy05.js": {
+    "file": "assets/MainLayout-DxXuNy05.js",
+    "name": "MainLayout",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_leaflet-CG6DamIu.css": {
+    "file": "assets/leaflet-CG6DamIu.css",
+    "src": "_leaflet-CG6DamIu.css"
+  },
+  "_leaflet-D24Sv1E4.js": {
+    "file": "assets/leaflet-D24Sv1E4.js",
+    "name": "leaflet",
+    "imports": [
+      "resources/js/app.jsx"
+    ],
+    "css": [
+      "assets/leaflet-CG6DamIu.css"
+    ],
+    "assets": [
+      "assets/layers-BWBAp2CZ.png",
+      "assets/layers-2x-Bpkbi35X.png",
+      "assets/marker-icon-hN30_KVU.png"
+    ]
+  },
+  "node_modules/leaflet/dist/images/layers-2x.png": {
+    "file": "assets/layers-2x-Bpkbi35X.png",
+    "src": "node_modules/leaflet/dist/images/layers-2x.png"
+  },
+  "node_modules/leaflet/dist/images/layers.png": {
+    "file": "assets/layers-BWBAp2CZ.png",
+    "src": "node_modules/leaflet/dist/images/layers.png"
+  },
+  "node_modules/leaflet/dist/images/marker-icon.png": {
+    "file": "assets/marker-icon-hN30_KVU.png",
+    "src": "node_modules/leaflet/dist/images/marker-icon.png"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-CDS5cDIE.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/Pages/Admin/Dashboard.jsx": {
+    "file": "assets/Dashboard-BcLoD62L.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Admin/Dashboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Admin/FotografiaEdit.jsx": {
+    "file": "assets/FotografiaEdit-DsGxnsJY.js",
+    "name": "FotografiaEdit",
+    "src": "resources/js/Pages/Admin/FotografiaEdit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Fotografias.jsx": {
+    "file": "assets/Fotografias-nr_vmoiP.js",
+    "name": "Fotografias",
+    "src": "resources/js/Pages/Admin/Fotografias.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Admin/ReporteDetalle.jsx": {
+    "file": "assets/ReporteDetalle-4zo-nnE1.js",
+    "name": "ReporteDetalle",
+    "src": "resources/js/Pages/Admin/ReporteDetalle.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Reportes.jsx": {
+    "file": "assets/Reportes-DF2TED6F.js",
+    "name": "Reportes",
+    "src": "resources/js/Pages/Admin/Reportes.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Admin/UsuarioEdit.jsx": {
+    "file": "assets/UsuarioEdit-CbXTTHIa.js",
+    "name": "UsuarioEdit",
+    "src": "resources/js/Pages/Admin/UsuarioEdit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Usuarios.jsx": {
+    "file": "assets/Usuarios-HppoxNop.js",
+    "name": "Usuarios",
+    "src": "resources/js/Pages/Admin/Usuarios.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Desafios/Index.jsx": {
+    "file": "assets/Index-BtlOnCSX.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Desafios/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Desafios/MisDesafios.jsx": {
+    "file": "assets/MisDesafios-BvBf7kEk.js",
+    "name": "MisDesafios",
+    "src": "resources/js/Pages/Desafios/MisDesafios.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Fotografias/Comentar.jsx": {
+    "file": "assets/Comentar-ytdIIeXr.js",
+    "name": "Comentar",
+    "src": "resources/js/Pages/Fotografias/Comentar.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js",
+      "_leaflet-D24Sv1E4.js"
+    ]
+  },
+  "resources/js/Pages/Fotografias/Create.jsx": {
+    "file": "assets/Create-CHcCnt1t.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Fotografias/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js",
+      "_leaflet-D24Sv1E4.js"
+    ]
+  },
+  "resources/js/Pages/Fotografias/Index.jsx": {
+    "file": "assets/Index-Cjlb9U3o.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Fotografias/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Fotografias/MisFotografias.jsx": {
+    "file": "assets/MisFotografias-DXXayYib.js",
+    "name": "MisFotografias",
+    "src": "resources/js/Pages/Fotografias/MisFotografias.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Fotografias/Reportar.jsx": {
+    "file": "assets/Reportar-Casm9MXv.js",
+    "name": "Reportar",
+    "src": "resources/js/Pages/Fotografias/Reportar.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Grupos/Create.jsx": {
+    "file": "assets/Create-BgzlS2_O.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Grupos/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Grupos/Index.jsx": {
+    "file": "assets/Index-zca17h0d.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Grupos/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Grupos/Join.jsx": {
+    "file": "assets/Join-ByLWF7-P.js",
+    "name": "Join",
+    "src": "resources/js/Pages/Grupos/Join.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Grupos/Show.jsx": {
+    "file": "assets/Show-CVbPUGyd.js",
+    "name": "Show",
+    "src": "resources/js/Pages/Grupos/Show.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Edit.jsx": {
+    "file": "assets/Edit-DIG2Zz4s.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Profile/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MainLayout-DxXuNy05.js"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-iYoSoMem.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Admin/Dashboard.jsx",
+      "resources/js/Pages/Admin/FotografiaEdit.jsx",
+      "resources/js/Pages/Admin/Fotografias.jsx",
+      "resources/js/Pages/Admin/ReporteDetalle.jsx",
+      "resources/js/Pages/Admin/Reportes.jsx",
+      "resources/js/Pages/Admin/UsuarioEdit.jsx",
+      "resources/js/Pages/Admin/Usuarios.jsx",
+      "resources/js/Pages/Desafios/Index.jsx",
+      "resources/js/Pages/Desafios/MisDesafios.jsx",
+      "resources/js/Pages/Fotografias/Comentar.jsx",
+      "resources/js/Pages/Fotografias/Create.jsx",
+      "resources/js/Pages/Fotografias/Index.jsx",
+      "resources/js/Pages/Fotografias/MisFotografias.jsx",
+      "resources/js/Pages/Fotografias/Reportar.jsx",
+      "resources/js/Pages/Grupos/Create.jsx",
+      "resources/js/Pages/Grupos/Index.jsx",
+      "resources/js/Pages/Grupos/Join.jsx",
+      "resources/js/Pages/Grupos/Show.jsx",
+      "resources/js/Pages/Profile/Edit.jsx"
+    ],
+    "css": [
+      "assets/app-CDS5cDIE.css"
+    ]
+  }
+}
