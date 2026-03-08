@@ -1,6 +1,6 @@
 {
-  "_MainLayout-DMIJsPD4.js": {
-    "file": "assets/MainLayout-DMIJsPD4.js",
+  "_MainLayout-N2e-wjRs.js": {
+    "file": "assets/MainLayout-N2e-wjRs.js",
     "name": "MainLayout",
     "imports": [
       "resources/js/app.jsx"
@@ -10,8 +10,8 @@
     "file": "assets/leaflet-CG6DamIu.css",
     "src": "_leaflet-CG6DamIu.css"
   },
-  "_leaflet-bHycEV9Q.js": {
-    "file": "assets/leaflet-bHycEV9Q.js",
+  "_leaflet-CVJw2L8_.js": {
+    "file": "assets/leaflet-CVJw2L8_.js",
     "name": "leaflet",
     "imports": [
       "resources/js/app.jsx"
@@ -38,82 +38,82 @@
     "src": "node_modules/leaflet/dist/images/marker-icon.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-LGr-wRul.css",
+    "file": "assets/app-DWEdTlGk.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/Pages/Admin/Dashboard.jsx": {
-    "file": "assets/Dashboard-DH3y6uYp.js",
+    "file": "assets/Dashboard-BcHVpc11.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Admin/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Admin/FotografiaEdit.jsx": {
-    "file": "assets/FotografiaEdit-BwAZr0JH.js",
+    "file": "assets/FotografiaEdit-S8epDMrX.js",
     "name": "FotografiaEdit",
     "src": "resources/js/Pages/Admin/FotografiaEdit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Admin/Fotografias.jsx": {
-    "file": "assets/Fotografias-Slf09v0u.js",
+    "file": "assets/Fotografias-DWZd5a5u.js",
     "name": "Fotografias",
     "src": "resources/js/Pages/Admin/Fotografias.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Admin/ReporteDetalle.jsx": {
-    "file": "assets/ReporteDetalle-CtHmOj3g.js",
+    "file": "assets/ReporteDetalle-Dt1KT7f7.js",
     "name": "ReporteDetalle",
     "src": "resources/js/Pages/Admin/ReporteDetalle.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Admin/Reportes.jsx": {
-    "file": "assets/Reportes-Cq9pr0kU.js",
+    "file": "assets/Reportes-Bg4H6J31.js",
     "name": "Reportes",
     "src": "resources/js/Pages/Admin/Reportes.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Admin/UsuarioEdit.jsx": {
-    "file": "assets/UsuarioEdit-nqpNR1jk.js",
+    "file": "assets/UsuarioEdit-PD9_wyhh.js",
     "name": "UsuarioEdit",
     "src": "resources/js/Pages/Admin/UsuarioEdit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Admin/Usuarios.jsx": {
-    "file": "assets/Usuarios-BCuCnR8X.js",
+    "file": "assets/Usuarios-CWeqPQJS.js",
     "name": "Usuarios",
     "src": "resources/js/Pages/Admin/Usuarios.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Auth/Login.jsx": {
-    "file": "assets/Login-B6ClvhgV.js",
+    "file": "assets/Login-CL3d6nk7.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.jsx",
     "isDynamicEntry": true,
@@ -122,7 +122,7 @@
     ]
   },
   "resources/js/Pages/Auth/Register.jsx": {
-    "file": "assets/Register-CMSvfzuf.js",
+    "file": "assets/Register-CN8yJpS9.js",
     "name": "Register",
     "src": "resources/js/Pages/Auth/Register.jsx",
     "isDynamicEntry": true,
@@ -131,129 +131,129 @@
     ]
   },
   "resources/js/Pages/Desafios/Index.jsx": {
-    "file": "assets/Index-Dmau8Iz3.js",
+    "file": "assets/Index-Cif2Rjqp.js",
     "name": "Index",
     "src": "resources/js/Pages/Desafios/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Desafios/MisDesafios.jsx": {
-    "file": "assets/MisDesafios-BH7JR44n.js",
+    "file": "assets/MisDesafios-BzYXpmei.js",
     "name": "MisDesafios",
     "src": "resources/js/Pages/Desafios/MisDesafios.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Fotografias/Comentar.jsx": {
-    "file": "assets/Comentar-BJxPzYkj.js",
+    "file": "assets/Comentar-DDprKulX.js",
     "name": "Comentar",
     "src": "resources/js/Pages/Fotografias/Comentar.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js",
-      "_leaflet-bHycEV9Q.js"
+      "_MainLayout-N2e-wjRs.js",
+      "_leaflet-CVJw2L8_.js"
     ]
   },
   "resources/js/Pages/Fotografias/Create.jsx": {
-    "file": "assets/Create-BN9FG1i2.js",
+    "file": "assets/Create-BpWZPR3D.js",
     "name": "Create",
     "src": "resources/js/Pages/Fotografias/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js",
-      "_leaflet-bHycEV9Q.js"
+      "_MainLayout-N2e-wjRs.js",
+      "_leaflet-CVJw2L8_.js"
     ]
   },
   "resources/js/Pages/Fotografias/Index.jsx": {
-    "file": "assets/Index-i5AoXNXN.js",
+    "file": "assets/Index-CScq8LlR.js",
     "name": "Index",
     "src": "resources/js/Pages/Fotografias/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Fotografias/MisFotografias.jsx": {
-    "file": "assets/MisFotografias-Cu2NnfMa.js",
+    "file": "assets/MisFotografias-Dsp-0iYV.js",
     "name": "MisFotografias",
     "src": "resources/js/Pages/Fotografias/MisFotografias.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Fotografias/Reportar.jsx": {
-    "file": "assets/Reportar-DVpz-idh.js",
+    "file": "assets/Reportar-DzakcW9V.js",
     "name": "Reportar",
     "src": "resources/js/Pages/Fotografias/Reportar.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Grupos/Create.jsx": {
-    "file": "assets/Create-BD6IgCKZ.js",
+    "file": "assets/Create-D5ngCNp2.js",
     "name": "Create",
     "src": "resources/js/Pages/Grupos/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Grupos/Index.jsx": {
-    "file": "assets/Index-CpWXIWP8.js",
+    "file": "assets/Index-BI9aOc8B.js",
     "name": "Index",
     "src": "resources/js/Pages/Grupos/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Grupos/Join.jsx": {
-    "file": "assets/Join-CDVHF91d.js",
+    "file": "assets/Join-YHwwSdD1.js",
     "name": "Join",
     "src": "resources/js/Pages/Grupos/Join.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Grupos/Show.jsx": {
-    "file": "assets/Show-B9y-WZlL.js",
+    "file": "assets/Show-by_2kW6h.js",
     "name": "Show",
     "src": "resources/js/Pages/Grupos/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/Pages/Profile/Edit.jsx": {
-    "file": "assets/Edit-B39rh-xt.js",
+    "file": "assets/Edit-CDKAf8OA.js",
     "name": "Edit",
     "src": "resources/js/Pages/Profile/Edit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_MainLayout-DMIJsPD4.js"
+      "_MainLayout-N2e-wjRs.js"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-m80WALOD.js",
+    "file": "assets/app-BABHXtnB.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
@@ -281,7 +281,7 @@
       "resources/js/Pages/Profile/Edit.jsx"
     ],
     "css": [
-      "assets/app-LGr-wRul.css"
+      "assets/app-DWEdTlGk.css"
     ]
   }
 }
