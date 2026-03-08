@@ -31,4 +31,12 @@ class Grupo extends Model
                     ->withTimestamps()
                     ->withPivot('rol');
     }
+
+    /**
+     * Relación: Un grupo tiene muchos mensajes
+     */
+    public function mensajes()
+    {
+        return $this->hasMany(GrupoMensaje::class, 'grupo_id');
+    }
 }

@@ -18,7 +18,13 @@ class UsuarioController extends Controller
     public function edit($id)
     {
         $usuario = User::findOrFail($id);
-        return view('ControlUsuarios.edit', compact('usuario'));
+        
+        return inertia('Admin/UsuarioEdit', [
+            'usuario' => $usuario,
+            'estaVetado' => $usuario->estaVetado(),
+            'tiempoRestante' => $usuario->estaVetado() ? $usuario->tiempoRestanteVeto() : null,
+            'vetadoHasta' => $usuario->estaVetado() ? $usuario->vetado_hasta->format('H:i:s d/m/Y') : null,
+        ]);
     }
 
     // Método para actualizar los datos del usuario

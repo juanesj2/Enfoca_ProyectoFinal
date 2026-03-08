@@ -29,7 +29,9 @@ class AdminController extends Controller
         // Obtenemos todas las fotografias
         $fotografias = Fotografia::with('user', 'likes', 'comentarios')->orderBy('id', 'desc')->paginate(5); // Las paginamos de 5 en 5
 
-        return view('admin', compact('fotografias'));
+        return inertia('Admin/Dashboard', [
+            'fotografias' => $fotografias
+        ]);
     }
 
     //**************************************************************/
@@ -46,7 +48,9 @@ class AdminController extends Controller
         }
 
         $usuarios = User::all(); // Si queremos usar paginacion lo ponemos aqui
-        return view('ControlUsuarios.ControlUsuarios', compact('usuarios'));
+        return inertia('Admin/Usuarios', [
+            'usuarios' => $usuarios
+        ]);
     }
 
     //**************************************************************/
@@ -60,8 +64,10 @@ class AdminController extends Controller
         if (auth()->user()->rol !== 'admin') {
             return redirect()->route('fotografias.index');
         }
-        $fotografias = Fotografia::paginate(5);
+        $fotografias = Fotografia::with('user')->withCount(['likes', 'comentarios'])->paginate(10);
 
-        return view('Controlfotografias.index', compact('fotografias'));
+        return inertia('Admin/Fotografias', [
+            'fotografias' => $fotografias
+        ]);
     }
 }

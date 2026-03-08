@@ -13,9 +13,10 @@
 - 📷 Subir fotografías y compartir tu trabajo.
 - ❤️‍🔥 Dar y quitar "likes" a otras publicaciones.
 - 💬 Comentar en las fotos de otros y recibir retroalimentación.
-- 🖥️ Interfaz simple, clara y fácil de usar.
-- 🛠️ Base sólida y pensada para ser fácilmente mejorable y extendida.
-  
+- 🎨 **Frontend moderno e interactivo** desarrollado en **React** con **Inertia.js**.
+- 🖥️ Interfaz única, atractiva y muy rápida (Single Page Application).
+- 🛠️ Back-end sólido y escalable apoyado en Laravel.
+
 ## Cómo Empezar
 
 Sigue estos pasos para ejecutar el proyecto en tu entorno local:
@@ -26,6 +27,14 @@ cd tuproject
 cp .env.example .env
 # Luego edita el archivo .env con tus propias variables (DB, MAIL, etc.)
 composer install
+npm install
 php artisan key:generate
 php artisan migrate
+
+# Necesitarás dos terminales para correr el entorno de desarrollo:
+# Terminal 1 (Backend - Laravel):
 php artisan serve
+
+# Terminal 2 (Frontend - React/Vite):
+npm run dev
+```

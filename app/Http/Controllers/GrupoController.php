@@ -16,7 +16,7 @@ class GrupoController extends Controller
     {
         // Obtener los grupos del usuario actual
         $grupos = Auth::user()->grupos()->with('usuarios')->get();
-        return view('grupos.index', compact('grupos'));
+        return inertia('Grupos/Index', ['grupos' => $grupos]);
     }
 
     /**
@@ -24,7 +24,7 @@ class GrupoController extends Controller
      */
     public function create()
     {
-        return view('grupos.create');
+        return inertia('Grupos/Create');
     }
 
     /**
@@ -63,7 +63,11 @@ class GrupoController extends Controller
             abort(403, 'No tienes acceso a este grupo.');
         }
 
-        return view('grupos.show', compact('grupo'));
+        return inertia('Grupos/Show', [
+            'grupo' => $grupo,
+            'isGlobalAdmin' => Auth::user()->rol === 'admin',
+            'currentUserId' => Auth::id()
+        ]);
     }
 
     /**
@@ -71,7 +75,7 @@ class GrupoController extends Controller
      */
     public function joinForm()
     {
-        return view('grupos.join');
+        return inertia('Grupos/Join');
     }
 
     /**

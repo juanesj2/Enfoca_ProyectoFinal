@@ -25,9 +25,17 @@ class DesafioController extends Controller
         }
 
         // 2) Si no está vetado, muestro normalmente
-        $desafios = Desafio::paginate(6);
+        $desafios = Desafio::paginate(12);
+        
+        $user_desafios_ids = [];
+        if (Auth::check()) {
+            $user_desafios_ids = Auth::user()->desafios->pluck('id')->toArray();
+        }
 
-        return view('desafios.index', compact('desafios'));
+        return inertia('Desafios/Index', [
+            'desafios' => $desafios,
+            'userDesafiosIds' => $user_desafios_ids
+        ]);
     }
 
     //**************************************************************/
@@ -39,9 +47,11 @@ class DesafioController extends Controller
     public function misDesafios()
     {
         $usuario = Auth::user();
-        $misDesafios = $usuario->desafios()->paginate(5);
+        $misDesafios = $usuario->desafios()->paginate(10);
 
-        return view('desafios.misDesafios', compact('misDesafios'));
+        return inertia('Desafios/MisDesafios', [
+            'misDesafios' => $misDesafios
+        ]);
     }
 
 }

@@ -30,7 +30,9 @@ class ReporteController extends Controller
             ->groupBy('foto_id')
             ->get();
 
-        return view('ControlReportes.index', compact('reportes'));
+        return inertia('Admin/Reportes', [
+            'reportes' => $reportes
+        ]);
     }
 
     //**************************************************************/
@@ -41,13 +43,16 @@ class ReporteController extends Controller
 
     public function detalle($foto_id)
     {
-        $foto = Fotografia::findOrFail($foto_id);
+        $foto = Fotografia::with(['user', 'likes', 'comentarios'])->findOrFail($foto_id);
 
         $reportes = Reporte::where('foto_id', $foto_id)
             ->with('usuario')
             ->get();
 
-        return view('ControlReportes.detalles', compact('foto', 'reportes'));
+        return inertia('Admin/ReporteDetalle', [
+            'foto' => $foto,
+            'reportes' => $reportes
+        ]);
     }
 
     //**************************************************************/
@@ -59,7 +64,9 @@ class ReporteController extends Controller
     public function create($id)
     {
         $fotografia = Fotografia::findOrFail($id);
-        return view('ControlReportes.create', compact('fotografia'));
+        return inertia('Fotografias/Reportar', [
+            'fotografia' => $fotografia
+        ]);
     }
 
     //**************************************************************/

@@ -165,6 +165,10 @@ Route::get('/vetado', function(){
         Route::post('/grupos/unirse', [GrupoController::class, 'join'])->name('grupos.join');
         Route::delete('/grupos/{id}/salir', [GrupoController::class, 'leave'])->name('grupos.leave');
         Route::resource('grupos', GrupoController::class);
+
+        // Rutas para los mensajes del chat del grupo
+        Route::get('/grupos/{grupo}/mensajes', [App\Http\Controllers\GrupoMensajeController::class, 'index'])->name('grupos.mensajes.index');
+        Route::post('/grupos/{grupo}/mensajes', [App\Http\Controllers\GrupoMensajeController::class, 'store'])->name('grupos.mensajes.store');
     });
 
     //**************************************************************/

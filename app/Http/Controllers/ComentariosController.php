@@ -26,11 +26,25 @@ class ComentariosController extends Controller
             // Obtener el ID de la fotografía desde la solicitud
             $fotografiaId = $request->input('fotografia_id');
 
-            // Obtener la instancia de la fotografía
-            $fotografia = Fotografia::findOrFail($fotografiaId);
+            // Obtener la instancia de la fotografía con datos extra
+            $fotografia = Fotografia::with(['user', 'likes' => function ($query) {
+                if (Auth::check()) {
+                    $query->where('usuario_id', Auth::id());
+                }
+            }])
+            ->withCount(['likes', 'comentarios'])
+            ->findOrFail($fotografiaId);
 
-            // Pasar el ID de la fotografía a la vista
-            return view('comentar', compact('fotografia'));
+            // Obtener los comentarios
+            $comentarios = Comentarios::where('fotografia_id', $fotografiaId)
+                            ->with('user')
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+            return inertia('Fotografias/Comentar', [
+                'fotografia' => $fotografia,
+                'comentariosInitial' => $comentarios
+            ]);
         } else {
             // Si el usuario no está logueado, redirige a la vista principal.
             return redirect('/');
@@ -132,10 +146,14 @@ class ComentariosController extends Controller
     // Asi es como eliminas un comentario seleccionado
     public function destroy($comentarioId)
     {
-        // Buscamos en la base de datos el comentario que tenga el id selecionado
         $comentario = Comentarios::find($comentarioId);
     
         if ($comentario) {
+            // Verificamos si el usuario actual es el creador del comentario o es un administrador
+            if ($comentario->usuario_id !== Auth::id() && Auth::user()->rol !== 'admin') {
+                return response()->json(['message' => 'No estás autorizado para eliminar este comentario.'], 403);
+            }
+
             $comentario->delete(); // Eliminamos el comentario con delete()
             // Devolvemos al cliente el mensaje existoso y un codigo de exito
             return response()->json(['message' => 'Comentario eliminado con éxito.'], 200);

@@ -31,23 +31,37 @@ class FotografiaController extends Controller
         }
 
         // 2) Si no está vetado, muestro normalmente
-        $fotografias = Fotografia::with('user', 'likes', 'comentarios')
+        $fotografias = Fotografia::with(['user', 'likes' => function ($query) {
+                if (Auth::check()) {
+                    $query->where('usuario_id', Auth::id());
+                }
+            }])
+            ->withCount(['likes', 'comentarios'])
             ->where('vetada', false)
             ->orderBy('id', 'desc')
             ->paginate(5);
 
-        return view('index', compact('fotografias'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        return inertia('Fotografias/Index', [
+            'fotografias' => $fotografias
+        ]);
     }
 
 
     // Funcion que se encarga de devolver solamente las publicaiones del usuario logeado
     public function misFotos() {
-        // Buscamos las fotografias del usuario logeado y si no tiene devolvemos una coleccion 
-        // Vacia para que la pagina siga funcionando sin dar error
-        // El operador ?? sirve para que php combruebe si el valor pasado el null
-        $misFotografias = Auth::user()->fotografias ?? collect(); 
-        return view('mis_fotografias', compact('misFotografias'));
+        // Buscamos las fotografias del usuario logeado con sus correspondientes contadores
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $misFotografias = Fotografia::where('usuario_id', Auth::id())
+            ->withCount(['likes', 'comentarios'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return inertia('Fotografias/MisFotografias', [
+            'misFotografias' => $misFotografias
+        ]);
     }   
 
     //**************************************************************/
@@ -63,7 +77,7 @@ class FotografiaController extends Controller
             return redirect()->route('vetado');
         }
         
-        return view('create');
+        return inertia('Fotografias/Create');
     }
 
     // Esta funcion es la encargada de crear y guardar una nueva fotografia
@@ -168,8 +182,10 @@ class FotografiaController extends Controller
     // Método para mostrar el formulario de edición de la fotografía
     public function edit($id)
     {
-        $fotografia = Fotografia::findOrFail($id);
-        return view('Controlfotografias.edit', compact('fotografia'));
+        $fotografia = Fotografia::with('user')->findOrFail($id);
+        return inertia('Admin/FotografiaEdit', [
+            'fotografia' => $fotografia
+        ]);
     }
 
     // Método para eliminar una fotografía
@@ -195,7 +211,7 @@ class FotografiaController extends Controller
         $fotografia->descripcion = $request->descripcion;
 
         // Aquí asignamos true si está vetado y false si no
-        $fotografia->vetada = $request->has('vetada');
+        $fotografia->vetada = $request->boolean('vetada');
 
         $fotografia->save();
 
