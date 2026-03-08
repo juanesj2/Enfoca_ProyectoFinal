@@ -116,7 +116,7 @@ export default function MainLayout({ children }) {
                 En móvil añadimos padding-bottom para que el tab bar
                 no tape el contenido de abajo
             ==================================================== */}
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8 animate-fade-in-up">
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32 md:pb-8 animate-fade-in-up">
                 {children}
             </main>
 
