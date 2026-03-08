@@ -30,11 +30,9 @@ export default function Index({ fotografias }) {
             
             {/* Grid de Fotografías */}
             {fotografias.data.length > 0 ? (
-                <div className="flex flex-wrap justify-center gap-8 items-start">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {fotografias.data.map((foto) => (
-                        <div key={foto.id} className="w-full max-w-sm md:max-w-md lg:max-w-lg">
-                            <PhotoCard foto={foto} />
-                        </div>
+                        <PhotoCard key={foto.id} foto={foto} />
                     ))}
                 </div>
             ) : (
