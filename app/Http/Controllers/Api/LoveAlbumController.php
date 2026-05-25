@@ -59,7 +59,10 @@ class LoveAlbumController extends Controller
         }
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+            // Usamos 'file' en lugar de 'image' por si el servidor (AlwaysData)
+            // no tiene activa la extensión 'fileinfo' que Laravel usa para verificar mimes.
+            // Aumentamos el límite a 15MB (15360 KB) para móviles modernos.
+            'image' => 'required|file|max:15360',
             'description' => 'nullable|string|max:500',
             'fecha_recuerdo' => 'nullable|date'
         ]);
