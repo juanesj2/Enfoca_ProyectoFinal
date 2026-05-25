@@ -99,6 +99,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('love-album')->group(function () {
         Route::get('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getCoupleInfo']);
         
+        // Álbumes Personalizados (Colecciones)
+        Route::get('/albums', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getAlbums']);
+        Route::post('/albums', [\App\Http\Controllers\Api\LoveAlbumController::class, 'createAlbum']);
+
         // Fotos
         Route::get('/photos', [\App\Http\Controllers\Api\LoveAlbumController::class, 'index']);
         Route::post('/photos', [\App\Http\Controllers\Api\LoveAlbumController::class, 'store']);

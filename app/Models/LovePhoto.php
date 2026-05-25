@@ -10,12 +10,18 @@ class LovePhoto extends Model
     use HasFactory;
 
     protected $fillable = [
+        'album_id',
         'couple_id',
         'user_id',
         'image_path',
         'description',
         'fecha_recuerdo'
     ];
+
+    public function album()
+    {
+        return $this->belongsTo(LoveAlbum::class);
+    }
 
     public function couple()
     {

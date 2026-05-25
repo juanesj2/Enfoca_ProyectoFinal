@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Couple;
 use App\Models\LovePhoto;
+use App\Models\LoveAlbum;
 use App\Models\LovePhotoReaction;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -179,5 +180,45 @@ class LoveAlbumController extends Controller
         $photo->delete();
 
         return response()->json(['message' => 'Foto eliminada con éxito']);
+    }
+
+    // --- ÁLBUMES PERSONALIZADOS ---
+    public function getAlbums()
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        $albums = LoveAlbum::where('couple_id', $couple->id)
+            ->withCount('photos')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($albums);
+    }
+
+    public function createAlbum(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:100',
+        ]);
+
+        $album = LoveAlbum::create([
+            'couple_id' => $couple->id,
+            'name' => $request->name,
+            'cover_image' => null // Placeholder
+        ]);
+
+        return response()->json(['message' => 'Álbum creado', 'album' => $album], 201);
     }
 }
