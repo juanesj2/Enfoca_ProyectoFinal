@@ -95,4 +95,22 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas públicas de usuarios (si se necesitan)
     Route::get('/usuarios', [UserController::class, 'index']);
 
+    // ----- LOVE ALBUM & CHAT -----
+    Route::prefix('love-album')->group(function () {
+        Route::get('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getCoupleInfo']);
+        
+        // Fotos
+        Route::get('/photos', [\App\Http\Controllers\Api\LoveAlbumController::class, 'index']);
+        Route::post('/photos', [\App\Http\Controllers\Api\LoveAlbumController::class, 'store']);
+        Route::get('/photos/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'show']);
+        Route::delete('/photos/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'destroy']);
+        
+        // Reacciones a Fotos
+        Route::post('/photos/{id}/reactions', [\App\Http\Controllers\Api\LoveAlbumController::class, 'react']);
+        
+        // Chat Privado
+        Route::get('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'index']);
+        Route::post('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'store']);
+    });
+
 });
