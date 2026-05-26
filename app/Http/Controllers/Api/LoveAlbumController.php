@@ -243,6 +243,25 @@ class LoveAlbumController extends Controller
         return response()->json($photo);
     }
 
+    public function download($id)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        $photo = LovePhoto::where('couple_id', $couple->id)->findOrFail($id);
+        $path = storage_path('app/public/' . $photo->image_path);
+
+        if (!file_exists($path)) {
+            return response()->json(['message' => 'Archivo no encontrado'], 404);
+        }
+
+        return response()->download($path, 'love_photo_' . $photo->id . '.jpg');
+    }
+
     public function destroy($id)
     {
         $user = Auth::user();

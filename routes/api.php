@@ -120,6 +120,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/photos', [\App\Http\Controllers\Api\LoveAlbumController::class, 'index']);
         Route::post('/photos', [\App\Http\Controllers\Api\LoveAlbumController::class, 'store']);
         Route::get('/photos/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'show']);
+        Route::get('/photos/{id}/download', [\App\Http\Controllers\Api\LoveAlbumController::class, 'download']);
         Route::delete('/photos/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'destroy']);
         
         // Reacciones a Fotos
