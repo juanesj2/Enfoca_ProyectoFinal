@@ -125,13 +125,20 @@ class GameController extends Controller
 
     // --- DRAWING GAME ---
 
-    public function getDrawingPrompt()
+    public function getDrawingCategories()
+    {
+        $categories = DrawingPrompt::select('category')->distinct()->pluck('category');
+        return response()->json($categories);
+    }
+
+    public function getDrawingPrompt(Request $request)
     {
         $user = Auth::user();
         $couple = $this->getCoupleForUser($user->id);
         if (!$couple) return response()->json(['message' => 'No tienes pareja'], 403);
 
         $partnerId = $couple->user1_id === $user->id ? $couple->user2_id : $couple->user1_id;
+        $category = $request->query('category');
 
         // Buscar un prompt que la pareja haya empezado o respondido y yo no
         $partnerDrawings = Drawing::where('user_id', $partnerId)->pluck('drawing_prompt_id')->toArray();
@@ -139,12 +146,24 @@ class GameController extends Controller
 
         $promptsPartnerDidButINot = array_diff($partnerDrawings, $myDrawings);
         
+        $prompt = null;
+
         if (count($promptsPartnerDidButINot) > 0) {
-            $prompt = DrawingPrompt::find(reset($promptsPartnerDidButINot));
-        } else {
+            $query = DrawingPrompt::whereIn('id', $promptsPartnerDidButINot);
+            if ($category) {
+                $query->where('category', $category);
+            }
+            $prompt = $query->first();
+        } 
+        
+        if (!$prompt) {
             // Buscar un prompt nuevo que ninguno haya hecho
             $allDone = array_merge($partnerDrawings, $myDrawings);
-            $prompt = DrawingPrompt::whereNotIn('id', $allDone)->inRandomOrder()->first();
+            $query = DrawingPrompt::whereNotIn('id', $allDone);
+            if ($category) {
+                $query->where('category', $category);
+            }
+            $prompt = $query->inRandomOrder()->first();
         }
 
         if (!$prompt) {

@@ -135,6 +135,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/games/swipe/answer', [\App\Http\Controllers\Api\GameController::class, 'answerSwipe']);
         Route::get('/games/swipe/stats', [\App\Http\Controllers\Api\GameController::class, 'getSwipeStats']);
 
+        Route::get('/games/drawing/categories', [\App\Http\Controllers\Api\GameController::class, 'getDrawingCategories']);
         Route::get('/games/drawing/prompt', [\App\Http\Controllers\Api\GameController::class, 'getDrawingPrompt']);
         Route::post('/games/drawing/upload', [\App\Http\Controllers\Api\GameController::class, 'uploadDrawing']);
         Route::get('/games/drawing/{promptId}/result', [\App\Http\Controllers\Api\GameController::class, 'getDrawingResult']);

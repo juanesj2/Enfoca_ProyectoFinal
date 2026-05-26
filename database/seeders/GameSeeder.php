@@ -33,17 +33,22 @@ class GameSeeder extends Seeder
         }
 
         $drawingPrompts = [
-            ['prompt_text' => 'Dibuja un perro en un árbol'],
-            ['prompt_text' => 'Dibuja a tu pareja como si fuera un superhéroe'],
-            ['prompt_text' => 'Nuestro primer beso (versión monigotes)'],
-            ['prompt_text' => 'A ti intentando cocinar'],
-            ['prompt_text' => 'Un gato conduciendo un coche'],
+            ['category' => 'Animales', 'prompt_text' => 'Dibuja un perro en un árbol'],
+            ['category' => 'Pareja', 'prompt_text' => 'Dibuja a tu pareja como si fuera un superhéroe'],
+            ['category' => 'Pareja', 'prompt_text' => 'Nuestro primer beso (versión monigotes)'],
+            ['category' => 'Situaciones', 'prompt_text' => 'A ti intentando cocinar'],
+            ['category' => 'Animales', 'prompt_text' => 'Un gato conduciendo un coche'],
+            
+            // Nuevas
+            ['category' => 'Picante', 'prompt_text' => 'Dibuja la lencería que más te gusta'],
+            ['category' => 'Situaciones', 'prompt_text' => 'Dibuja nuestra casa de los sueños'],
+            ['category' => 'Humor', 'prompt_text' => 'Dibújame recién levantado/a'],
         ];
 
         foreach ($drawingPrompts as $dp) {
             DrawingPrompt::updateOrCreate(
                 ['prompt_text' => $dp['prompt_text']],
-                []
+                ['category' => $dp['category']]
             );
         }
     }
