@@ -129,6 +129,14 @@ Route::middleware('auth:sanctum')->group(function () {
         // Chat Privado
         Route::get('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'index']);
         Route::post('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'store']);
+        // Minijuegos
+        Route::get('/games/swipe/cards', [\App\Http\Controllers\Api\GameController::class, 'getSwipeCards']);
+        Route::post('/games/swipe/answer', [\App\Http\Controllers\Api\GameController::class, 'answerSwipe']);
+        Route::get('/games/swipe/stats', [\App\Http\Controllers\Api\GameController::class, 'getSwipeStats']);
+
+        Route::get('/games/drawing/prompt', [\App\Http\Controllers\Api\GameController::class, 'getDrawingPrompt']);
+        Route::post('/games/drawing/upload', [\App\Http\Controllers\Api\GameController::class, 'uploadDrawing']);
+        Route::get('/games/drawing/{promptId}/result', [\App\Http\Controllers\Api\GameController::class, 'getDrawingResult']);
     });
 
 });
