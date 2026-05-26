@@ -191,8 +191,12 @@ class GameController extends Controller
         $myDrawing = Drawing::where('user_id', $user->id)->where('drawing_prompt_id', $promptId)->first();
         $partnerDrawing = Drawing::where('user_id', $partnerId)->where('drawing_prompt_id', $promptId)->first();
 
-        if (!$myDrawing || !$partnerDrawing) {
-            return response()->json(['status' => 'waiting', 'message' => 'Falta que uno termine']);
+        if (!$myDrawing) {
+            return response()->json(['status' => 'pending_me', 'message' => 'Te falta dibujar']);
+        }
+
+        if (!$partnerDrawing) {
+            return response()->json(['status' => 'waiting_partner', 'message' => 'Esperando a tu pareja']);
         }
 
         return response()->json([
