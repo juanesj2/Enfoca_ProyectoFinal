@@ -298,6 +298,31 @@ class LoveAlbumController extends Controller
         return response()->json(['message' => 'Álbum creado', 'album' => $album], 201);
     }
 
+    public function updateAlbumCover(Request $request, $id)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $album = LoveAlbum::where('couple_id', $couple->id)->find($id);
+        if (!$album) return response()->json([], 404);
+
+        $request->validate(['image' => 'required|string']);
+
+        $imageParts = explode(";base64,", $request->image);
+        if (count($imageParts) >= 2) {
+            $imageBase64 = base64_decode($imageParts[1]);
+            $fileName = uniqid() . '.png';
+            $path = 'love_album/covers/' . $fileName;
+            Storage::disk('public')->put($path, $imageBase64);
+
+            $album->cover_image = $path;
+            $album->save();
+        }
+
+        return response()->json(['message' => 'Portada actualizada', 'album' => $album]);
+    }
+
     // --- HITOS IMPORTANTES (MILESTONES) ---
     public function getMilestones()
     {
