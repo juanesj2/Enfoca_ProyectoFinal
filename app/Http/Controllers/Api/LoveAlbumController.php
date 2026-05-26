@@ -122,6 +122,8 @@ class LoveAlbumController extends Controller
 
         if ($request->has('album_id')) {
             $query->where('album_id', $request->album_id);
+        } else {
+            $query->whereNull('album_id');
         }
 
         $photos = $query->orderBy('fecha_recuerdo', 'desc')
