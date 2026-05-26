@@ -108,7 +108,7 @@ class LoveAlbumController extends Controller
         return response()->json(['message' => 'Zumbido enviado', 'poke_count' => $couple->poke_count]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $couple = $this->getCoupleForUser($user->id);
