@@ -39,11 +39,14 @@ class FcmService
         if (!$token || !$this->messaging) return false;
 
         try {
-            $notification = Notification::create($title, $body);
-
-            $message = CloudMessage::withTarget('token', $token)
-                ->withNotification($notification)
-                ->withData($data);
+            $message = CloudMessage::fromArray([
+                'token' => $token,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body,
+                ],
+                'data' => empty($data) ? null : $data,
+            ]);
 
             $this->messaging->send($message);
             return true;
