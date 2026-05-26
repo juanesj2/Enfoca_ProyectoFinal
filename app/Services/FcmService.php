@@ -38,13 +38,13 @@ class FcmService
     {
         if (!$token || !$this->messaging) return false;
 
-        $notification = Notification::create($title, $body);
-
-        $message = CloudMessage::withTarget('token', $token)
-            ->withNotification($notification)
-            ->withData($data);
-
         try {
+            $notification = Notification::create($title, $body);
+
+            $message = CloudMessage::withTarget('token', $token)
+                ->withNotification($notification)
+                ->withData($data);
+
             $this->messaging->send($message);
             return true;
         } catch (\Throwable $e) {
