@@ -14,6 +14,7 @@ use App\Models\QuestionAnswer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\FcmService;
 
 class LoveAlbumController extends Controller
 {
@@ -62,6 +63,18 @@ class LoveAlbumController extends Controller
         if ($request->has('current_mood')) {
             $user->current_mood = $request->current_mood;
             $user->save();
+            
+            // Notify partner
+            $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+            $partner = \App\Models\User::find($partnerId);
+            if ($partner && $partner->fcm_token) {
+                $fcm = new FcmService();
+                $fcm->sendToToken(
+                    $partner->fcm_token,
+                    "Cambio de humor 🎭",
+                    "{$user->name} se siente ahora: {$request->current_mood}."
+                );
+            }
         }
 
         return response()->json(['message' => 'Información actualizada con éxito']);
@@ -79,6 +92,18 @@ class LoveAlbumController extends Controller
         $couple->last_poke_at = now();
         $couple->poke_count = $couple->poke_count + 1;
         $couple->save();
+
+        // Notify partner
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+        $partner = \App\Models\User::find($partnerId);
+        if ($partner && $partner->fcm_token) {
+            $fcm = new FcmService();
+            $fcm->sendToToken(
+                $partner->fcm_token,
+                "¡Zumbido de {$user->name}! 🐝",
+                "Tu pareja te ha enviado un toque de atención."
+            );
+        }
 
         return response()->json(['message' => 'Zumbido enviado', 'poke_count' => $couple->poke_count]);
     }
@@ -367,6 +392,28 @@ class LoveAlbumController extends Controller
             ['answer' => $request->answer]
         );
 
+        // Notify partner that I answered
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+        $partner = \App\Models\User::find($partnerId);
+        if ($partner && $partner->fcm_token) {
+            $fcm = new FcmService();
+            $fcm->sendToToken(
+                $partner->fcm_token,
+                "¡Nueva respuesta! 👀",
+                "{$user->name} ha respondido una pregunta. ¡Te toca a ti!"
+            );
+        }
+
         return response()->json(['message' => 'Respuesta guardada']);
+    }
+
+    public function saveFcmToken(Request $request)
+    {
+        $user = Auth::user();
+        if ($user) {
+            $user->fcm_token = $request->input('token');
+            $user->save();
+        }
+        return response()->json(['success' => true]);
     }
 }
