@@ -24,15 +24,29 @@ class GameController extends Controller
 
     // --- SWIPE GAME ---
 
-    public function getSwipeCards()
+    public function getSwipeCategories()
+    {
+        $categories = SwipeQuestion::select('category')->distinct()->pluck('category');
+        return response()->json($categories);
+    }
+
+    public function getSwipeCards(Request $request)
     {
         $user = Auth::user();
         $couple = $this->getCoupleForUser($user->id);
         if (!$couple) return response()->json(['message' => 'No tienes pareja'], 403);
 
+        $category = $request->query('category');
+
         // Preguntas no respondidas por MÍ
         $answeredIds = SwipeAnswer::where('user_id', $user->id)->pluck('swipe_question_id')->toArray();
-        $pending = SwipeQuestion::whereNotIn('id', $answeredIds)->inRandomOrder()->limit(10)->get();
+        
+        $query = SwipeQuestion::whereNotIn('id', $answeredIds);
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        $pending = $query->inRandomOrder()->limit(10)->get();
 
         return response()->json($pending);
     }
@@ -56,16 +70,20 @@ class GameController extends Controller
         return response()->json(['message' => 'Respuesta guardada', 'data' => $answer]);
     }
 
-    public function getSwipeStats()
+    public function getSwipeStats(Request $request)
     {
         $user = Auth::user();
         $couple = $this->getCoupleForUser($user->id);
         if (!$couple) return response()->json(['message' => 'No tienes pareja'], 403);
 
         $partnerId = $couple->user1_id === $user->id ? $couple->user2_id : $couple->user1_id;
+        $category = $request->query('category');
 
-        $myAnswers = SwipeAnswer::where('user_id', $user->id)->get()->keyBy('swipe_question_id');
-        $partnerAnswers = SwipeAnswer::where('user_id', $partnerId)->get()->keyBy('swipe_question_id');
+        $myAnswersQuery = SwipeAnswer::where('user_id', $user->id)->with('question');
+        $partnerAnswersQuery = SwipeAnswer::where('user_id', $partnerId);
+
+        $myAnswers = $myAnswersQuery->get()->keyBy('swipe_question_id');
+        $partnerAnswers = $partnerAnswersQuery->get()->keyBy('swipe_question_id');
 
         $matches = [];
         $mismatches = [];
@@ -73,6 +91,8 @@ class GameController extends Controller
         $agreed = 0;
 
         foreach ($myAnswers as $qId => $myAns) {
+            if ($category && $myAns->question->category !== $category) continue;
+
             if (isset($partnerAnswers[$qId])) {
                 $totalCommon++;
                 $questionText = $myAns->question->question_text;

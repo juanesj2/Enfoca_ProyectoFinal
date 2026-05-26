@@ -7,30 +7,42 @@ use Illuminate\Support\Facades\DB;
 
 class GameSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // Limpiar para evitar duplicados si se corre varias veces
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('swipe_questions')->truncate();
-        DB::table('drawing_prompts')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        $swipeQuestions = [
+            ['category' => 'Comida', 'question_text' => '¿Te gusta la pizza con piña?'],
+            ['category' => 'Futuro', 'question_text' => '¿Tendrías una mascota exótica en casa?'],
+            ['category' => 'Costumbres', 'question_text' => '¿Prefieres dormir con calcetines en invierno?'],
+            ['category' => 'Relación', 'question_text' => '¿Perdonarías una infidelidad?'],
+            ['category' => 'Futuro', 'question_text' => '¿Te gustaría vivir en el campo alejado de la ciudad?'],
+            ['category' => 'Relación', 'question_text' => '¿Deberíamos compartir contraseñas del móvil?'],
+            ['category' => 'Viajes', 'question_text' => '¿Prefieres un viaje de mochilero a un resort todo incluido?'],
+            ['category' => 'Viajes', 'question_text' => '¿Te mudarías a otro país por amor?'],
+            ['category' => 'Viajes', 'question_text' => '¿Te gustaría hacer un viaje en autocaravana?'],
+            ['category' => 'Convivencia', 'question_text' => '¿Dejarías que yo decore toda la casa?'],
+            ['category' => 'Convivencia', 'question_text' => '¿Te molesta que deje los zapatos por en medio?'],
+        ];
 
-        // Insertar Swipe Questions
-        DB::table('swipe_questions')->insert([
-            ['question_text' => '¿Te gusta la pizza con piña?', 'created_at' => now(), 'updated_at' => now()],
-            ['question_text' => '¿Tendrías una mascota exótica en casa?', 'created_at' => now(), 'updated_at' => now()],
-            ['question_text' => '¿Prefieres dormir con calcetines en invierno?', 'created_at' => now(), 'updated_at' => now()],
-            ['question_text' => '¿Perdonarías una infidelidad?', 'created_at' => now(), 'updated_at' => now()],
-            ['question_text' => '¿Te gustaría vivir en el campo alejado de la ciudad?', 'created_at' => now(), 'updated_at' => now()],
-            ['question_text' => '¿Deberíamos compartir contraseñas del móvil?', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        foreach ($swipeQuestions as $sq) {
+            SwipeQuestion::updateOrCreate(
+                ['question_text' => $sq['question_text']],
+                ['category' => $sq['category']]
+            );
+        }
 
-        // Insertar Drawing Prompts
-        DB::table('drawing_prompts')->insert([
-            ['prompt_text' => 'Un perro atrapado en un árbol', 'created_at' => now(), 'updated_at' => now()],
-            ['prompt_text' => 'Nuestro primer beso (versión monigotes)', 'created_at' => now(), 'updated_at' => now()],
-            ['prompt_text' => 'A ti intentando cocinar', 'created_at' => now(), 'updated_at' => now()],
-            ['prompt_text' => 'Un gato conduciendo un coche', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        $drawingPrompts = [
+            ['prompt_text' => 'Dibuja un perro en un árbol'],
+            ['prompt_text' => 'Dibuja a tu pareja como si fuera un superhéroe'],
+            ['prompt_text' => 'Nuestro primer beso (versión monigotes)'],
+            ['prompt_text' => 'A ti intentando cocinar'],
+            ['prompt_text' => 'Un gato conduciendo un coche'],
+        ];
+
+        foreach ($drawingPrompts as $dp) {
+            DrawingPrompt::updateOrCreate(
+                ['prompt_text' => $dp['prompt_text']],
+                []
+            );
+        }
     }
 }
