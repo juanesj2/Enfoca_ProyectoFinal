@@ -117,9 +117,14 @@ class LoveAlbumController extends Controller
             return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
         }
 
-        $photos = LovePhoto::where('couple_id', $couple->id)
-            ->with(['user:id,name,email', 'reactions.user:id,name'])
-            ->orderBy('fecha_recuerdo', 'desc')
+        $query = LovePhoto::where('couple_id', $couple->id)
+            ->with(['user:id,name,email', 'reactions.user:id,name']);
+
+        if ($request->has('album_id')) {
+            $query->where('album_id', $request->album_id);
+        }
+
+        $photos = $query->orderBy('fecha_recuerdo', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -141,7 +146,8 @@ class LoveAlbumController extends Controller
             // Aumentamos el límite a 15MB (15360 KB) para móviles modernos.
             'image' => 'required|file|max:15360',
             'description' => 'nullable|string|max:500',
-            'fecha_recuerdo' => 'nullable|date'
+            'fecha_recuerdo' => 'nullable|date',
+            'album_id' => 'nullable|exists:love_albums,id'
         ]);
 
         if ($request->hasFile('image')) {
@@ -171,6 +177,7 @@ class LoveAlbumController extends Controller
             $photo = LovePhoto::create([
                 'couple_id' => $couple->id,
                 'user_id' => $user->id,
+                'album_id' => $request->album_id,
                 'image_path' => $imagePath,
                 'description' => $request->description,
                 'fecha_recuerdo' => $request->fecha_recuerdo ?? now(),
