@@ -98,6 +98,17 @@ Route::middleware('auth:sanctum')->group(function () {
     // ----- LOVE ALBUM & CHAT -----
     Route::prefix('love-album')->group(function () {
         Route::get('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getCoupleInfo']);
+        Route::put('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'updateCoupleInfo']);
+        Route::post('/poke', [\App\Http\Controllers\Api\LoveAlbumController::class, 'poke']);
+        
+        // Hitos
+        Route::get('/milestones', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getMilestones']);
+        Route::post('/milestones', [\App\Http\Controllers\Api\LoveAlbumController::class, 'addMilestone']);
+        Route::delete('/milestones/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'deleteMilestone']);
+        
+        // Preguntas (Minijuego)
+        Route::get('/questions', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getQuestions']);
+        Route::post('/questions/{id}/answer', [\App\Http\Controllers\Api\LoveAlbumController::class, 'answerQuestion']);
         
         // Álbumes Personalizados (Colecciones)
         Route::get('/albums', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getAlbums']);

@@ -29,6 +29,9 @@ class User extends Authenticatable
         'password',
         'rol',
         'vetado',
+        'telefono',
+        'estado',
+        'current_mood',
     ];
 
     /**

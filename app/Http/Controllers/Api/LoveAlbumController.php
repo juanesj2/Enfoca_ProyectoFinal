@@ -8,8 +8,12 @@ use App\Models\Couple;
 use App\Models\LovePhoto;
 use App\Models\LoveAlbum;
 use App\Models\LovePhotoReaction;
+use App\Models\CoupleMilestone;
+use App\Models\Question;
+use App\Models\QuestionAnswer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LoveAlbumController extends Controller
 {
@@ -29,7 +33,54 @@ class LoveAlbumController extends Controller
             return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
         }
 
-        return response()->json($couple);
+        // Return couple info plus partner's mood
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+        $partner = \App\Models\User::find($partnerId);
+
+        return response()->json([
+            'couple' => $couple,
+            'my_mood' => $user->current_mood,
+            'partner_mood' => $partner ? $partner->current_mood : null,
+            'partner_name' => $partner ? $partner->name : null
+        ]);
+    }
+
+    public function updateCoupleInfo(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        if ($request->has('relationship_start_date')) {
+            $couple->relationship_start_date = $request->relationship_start_date;
+            $couple->save();
+        }
+
+        if ($request->has('current_mood')) {
+            $user->current_mood = $request->current_mood;
+            $user->save();
+        }
+
+        return response()->json(['message' => 'Información actualizada con éxito']);
+    }
+
+    public function poke()
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        $couple->last_poke_at = now();
+        $couple->poke_count = $couple->poke_count + 1;
+        $couple->save();
+
+        return response()->json(['message' => 'Zumbido enviado', 'poke_count' => $couple->poke_count]);
     }
 
     public function index()
@@ -220,5 +271,102 @@ class LoveAlbumController extends Controller
         ]);
 
         return response()->json(['message' => 'Álbum creado', 'album' => $album], 201);
+    }
+
+    // --- HITOS IMPORTANTES (MILESTONES) ---
+    public function getMilestones()
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $milestones = CoupleMilestone::where('couple_id', $couple->id)->orderBy('date', 'desc')->get();
+        return response()->json($milestones);
+    }
+
+    public function addMilestone(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $request->validate([
+            'title' => 'required|string|max:100',
+            'date' => 'required|date'
+        ]);
+
+        $milestone = CoupleMilestone::create([
+            'couple_id' => $couple->id,
+            'title' => $request->title,
+            'date' => $request->date
+        ]);
+
+        return response()->json($milestone, 201);
+    }
+
+    public function deleteMilestone($id)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $milestone = CoupleMilestone::where('couple_id', $couple->id)->find($id);
+        if ($milestone) {
+            $milestone->delete();
+        }
+
+        return response()->json(['message' => 'Hito eliminado']);
+    }
+
+    // --- MINIJUEGO DE PREGUNTAS ---
+    public function getQuestions()
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        // Fetch all questions and check if answered
+        $questions = Question::all();
+        $answers = QuestionAnswer::where('couple_id', $couple->id)->get();
+
+        $result = [];
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+
+        foreach ($questions as $q) {
+            $myAnswer = $answers->where('question_id', $q->id)->where('user_id', $user->id)->first();
+            $partnerAnswer = $answers->where('question_id', $q->id)->where('user_id', $partnerId)->first();
+
+            $status = 'unanswered';
+            if ($myAnswer && !$partnerAnswer) $status = 'waiting_partner';
+            if (!$myAnswer && $partnerAnswer) $status = 'waiting_you';
+            if ($myAnswer && $partnerAnswer) $status = 'answered';
+
+            $result[] = [
+                'id' => $q->id,
+                'category' => $q->category,
+                'question_text' => $q->question_text,
+                'status' => $status,
+                'my_answer' => $myAnswer ? $myAnswer->answer : null,
+                'partner_answer' => ($status === 'answered') ? $partnerAnswer->answer : null, // Hidden until both answer
+            ];
+        }
+
+        return response()->json($result);
+    }
+
+    public function answerQuestion(Request $request, $id)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $request->validate(['answer' => 'required|string']);
+
+        $answer = QuestionAnswer::updateOrCreate(
+            ['couple_id' => $couple->id, 'user_id' => $user->id, 'question_id' => $id],
+            ['answer' => $request->answer]
+        );
+
+        return response()->json(['message' => 'Respuesta guardada']);
     }
 }

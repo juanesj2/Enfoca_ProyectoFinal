@@ -15,9 +15,12 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            // Aquí Llamamos a los seeders que queramos ejecutar
+            UserSeeder::class,
+            GrupoSeeder::class,
+            ReporteSeeder::class,
             DesafioSeeder::class,
-            UsersSeeder::class,
+            // Agregando las preguntas para el minijuego de amor
+            QuestionSeeder::class,
         ]);
 
     }
