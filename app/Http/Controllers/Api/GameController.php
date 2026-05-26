@@ -22,6 +22,47 @@ class GameController extends Controller
             ->first();
     }
 
+    public function getGameProgress(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json(['message' => 'No tienes pareja'], 403);
+
+        // 1. Preguntas (Questions)
+        // El frontend ya recibe todas, pero lo calculamos igual
+        $totalQuestions = \App\Models\Question::count();
+        $answeredQuestions = \App\Models\Answer::where('user_id', $user->id)->count();
+        $questionsPercent = $totalQuestions > 0 ? round(($answeredQuestions / $totalQuestions) * 100) : 0;
+
+        // 2. Swipe Game
+        $totalSwipe = SwipeQuestion::count();
+        $answeredSwipe = SwipeAnswer::where('user_id', $user->id)->count();
+        $swipePercent = $totalSwipe > 0 ? round(($answeredSwipe / $totalSwipe) * 100) : 0;
+
+        // 3. Drawing Game
+        $totalDrawing = DrawingPrompt::count();
+        $answeredDrawing = Drawing::where('user_id', $user->id)->count();
+        $drawingPercent = $totalDrawing > 0 ? round(($answeredDrawing / $totalDrawing) * 100) : 0;
+
+        return response()->json([
+            'questions' => [
+                'total' => $totalQuestions,
+                'answered' => $answeredQuestions,
+                'percentage' => $questionsPercent
+            ],
+            'swipe' => [
+                'total' => $totalSwipe,
+                'answered' => $answeredSwipe,
+                'percentage' => $swipePercent
+            ],
+            'drawing' => [
+                'total' => $totalDrawing,
+                'answered' => $answeredDrawing,
+                'percentage' => $drawingPercent
+            ]
+        ]);
+    }
+
     // --- SWIPE GAME ---
 
     public function getSwipeCategories()

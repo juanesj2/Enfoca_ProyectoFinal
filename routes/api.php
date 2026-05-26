@@ -130,6 +130,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'index']);
         Route::post('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'store']);
         // Minijuegos
+        Route::get('/games/progress', [\App\Http\Controllers\Api\GameController::class, 'getGameProgress']);
         Route::get('/games/swipe/categories', [\App\Http\Controllers\Api\GameController::class, 'getSwipeCategories']);
         Route::get('/games/swipe/cards', [\App\Http\Controllers\Api\GameController::class, 'getSwipeCards']);
         Route::post('/games/swipe/answer', [\App\Http\Controllers\Api\GameController::class, 'answerSwipe']);
