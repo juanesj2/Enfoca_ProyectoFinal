@@ -31,7 +31,7 @@ class GameController extends Controller
         // 1. Preguntas (Questions)
         // El frontend ya recibe todas, pero lo calculamos igual
         $totalQuestions = \App\Models\Question::count();
-        $answeredQuestions = \App\Models\Answer::where('user_id', $user->id)->count();
+        $answeredQuestions = \App\Models\QuestionAnswer::where('user_id', $user->id)->count();
         $questionsPercent = $totalQuestions > 0 ? round(($answeredQuestions / $totalQuestions) * 100) : 0;
 
         // 2. Swipe Game
