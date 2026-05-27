@@ -12,6 +12,7 @@ use App\Models\SwipeQuestion;
 use App\Models\SwipeAnswer;
 use App\Models\DrawingPrompt;
 use App\Models\Drawing;
+use App\Services\FcmService;
 
 class GameController extends Controller
 {
@@ -107,6 +108,18 @@ class GameController extends Controller
             ['user_id' => $user->id, 'swipe_question_id' => $request->question_id],
             ['couple_id' => $couple->id, 'answer' => $request->answer]
         );
+
+        // Notificar a la pareja
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+        $partner = \App\Models\User::find($partnerId);
+        if ($partner && $partner->fcm_token) {
+            $fcm = new FcmService();
+            $fcm->sendToToken(
+                $partner->fcm_token,
+                "Tinder de Pareja 🔥",
+                "{$user->name} ha respondido a una carta. ¡Abre la app para ver o responder!"
+            );
+        }
 
         return response()->json(['message' => 'Respuesta guardada', 'data' => $answer]);
     }
@@ -270,6 +283,27 @@ class GameController extends Controller
             ['user_id' => $user->id, 'drawing_prompt_id' => $request->prompt_id],
             ['couple_id' => $couple->id, 'image_path' => $imageName]
         );
+
+        // Notificar a la pareja
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+        $partner = \App\Models\User::find($partnerId);
+        if ($partner && $partner->fcm_token) {
+            $partnerDrawing = Drawing::where('user_id', $partnerId)->where('drawing_prompt_id', $request->prompt_id)->first();
+            $fcm = new FcmService();
+            if ($partnerDrawing) {
+                $fcm->sendToToken(
+                    $partner->fcm_token,
+                    "¡Obras de arte listas! 🖼️",
+                    "{$user->name} ha completado su dibujo. ¡Entra a ver el resultado!"
+                );
+            } else {
+                $fcm->sendToToken(
+                    $partner->fcm_token,
+                    "¡Nuevo reto de dibujo! 🎨",
+                    "{$user->name} ha dibujado. ¡Te toca a ti para poder verlo!"
+                );
+            }
+        }
 
         return response()->json(['message' => 'Dibujo guardado', 'data' => $drawing]);
     }

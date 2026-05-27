@@ -99,10 +99,18 @@ class LoveAlbumController extends Controller
         $partner = \App\Models\User::find($partnerId);
         if ($partner && $partner->fcm_token) {
             $fcm = new FcmService();
+            $messages = [
+                "{$user->name} te echa de menos 🥰",
+                "{$user->name} está pensando en ti 💭",
+                "¡Alguien reclama tu atención! 👀",
+                "{$user->name} te manda un abracito virtual 🤗",
+                "¡Ring ring! {$user->name} te llama 📞"
+            ];
+            $randomMessage = $messages[array_rand($messages)];
             $fcm->sendToToken(
                 $partner->fcm_token,
                 "¡Zumbido de {$user->name}! 🐝",
-                "Tu pareja te ha enviado un toque de atención."
+                $randomMessage
             );
         }
 
