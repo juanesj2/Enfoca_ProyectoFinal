@@ -111,6 +111,40 @@ class GameController extends Controller
         return response()->json(['message' => 'Respuesta guardada', 'data' => $answer]);
     }
 
+    public function getAllSwipeCards(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json(['message' => 'No tienes pareja'], 403);
+
+        $partnerId = $couple->user1_id === $user->id ? $couple->user2_id : $couple->user1_id;
+
+        $questions = SwipeQuestion::all();
+        $answers = SwipeAnswer::where('couple_id', $couple->id)->get();
+
+        $result = [];
+        foreach ($questions as $q) {
+            $myAnswer = $answers->where('swipe_question_id', $q->id)->where('user_id', $user->id)->first();
+            $partnerAnswer = $answers->where('swipe_question_id', $q->id)->where('user_id', $partnerId)->first();
+
+            $status = 'unanswered';
+            if ($myAnswer && !$partnerAnswer) $status = 'waiting_partner';
+            if (!$myAnswer && $partnerAnswer) $status = 'waiting_you';
+            if ($myAnswer && $partnerAnswer) $status = 'answered';
+
+            $result[] = [
+                'id' => $q->id,
+                'category' => $q->category,
+                'question_text' => $q->question_text,
+                'status' => $status,
+                'my_answer' => $myAnswer ? $myAnswer->answer : null,
+                'partner_answer' => ($status === 'answered') ? $partnerAnswer->answer : null,
+            ];
+        }
+
+        return response()->json($result);
+    }
+
     public function getSwipeStats(Request $request)
     {
         $user = Auth::user();
@@ -265,5 +299,39 @@ class GameController extends Controller
             'partner_drawing' => $partnerDrawing->image_path,
             'prompt' => DrawingPrompt::find($promptId)->prompt_text
         ]);
+    }
+
+    public function getAllDrawingPrompts(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json(['message' => 'No tienes pareja'], 403);
+
+        $partnerId = $couple->user1_id === $user->id ? $couple->user2_id : $couple->user1_id;
+
+        $prompts = DrawingPrompt::all();
+        $drawings = Drawing::where('couple_id', $couple->id)->get();
+
+        $result = [];
+        foreach ($prompts as $p) {
+            $myDrawing = $drawings->where('drawing_prompt_id', $p->id)->where('user_id', $user->id)->first();
+            $partnerDrawing = $drawings->where('drawing_prompt_id', $p->id)->where('user_id', $partnerId)->first();
+
+            $status = 'unanswered';
+            if ($myDrawing && !$partnerDrawing) $status = 'waiting_partner';
+            if (!$myDrawing && $partnerDrawing) $status = 'waiting_you';
+            if ($myDrawing && $partnerDrawing) $status = 'completed';
+
+            $result[] = [
+                'id' => $p->id,
+                'category' => $p->category,
+                'prompt_text' => $p->prompt_text,
+                'status' => $status,
+                'my_drawing' => $myDrawing ? $myDrawing->image_path : null,
+                'partner_drawing' => ($status === 'completed') ? $partnerDrawing->image_path : null,
+            ];
+        }
+
+        return response()->json($result);
     }
 }

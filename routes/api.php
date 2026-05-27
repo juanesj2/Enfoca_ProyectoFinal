@@ -133,11 +133,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/games/progress', [\App\Http\Controllers\Api\GameController::class, 'getGameProgress']);
         Route::get('/games/swipe/categories', [\App\Http\Controllers\Api\GameController::class, 'getSwipeCategories']);
         Route::get('/games/swipe/cards', [\App\Http\Controllers\Api\GameController::class, 'getSwipeCards']);
+        Route::get('/games/swipe/all', [\App\Http\Controllers\Api\GameController::class, 'getAllSwipeCards']);
         Route::post('/games/swipe/answer', [\App\Http\Controllers\Api\GameController::class, 'answerSwipe']);
         Route::get('/games/swipe/stats', [\App\Http\Controllers\Api\GameController::class, 'getSwipeStats']);
 
         Route::get('/games/drawing/categories', [\App\Http\Controllers\Api\GameController::class, 'getDrawingCategories']);
         Route::get('/games/drawing/prompt', [\App\Http\Controllers\Api\GameController::class, 'getDrawingPrompt']);
+        Route::get('/games/drawing/all', [\App\Http\Controllers\Api\GameController::class, 'getAllDrawingPrompts']);
         Route::post('/games/drawing/upload', [\App\Http\Controllers\Api\GameController::class, 'uploadDrawing']);
         Route::get('/games/drawing/{promptId}/result', [\App\Http\Controllers\Api\GameController::class, 'getDrawingResult']);
     });

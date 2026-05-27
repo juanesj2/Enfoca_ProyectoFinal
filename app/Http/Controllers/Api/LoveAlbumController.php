@@ -40,6 +40,7 @@ class LoveAlbumController extends Controller
 
         return response()->json([
             'couple' => $couple,
+            'current_streak' => $couple->current_streak,
             'my_mood' => $user->current_mood,
             'partner_mood' => $partner ? $partner->current_mood : null,
             'partner_name' => $partner ? $partner->name : null
