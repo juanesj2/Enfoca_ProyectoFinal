@@ -117,6 +117,33 @@ class LoveAlbumController extends Controller
         return response()->json(['message' => 'Zumbido enviado', 'poke_count' => $couple->poke_count]);
     }
 
+    public function assignPhotosToAlbum(Request $request, $albumId)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        $request->validate([
+            'photo_ids' => 'required|array',
+            'photo_ids.*' => 'integer'
+        ]);
+
+        // Verificamos que el álbum pertenezca a la pareja
+        $album = LoveAlbum::where('id', $albumId)->where('couple_id', $couple->id)->first();
+        if (!$album) {
+            return response()->json(['message' => 'Álbum no encontrado o no pertenece a tu pareja.'], 404);
+        }
+
+        LovePhoto::whereIn('id', $request->photo_ids)
+            ->where('couple_id', $couple->id)
+            ->update(['album_id' => $albumId]);
+
+        return response()->json(['message' => 'Fotos asignadas al álbum con éxito']);
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
