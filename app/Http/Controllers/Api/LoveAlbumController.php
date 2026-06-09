@@ -137,11 +137,24 @@ class LoveAlbumController extends Controller
             return response()->json(['message' => 'Álbum no encontrado o no pertenece a tu pareja.'], 404);
         }
 
-        LovePhoto::whereIn('id', $request->photo_ids)
+        $photosToCopy = LovePhoto::whereIn('id', $request->photo_ids)
             ->where('couple_id', $couple->id)
-            ->update(['album_id' => $albumId]);
+            ->get();
 
-        return response()->json(['message' => 'Fotos asignadas al álbum con éxito']);
+        foreach ($photosToCopy as $photo) {
+            LovePhoto::create([
+                'couple_id' => $photo->couple_id,
+                'user_id' => $photo->user_id,
+                'album_id' => $albumId,
+                'image_path' => $photo->image_path,
+                'description' => $photo->description,
+                'fecha_recuerdo' => $photo->fecha_recuerdo,
+                'created_at' => $photo->created_at,
+                'updated_at' => now(),
+            ]);
+        }
+
+        return response()->json(['message' => 'Fotos copiadas al álbum con éxito']);
     }
 
     public function index(Request $request)
