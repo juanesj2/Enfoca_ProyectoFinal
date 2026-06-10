@@ -45,7 +45,8 @@ class CoupleChatController extends Controller
 
         $request->validate([
             'mensaje' => 'required|string',
-            'love_photo_id' => 'nullable|exists:love_photos,id'
+            'love_photo_id' => 'nullable|exists:love_photos,id',
+            'reply_to' => 'nullable|array'
         ]);
 
         $message = CoupleMessage::create([
@@ -53,6 +54,7 @@ class CoupleChatController extends Controller
             'user_id' => $user->id,
             'mensaje' => $request->mensaje,
             'love_photo_id' => $request->love_photo_id,
+            'reply_to' => $request->reply_to,
         ]);
 
         return response()->json([
@@ -84,6 +86,52 @@ class CoupleChatController extends Controller
 
         return response()->json([
             'message' => 'Mensaje actualizado',
+            'chat_message' => $message->load(['user:id,name', 'photo'])
+        ], 200);
+    }
+
+    public function react(Request $request, $id)
+    {
+        $user = Auth::user();
+        $message = CoupleMessage::find($id);
+
+        if (!$message) {
+            return response()->json(['message' => 'Mensaje no encontrado.'], 404);
+        }
+
+        $request->validate([
+            'reaction' => 'required|string'
+        ]);
+
+        $reactions = $message->reactions ?? [];
+        $reaction = $request->reaction;
+
+        // Si el usuario ya reaccionó con este emoji, lo quitamos
+        $existingIndex = null;
+        foreach ($reactions as $index => $r) {
+            if ($r['user_id'] === $user->id && $r['reaction'] === $reaction) {
+                $existingIndex = $index;
+                break;
+            }
+        }
+
+        if ($existingIndex !== null) {
+            unset($reactions[$existingIndex]);
+            // Reindexar array
+            $reactions = array_values($reactions);
+        } else {
+            $reactions[] = [
+                'user_id' => $user->id,
+                'reaction' => $reaction,
+                'user_name' => $user->name,
+                'timestamp' => now()->toIso8601String()
+            ];
+        }
+
+        $message->update(['reactions' => $reactions]);
+
+        return response()->json([
+            'message' => 'Reacción actualizada',
             'chat_message' => $message->load(['user:id,name', 'photo'])
         ], 200);
     }
