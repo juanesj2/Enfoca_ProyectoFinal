@@ -60,4 +60,31 @@ class CoupleChatController extends Controller
             'chat_message' => $message->load(['user:id,name', 'photo'])
         ], 201);
     }
+
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+        $message = CoupleMessage::find($id);
+
+        if (!$message) {
+            return response()->json(['message' => 'Mensaje no encontrado.'], 404);
+        }
+
+        if ($message->user_id !== $user->id) {
+            return response()->json(['message' => 'No puedes editar un mensaje que no es tuyo.'], 403);
+        }
+
+        $request->validate([
+            'mensaje' => 'required|string',
+        ]);
+
+        $message->update([
+            'mensaje' => $request->mensaje,
+        ]);
+
+        return response()->json([
+            'message' => 'Mensaje actualizado',
+            'chat_message' => $message->load(['user:id,name', 'photo'])
+        ], 200);
+    }
 }
