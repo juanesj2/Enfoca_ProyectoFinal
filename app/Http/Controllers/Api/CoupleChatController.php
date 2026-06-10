@@ -82,6 +82,7 @@ class CoupleChatController extends Controller
 
         $message->update([
             'mensaje' => $request->mensaje,
+            'is_edited' => true
         ]);
 
         return response()->json([

@@ -15,12 +15,14 @@ class CoupleMessage extends Model
         'love_photo_id',
         'mensaje',
         'reply_to',
-        'reactions'
+        'reactions',
+        'is_edited'
     ];
 
     protected $casts = [
         'reply_to' => 'array',
-        'reactions' => 'array'
+        'reactions' => 'array',
+        'is_edited' => 'boolean'
     ];
 
     public function couple()
