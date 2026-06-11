@@ -239,7 +239,9 @@ class LoveAlbumController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $filename = uniqid() . '.jpg';
+            $isGraffiti = str_contains($request->description ?? '', '[GRAFFITI:');
+            $extension = $isGraffiti ? '.png' : '.jpg';
+            $filename = uniqid() . $extension;
             $imagePath = 'love_album/' . $filename;
             
             // Optimizar imagen
@@ -248,8 +250,12 @@ class LoveAlbumController extends Controller
             // Redimensionar si es muy grande, manteniendo proporciones
             $image->scaleDown(width: 1920, height: 1920);
             
-            // Guardar imagen comprimida
-            \Illuminate\Support\Facades\Storage::disk('public')->put($imagePath, $image->toJpeg(90)->toString());
+            // Guardar imagen
+            if ($isGraffiti) {
+                \Illuminate\Support\Facades\Storage::disk('public')->put($imagePath, $image->toPng()->toString());
+            } else {
+                \Illuminate\Support\Facades\Storage::disk('public')->put($imagePath, $image->toJpeg(90)->toString());
+            }
 
             // --- Calcular racha dual ---
             $localDateStr = $request->input('local_date');
