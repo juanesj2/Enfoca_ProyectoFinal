@@ -233,11 +233,15 @@ class LoveAlbumController extends Controller
             
             $lastPhotoDate = $couple->last_photo_date ? \Carbon\Carbon::parse($couple->last_photo_date)->startOfDay() : null;
 
+            \Illuminate\Support\Facades\Log::info("Calculando racha: Today is {$today->toDateString()}, LastPhotoDate is " . ($lastPhotoDate ? $lastPhotoDate->toDateString() : 'null') . ", localDateStr was {$localDateStr}");
+
             if (!$lastPhotoDate) {
                 $couple->current_streak = 1;
                 $couple->longest_streak = 1;
             } else {
                 $diffInDays = $today->diffInDays($lastPhotoDate);
+                \Illuminate\Support\Facades\Log::info("Diff in days: {$diffInDays}");
+                
                 if ($diffInDays == 1) {
                     $couple->current_streak += 1;
                     if ($couple->current_streak > $couple->longest_streak) {
@@ -249,6 +253,7 @@ class LoveAlbumController extends Controller
             }
             $couple->last_photo_date = $localDateStr ? $today->format('Y-m-d H:i:s') : now();
             $couple->save();
+            \Illuminate\Support\Facades\Log::info("Nueva racha guardada: {$couple->current_streak}");
 
             $photo = LovePhoto::create([
                 'couple_id' => $couple->id,
