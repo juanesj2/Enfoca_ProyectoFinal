@@ -177,7 +177,7 @@ class LoveAlbumController extends Controller
 
         $photos = $query->orderBy('fecha_recuerdo', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15);
 
         return response()->json($photos);
     }
@@ -202,10 +202,27 @@ class LoveAlbumController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('love_album', 'public');
+            $file = $request->file('image');
+            $filename = uniqid() . '.jpg';
+            $imagePath = 'love_album/' . $filename;
+            
+            // Optimizar imagen
+            $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+            $image = $manager->read($file);
+            // Redimensionar si es muy grande, manteniendo proporciones
+            $image->scaleDown(width: 1920, height: 1920);
+            
+            // Guardar imagen comprimida
+            \Illuminate\Support\Facades\Storage::disk('public')->put($imagePath, $image->toJpeg(90)->toString());
 
             // --- Calcular racha ---
-            $today = \Carbon\Carbon::now()->startOfDay();
+            $localDateStr = $request->input('local_date');
+            if ($localDateStr) {
+                $today = \Carbon\Carbon::parse($localDateStr)->startOfDay();
+            } else {
+                $today = \Carbon\Carbon::now()->startOfDay();
+            }
+            
             $lastPhotoDate = $couple->last_photo_date ? \Carbon\Carbon::parse($couple->last_photo_date)->startOfDay() : null;
 
             if (!$lastPhotoDate) {
@@ -222,7 +239,7 @@ class LoveAlbumController extends Controller
                     $couple->current_streak = 1;
                 }
             }
-            $couple->last_photo_date = now();
+            $couple->last_photo_date = $localDateStr ? $today->format('Y-m-d H:i:s') : now();
             $couple->save();
 
             $photo = LovePhoto::create([
