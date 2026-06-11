@@ -172,7 +172,15 @@ class LoveAlbumController extends Controller
         if ($request->has('album_id')) {
             $query->where('album_id', $request->album_id);
         } else {
-            $query->whereNull('album_id');
+            $query->where(function ($q) {
+                $q->whereNull('description')
+                  ->orWhere(function ($sub) {
+                      $sub->where('description', 'NOT LIKE', '[DOODLE]%')
+                          ->where('description', 'NOT LIKE', '[AUDIO]%')
+                          ->where('description', 'NOT LIKE', '[GIF]%')
+                          ->where('description', 'NOT LIKE', '[GRAFFITI:%');
+                  });
+            });
         }
 
         $photos = $query->orderBy('fecha_recuerdo', 'desc')
