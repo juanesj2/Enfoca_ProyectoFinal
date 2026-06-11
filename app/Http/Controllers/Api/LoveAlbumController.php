@@ -25,7 +25,7 @@ class LoveAlbumController extends Controller
             ->first();
     }
 
-    public function getCoupleInfo()
+    public function getCoupleInfo(Request $request)
     {
         $user = Auth::user();
         $couple = $this->getCoupleForUser($user->id);
@@ -38,12 +38,40 @@ class LoveAlbumController extends Controller
         $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
         $partner = \App\Models\User::find($partnerId);
 
+        $localDateStr = $request->query('local_date');
+        $today = $localDateStr ? \Carbon\Carbon::parse($localDateStr)->startOfDay() : \Carbon\Carbon::now()->startOfDay();
+
+        // Control de ruptura de racha al vuelo
+        $lastStreakDate = $couple->last_photo_date ? \Carbon\Carbon::parse($couple->last_photo_date)->startOfDay() : null;
+        if ($lastStreakDate && $couple->current_streak > 0) {
+            $diffInDays = $today->diffInDays($lastStreakDate);
+            if ($diffInDays > 1) {
+                // Racha rota (ayer nadie o sólo uno subió foto)
+                $couple->current_streak = 0;
+                $couple->save();
+            }
+        }
+
+        // Estado de subidas de HOY
+        $dateStr = $today->format('Y-m-d');
+        $myPhotoToday = \App\Models\LovePhoto::where('couple_id', $couple->id)
+                            ->where('user_id', $user->id)
+                            ->whereDate('fecha_recuerdo', $dateStr)
+                            ->exists();
+
+        $partnerPhotoToday = \App\Models\LovePhoto::where('couple_id', $couple->id)
+                            ->where('user_id', $partnerId)
+                            ->whereDate('fecha_recuerdo', $dateStr)
+                            ->exists();
+
         return response()->json([
             'couple' => $couple,
             'current_streak' => $couple->current_streak,
             'my_mood' => $user->current_mood,
             'partner_mood' => $partner ? $partner->current_mood : null,
-            'partner_name' => $partner ? $partner->name : null
+            'partner_name' => $partner ? $partner->name : null,
+            'my_photo_today' => $myPhotoToday,
+            'partner_photo_today' => $partnerPhotoToday
         ]);
     }
 
@@ -223,37 +251,52 @@ class LoveAlbumController extends Controller
             // Guardar imagen comprimida
             \Illuminate\Support\Facades\Storage::disk('public')->put($imagePath, $image->toJpeg(90)->toString());
 
-            // --- Calcular racha ---
+            // --- Calcular racha dual ---
             $localDateStr = $request->input('local_date');
-            if ($localDateStr) {
-                $today = \Carbon\Carbon::parse($localDateStr)->startOfDay();
-            } else {
-                $today = \Carbon\Carbon::now()->startOfDay();
-            }
+            $today = $localDateStr ? \Carbon\Carbon::parse($localDateStr)->startOfDay() : \Carbon\Carbon::now()->startOfDay();
+            $dateStr = $today->format('Y-m-d');
             
-            $lastPhotoDate = $couple->last_photo_date ? \Carbon\Carbon::parse($couple->last_photo_date)->startOfDay() : null;
+            $lastStreakDate = $couple->last_photo_date ? \Carbon\Carbon::parse($couple->last_photo_date)->startOfDay() : null;
+            $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
 
-            \Illuminate\Support\Facades\Log::info("Calculando racha: Today is {$today->toDateString()}, LastPhotoDate is " . ($lastPhotoDate ? $lastPhotoDate->toDateString() : 'null') . ", localDateStr was {$localDateStr}");
+            $partnerPhotoToday = LovePhoto::where('couple_id', $couple->id)
+                                          ->where('user_id', $partnerId)
+                                          ->whereDate('fecha_recuerdo', $dateStr)
+                                          ->exists();
 
-            if (!$lastPhotoDate) {
-                $couple->current_streak = 1;
-                $couple->longest_streak = 1;
-            } else {
-                $diffInDays = $today->diffInDays($lastPhotoDate);
-                \Illuminate\Support\Facades\Log::info("Diff in days: {$diffInDays}");
-                
-                if ($diffInDays == 1) {
-                    $couple->current_streak += 1;
-                    if ($couple->current_streak > $couple->longest_streak) {
-                        $couple->longest_streak = $couple->current_streak;
-                    }
-                } elseif ($diffInDays > 1) {
+            if ($partnerPhotoToday) {
+                // AMBOS han subido hoy
+                if (!$lastStreakDate) {
                     $couple->current_streak = 1;
+                    $couple->longest_streak = 1;
+                    $couple->last_photo_date = $today->format('Y-m-d H:i:s');
+                } else {
+                    $diffInDays = $today->diffInDays($lastStreakDate);
+                    if ($diffInDays == 1) {
+                        // Racha se mantiene y sube
+                        $couple->current_streak += 1;
+                        if ($couple->current_streak > $couple->longest_streak) {
+                            $couple->longest_streak = $couple->current_streak;
+                        }
+                        $couple->last_photo_date = $today->format('Y-m-d H:i:s');
+                    } elseif ($diffInDays > 1) {
+                        // Hubo un hueco (se rompió), reiniciar a 1
+                        $couple->current_streak = 1;
+                        $couple->last_photo_date = $today->format('Y-m-d H:i:s');
+                    }
+                }
+            } else {
+                // SÓLO YO he subido hoy. Comprobamos si la racha se rompió ayer.
+                if ($lastStreakDate && $couple->current_streak > 0) {
+                    $diffInDays = $today->diffInDays($lastStreakDate);
+                    if ($diffInDays > 1) {
+                        // Ayer la racha murió
+                        $couple->current_streak = 0;
+                    }
                 }
             }
-            $couple->last_photo_date = $localDateStr ? $today->format('Y-m-d H:i:s') : now();
+            
             $couple->save();
-            \Illuminate\Support\Facades\Log::info("Nueva racha guardada: {$couple->current_streak}");
 
             $photo = LovePhoto::create([
                 'couple_id' => $couple->id,
@@ -261,13 +304,17 @@ class LoveAlbumController extends Controller
                 'album_id' => $request->album_id,
                 'image_path' => $imagePath,
                 'description' => $request->description,
-                'fecha_recuerdo' => $request->fecha_recuerdo ?? now(),
+                'fecha_recuerdo' => $localDateStr ? $today->format('Y-m-d H:i:s') : now(),
             ]);
 
+            // Si al guardar mi foto, el partner también lo hizo, la racha está completa hoy.
+            // Para la respuesta JSON, lo incluimos.
             return response()->json([
                 'message' => 'Foto subida con éxito',
                 'photo' => $photo->load('user:id,name,email'),
-                'streak' => $couple->current_streak
+                'streak' => $couple->current_streak,
+                'my_photo_today' => true,
+                'partner_photo_today' => $partnerPhotoToday
             ], 201);
         }
 
