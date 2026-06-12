@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at,
             'rol' => $this->rol,
             'updated_at' => $this->updated_at,
+            'pairing_code' => $this->pairing_code,
             'esta_vetado' => $this->estaVetado(),
             'tiempo_restante_veto' => $this->tiempoRestanteVeto(),
             'fotografias' => FotografiaResource::collection($this->whenLoaded('fotografias')),
