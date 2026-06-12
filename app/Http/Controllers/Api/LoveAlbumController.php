@@ -112,6 +112,8 @@ class LoveAlbumController extends Controller
             'current_streak' => $couple->current_streak,
             'my_mood' => $user->current_mood,
             'partner_mood' => $partner ? $partner->current_mood : null,
+            'my_birth_date' => $user->birth_date,
+            'partner_birth_date' => $partner ? $partner->birth_date : null,
             'my_name' => $user->name,
             'partner_name' => $partner ? $partner->name : null,
             'my_avatar' => $user->avatar_url ? url('storage/' . $user->avatar_url) : null,
@@ -133,6 +135,20 @@ class LoveAlbumController extends Controller
         if ($request->has('relationship_start_date')) {
             $couple->relationship_start_date = $request->relationship_start_date;
             $couple->save();
+        }
+
+        if ($request->has('birth_date')) {
+            $user->birth_date = $request->birth_date;
+            $user->save();
+        }
+
+        if ($request->has('partner_birth_date')) {
+            $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+            $partner = \App\Models\User::find($partnerId);
+            if ($partner) {
+                $partner->birth_date = $request->partner_birth_date;
+                $partner->save();
+            }
         }
 
         if ($request->has('current_mood')) {

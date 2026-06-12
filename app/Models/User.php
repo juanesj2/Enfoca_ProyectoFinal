@@ -34,6 +34,7 @@ class User extends Authenticatable
         'current_mood',
         'app',
         'pairing_code',
+        'birth_date',
         'avatar_url',
     ];
 
