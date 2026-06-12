@@ -25,6 +25,47 @@ class LoveAlbumController extends Controller
             ->first();
     }
 
+    public function pair(Request $request)
+    {
+        $request->validate([
+            'pairing_code' => 'required|string|size:6'
+        ]);
+
+        $user = Auth::user();
+
+        // Limite 1: Verificar que el usuario no tiene pareja ya
+        if ($this->getCoupleForUser($user->id)) {
+            return response()->json(['message' => 'Ya estás vinculado a una pareja.'], 400);
+        }
+
+        // Limite 3: No emparejarse consigo mismo
+        if (strtoupper($request->pairing_code) === strtoupper($user->pairing_code)) {
+            return response()->json(['message' => 'No puedes vincularte contigo mismo.'], 400);
+        }
+
+        // Buscar pareja por código
+        $partner = \App\Models\User::where('pairing_code', strtoupper($request->pairing_code))->first();
+
+        if (!$partner) {
+            return response()->json(['message' => 'Código de vinculación inválido.'], 404);
+        }
+
+        // Limite 2: Verificar que el dueño del código no tiene pareja ya
+        if ($this->getCoupleForUser($partner->id)) {
+            return response()->json(['message' => 'Ese usuario ya está vinculado a otra persona.'], 400);
+        }
+
+        // Todo correcto, crear el vínculo
+        Couple::create([
+            'user1_id' => $user->id,
+            'user2_id' => $partner->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['message' => '¡Vinculación exitosa!'], 200);
+    }
+
     public function getCoupleInfo(Request $request)
     {
         $user = Auth::user();

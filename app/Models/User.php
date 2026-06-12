@@ -33,7 +33,19 @@ class User extends Authenticatable
         'estado',
         'current_mood',
         'app',
+        'pairing_code',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (empty($user->pairing_code)) {
+                $user->pairing_code = strtoupper(substr(uniqid(), -6));
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.

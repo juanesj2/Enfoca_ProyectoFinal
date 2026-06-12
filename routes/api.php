@@ -97,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ----- LOVE ALBUM & CHAT -----
     Route::prefix('love-album')->group(function () {
+        Route::post('/pair', [\App\Http\Controllers\Api\LoveAlbumController::class, 'pair']);
         Route::get('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getCoupleInfo']);
         Route::put('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'updateCoupleInfo']);
         Route::post('/poke', [\App\Http\Controllers\Api\LoveAlbumController::class, 'poke']);
