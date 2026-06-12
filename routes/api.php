@@ -129,6 +129,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/wishes', [\App\Http\Controllers\Api\LoveAlbumController::class, 'addWish']);
         Route::put('/wishes/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'updateWish']);
         Route::delete('/wishes/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'deleteWish']);
+
+        // Widget Extras
+        Route::get('/widget/food-places', [\App\Http\Controllers\Api\WidgetController::class, 'getFoodPlaces']);
+        Route::post('/widget/food-places', [\App\Http\Controllers\Api\WidgetController::class, 'addFoodPlace']);
+        Route::delete('/widget/food-places/{id}', [\App\Http\Controllers\Api\WidgetController::class, 'deleteFoodPlace']);
+
+        Route::post('/widget/food-places/{placeId}/dishes', [\App\Http\Controllers\Api\WidgetController::class, 'addFoodDish']);
+        Route::delete('/widget/food-places/{placeId}/dishes/{dishId}', [\App\Http\Controllers\Api\WidgetController::class, 'deleteFoodDish']);
+
+        Route::get('/widget/movies', [\App\Http\Controllers\Api\WidgetController::class, 'getMovies']);
+        Route::post('/widget/movies', [\App\Http\Controllers\Api\WidgetController::class, 'addMovie']);
+        Route::delete('/widget/movies/{id}', [\App\Http\Controllers\Api\WidgetController::class, 'deleteMovie']);
         
         // Preguntas (Minijuego)
         Route::get('/questions', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getQuestions']);
