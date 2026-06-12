@@ -38,6 +38,13 @@ class UserController extends Controller
     public function show(Request $request)
     {
         $user = clone $request->user();
+
+        // Si el usuario es antiguo y no tiene código, se lo generamos
+        if (empty($user->pairing_code)) {
+            $user->pairing_code = strtoupper(substr(uniqid(), -6));
+            $user->save();
+        }
+
         $user->verificarTodosLosDesafios();
         return new UserResource($user);
     }
