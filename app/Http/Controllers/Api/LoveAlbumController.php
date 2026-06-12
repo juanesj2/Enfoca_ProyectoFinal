@@ -112,7 +112,10 @@ class LoveAlbumController extends Controller
             'current_streak' => $couple->current_streak,
             'my_mood' => $user->current_mood,
             'partner_mood' => $partner ? $partner->current_mood : null,
+            'my_name' => $user->name,
             'partner_name' => $partner ? $partner->name : null,
+            'my_avatar' => $user->avatar_url ? url('storage/' . $user->avatar_url) : null,
+            'partner_avatar' => ($partner && $partner->avatar_url) ? url('storage/' . $partner->avatar_url) : null,
             'my_photo_today' => $myPhotoToday,
             'partner_photo_today' => $partnerPhotoToday
         ]);
@@ -703,6 +706,68 @@ class LoveAlbumController extends Controller
             $user->fcm_token = $request->input('token');
             $user->save();
         }
+        return response()->json(['success' => true]);
+    }
+    
+    public function uploadAvatar(Request $request)
+    {
+        $request->validate(['avatar' => 'required|string']);
+        $user = Auth::user();
+        
+        // Extraer base64 si viene como data URI
+        $imgData = $request->avatar;
+        if (preg_match('/^data:image\/(\w+);base64,/', $imgData, $type)) {
+            $imgData = substr($imgData, strpos($imgData, ',') + 1);
+            $type = strtolower($type[1]);
+            if (!in_array($type, ['jpg', 'jpeg', 'png', 'gif'])) {
+                $type = 'jpg';
+            }
+        } else {
+            $type = 'jpg';
+        }
+        
+        $imgData = str_replace(' ', '+', $imgData);
+        $imageName = 'user_' . $user->id . '_' . time() . '.' . $type;
+        
+        Storage::disk('public')->put('avatars/' . $imageName, base64_decode($imgData));
+        
+        $user->avatar_url = 'avatars/' . $imageName;
+        $user->save();
+        
+        return response()->json(['success' => true, 'avatar_url' => url('storage/' . $user->avatar_url)]);
+    }
+
+    public function getRouletteOptions(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json(['options' => []]);
+
+        $options = \App\Models\CoupleRouletteOption::where('couple_id', $couple->id)
+                    ->orderBy('id')
+                    ->pluck('title');
+                    
+        return response()->json(['options' => $options]);
+    }
+
+    public function updateRouletteOptions(Request $request)
+    {
+        $request->validate(['options' => 'array']);
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+
+        \App\Models\CoupleRouletteOption::where('couple_id', $couple->id)->delete();
+
+        if ($request->options) {
+            foreach ($request->options as $opt) {
+                \App\Models\CoupleRouletteOption::create([
+                    'couple_id' => $couple->id,
+                    'title' => $opt
+                ]);
+            }
+        }
+
         return response()->json(['success' => true]);
     }
 }

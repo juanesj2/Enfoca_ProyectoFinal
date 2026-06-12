@@ -114,6 +114,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/remind-streak', [\App\Http\Controllers\Api\LoveAlbumController::class, 'remindStreak']);
         Route::post('/custom-notification', [\App\Http\Controllers\Api\LoveAlbumController::class, 'customNotification']);
         Route::post('/save-fcm-token', [\App\Http\Controllers\Api\LoveAlbumController::class, 'saveFcmToken']);
+        Route::post('/avatar', [\App\Http\Controllers\Api\LoveAlbumController::class, 'uploadAvatar']);
+        Route::get('/roulette', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getRouletteOptions']);
+        Route::post('/roulette', [\App\Http\Controllers\Api\LoveAlbumController::class, 'updateRouletteOptions']);
         
         // Hitos
         Route::get('/milestones', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getMilestones']);

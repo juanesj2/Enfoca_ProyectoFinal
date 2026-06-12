@@ -34,6 +34,7 @@ class User extends Authenticatable
         'current_mood',
         'app',
         'pairing_code',
+        'avatar_url',
     ];
 
     protected static function boot()
