@@ -516,6 +516,33 @@ class LoveAlbumController extends Controller
             return response()->json(['message' => 'Foto no encontrada'], 404);
         }
 
+        // --- STREAK DECREMENT LOGIC ---
+        $today = \Carbon\Carbon::now()->startOfDay();
+        $photoDate = \Carbon\Carbon::parse($photo->fecha_recuerdo)->startOfDay();
+
+        if ($photoDate->equalTo($today)) {
+            $remainingPhotosToday = LovePhoto::where('couple_id', $couple->id)
+                ->where('user_id', $user->id)
+                ->whereDate('fecha_recuerdo', $today->format('Y-m-d'))
+                ->where('id', '!=', $photo->id)
+                ->count();
+
+            if ($remainingPhotosToday == 0) {
+                $lastStreakDate = $couple->last_photo_date ? \Carbon\Carbon::parse($couple->last_photo_date)->startOfDay() : null;
+                
+                if ($lastStreakDate && $lastStreakDate->equalTo($today)) {
+                    $couple->current_streak = max(0, $couple->current_streak - 1);
+                    // Si la racha es 0, dejamos la fecha a null o ayer. La dejaremos a null si es 0.
+                    if ($couple->current_streak == 0) {
+                        $couple->last_photo_date = null;
+                    } else {
+                        $couple->last_photo_date = $today->copy()->subDay()->format('Y-m-d H:i:s');
+                    }
+                    $couple->save();
+                }
+            }
+        }
+
         if (Storage::disk('public')->exists($photo->image_path)) {
             Storage::disk('public')->delete($photo->image_path);
         }
