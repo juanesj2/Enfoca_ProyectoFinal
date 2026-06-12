@@ -147,6 +147,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'index']);
         Route::post('/chat', [\App\Http\Controllers\Api\CoupleChatController::class, 'store']);
         Route::put('/chat/{id}', [\App\Http\Controllers\Api\CoupleChatController::class, 'update']);
+        Route::delete('/chat/{id}', [\App\Http\Controllers\Api\CoupleChatController::class, 'destroy']);
         Route::post('/chat/{id}/react', [\App\Http\Controllers\Api\CoupleChatController::class, 'react']);
         // Minijuegos
         Route::get('/games/progress', [\App\Http\Controllers\Api\GameController::class, 'getGameProgress']);

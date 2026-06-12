@@ -136,4 +136,24 @@ class CoupleChatController extends Controller
             'chat_message' => $message->load(['user:id,name', 'photo'])
         ], 200);
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = Auth::user();
+        $message = CoupleMessage::find($id);
+
+        if (!$message) {
+            return response()->json(['message' => 'Mensaje no encontrado.'], 404);
+        }
+
+        if ($message->user_id !== $user->id) {
+            return response()->json(['message' => 'No puedes eliminar un mensaje que no es tuyo.'], 403);
+        }
+
+        $message->delete();
+
+        return response()->json([
+            'message' => 'Mensaje eliminado'
+        ], 200);
+    }
 }
