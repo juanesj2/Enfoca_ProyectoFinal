@@ -77,6 +77,25 @@ class AuthController extends Controller
         ]);
     }
 
+    public function testResetLink($email)
+    {
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no encontrado']);
+        }
+
+        $token = Password::getRepository()->create($user);
+        $link = url(route('password.reset', [
+            'token' => $token,
+            'email' => $email,
+        ], false));
+
+        return response()->json([
+            'email' => $email,
+            'reset_link' => $link
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

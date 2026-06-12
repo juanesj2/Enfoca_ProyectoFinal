@@ -28,6 +28,7 @@ Route::get('/test', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::get('/test/reset-link/{email}', [AuthController::class, 'testResetLink']);
 
 // ============================
 //     RUTAS PÚBLICAS 
