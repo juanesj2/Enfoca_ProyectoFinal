@@ -32,6 +32,7 @@ class User extends Authenticatable
         'telefono',
         'estado',
         'current_mood',
+        'app',
     ];
 
     /**
