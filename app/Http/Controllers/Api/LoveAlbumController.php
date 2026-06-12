@@ -813,4 +813,57 @@ class LoveAlbumController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    // --- WISHES (CUBO DE DESEOS) ---
+    public function getWishes()
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $wishes = \App\Models\Wish::where('couple_id', $couple->id)->orderBy('created_at', 'desc')->get();
+        return response()->json($wishes);
+    }
+
+    public function addWish(Request $request)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $wish = \App\Models\Wish::create([
+            'couple_id' => $couple->id,
+            'title' => $request->title,
+            'completed' => false,
+        ]);
+
+        return response()->json($wish, 201);
+    }
+
+    public function updateWish(Request $request, $id)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $wish = \App\Models\Wish::where('couple_id', $couple->id)->where('id', $id)->first();
+        if ($wish) {
+            $wish->completed = $request->completed;
+            $wish->save();
+        }
+
+        return response()->json($wish);
+    }
+
+    public function deleteWish($id)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+        if (!$couple) return response()->json([], 403);
+
+        $wish = \App\Models\Wish::where('couple_id', $couple->id)->where('id', $id)->first();
+        if ($wish) $wish->delete();
+        
+        return response()->json(['message' => 'Deseo eliminado']);
+    }
 }

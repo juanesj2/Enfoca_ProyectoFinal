@@ -123,6 +123,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/milestones', [\App\Http\Controllers\Api\LoveAlbumController::class, 'addMilestone']);
         Route::delete('/milestones/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'deleteMilestone']);
         
+        // Wishes
+        Route::get('/wishes', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getWishes']);
+        Route::post('/wishes', [\App\Http\Controllers\Api\LoveAlbumController::class, 'addWish']);
+        Route::put('/wishes/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'updateWish']);
+        Route::delete('/wishes/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'deleteWish']);
+        
         // Preguntas (Minijuego)
         Route::get('/questions', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getQuestions']);
         Route::post('/questions/{id}/answer', [\App\Http\Controllers\Api\LoveAlbumController::class, 'answerQuestion']);
