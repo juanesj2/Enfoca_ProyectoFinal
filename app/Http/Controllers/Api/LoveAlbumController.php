@@ -106,7 +106,8 @@ class LoveAlbumController extends Controller
                             ->exists();
 
         return response()->json([
-            'my_id' => $user->id,
+            'my_id' => (string) $user->id,
+            'partner_id' => (string) $partnerId,
             'couple' => $couple,
             'current_streak' => $couple->current_streak,
             'my_mood' => $user->current_mood,
