@@ -31,6 +31,10 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::get('/test/reset-link/{email}', [AuthController::class, 'testResetLink']);
 Route::get('/test/user-app/{email}', function($email) {
     $user = \App\Models\User::where('email', $email)->first();
+    if ($user) {
+        $user->app = 'love_widget';
+        $user->save();
+    }
     return response()->json(['email' => $email, 'app' => $user ? $user->app : 'not found']);
 });
 

@@ -59,6 +59,7 @@
                 <form method="POST" action="{{ route('password.store') }}" class="auth-form">
                     @csrf
                     <input type="hidden" name="token" value="{{ $request->route('token') }}">
+                    <input type="hidden" name="appName" value="love_widget">
 
                     <div>
                         <div class="input-group">

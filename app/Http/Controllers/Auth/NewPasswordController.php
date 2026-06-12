@@ -61,10 +61,17 @@ class NewPasswordController extends Controller
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         if ($status == Password::PASSWORD_RESET) {
+            // Priority: form hidden input (for when they reset from the web)
+            if ($request->has('appName') && $request->appName === 'love_widget') {
+                return view('auth.reset-success');
+            }
+            
+            // Fallback: database column
             $user = User::where('email', $request->email)->first();
             if ($user && $user->app === 'love_widget') {
                 return view('auth.reset-success');
             }
+            
             return redirect()->route('login')->with('status', __($status));
         }
 
