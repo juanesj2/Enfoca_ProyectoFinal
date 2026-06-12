@@ -146,6 +146,67 @@ class LoveAlbumController extends Controller
         return response()->json(['message' => 'Zumbido enviado', 'poke_count' => $couple->poke_count]);
     }
 
+    public function remindStreak()
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+        $partner = \App\Models\User::find($partnerId);
+
+        if ($partner && $partner->fcm_token) {
+            $fcm = new FcmService();
+            $messages = [
+                "{$user->name} te recuerda activar la racha 🔥",
+                "¡Que no se te pase la racha! {$user->name} está esperando tu foto 📸",
+                "¡Sube tu recuerdo de hoy! {$user->name} no quiere perder la racha 🥺",
+                "A {$user->name} le falta tu foto para mantener la racha viva 💖",
+                "¡Rápido! {$user->name} te avisa que la racha está en peligro ⏳"
+            ];
+            $randomMessage = $messages[array_rand($messages)];
+            $fcm->sendToToken(
+                $partner->fcm_token,
+                "¡Alerta de Racha! 🔥",
+                $randomMessage
+            );
+        }
+
+        return response()->json(['message' => 'Recordatorio enviado']);
+    }
+
+    public function customNotification(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string',
+            'body' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) {
+            return response()->json(['message' => 'No estás vinculado a ninguna pareja.'], 403);
+        }
+
+        $partnerId = ($couple->user1_id == $user->id) ? $couple->user2_id : $couple->user1_id;
+        $partner = \App\Models\User::find($partnerId);
+
+        if ($partner && $partner->fcm_token) {
+            $fcm = new FcmService();
+            $fcm->sendToToken(
+                $partner->fcm_token,
+                $request->input('title'),
+                $request->input('body')
+            );
+        }
+
+        return response()->json(['message' => 'Notificación sorpresa enviada']);
+    }
+
     public function assignPhotosToAlbum(Request $request, $albumId)
     {
         $user = Auth::user();

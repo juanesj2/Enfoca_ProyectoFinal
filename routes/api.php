@@ -100,6 +100,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getCoupleInfo']);
         Route::put('/info', [\App\Http\Controllers\Api\LoveAlbumController::class, 'updateCoupleInfo']);
         Route::post('/poke', [\App\Http\Controllers\Api\LoveAlbumController::class, 'poke']);
+        Route::post('/remind-streak', [\App\Http\Controllers\Api\LoveAlbumController::class, 'remindStreak']);
+        Route::post('/custom-notification', [\App\Http\Controllers\Api\LoveAlbumController::class, 'customNotification']);
         Route::post('/save-fcm-token', [\App\Http\Controllers\Api\LoveAlbumController::class, 'saveFcmToken']);
         
         // Hitos
