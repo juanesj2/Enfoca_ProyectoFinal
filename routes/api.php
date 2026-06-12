@@ -133,6 +133,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Widget Extras
         Route::get('/widget/food-places', [\App\Http\Controllers\Api\WidgetController::class, 'getFoodPlaces']);
         Route::post('/widget/food-places', [\App\Http\Controllers\Api\WidgetController::class, 'addFoodPlace']);
+        Route::put('/widget/food-places/{id}', [\App\Http\Controllers\Api\WidgetController::class, 'updateFoodPlace']);
         Route::delete('/widget/food-places/{id}', [\App\Http\Controllers\Api\WidgetController::class, 'deleteFoodPlace']);
 
         Route::post('/widget/food-places/{placeId}/dishes', [\App\Http\Controllers\Api\WidgetController::class, 'addFoodDish']);
@@ -140,6 +141,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/widget/movies', [\App\Http\Controllers\Api\WidgetController::class, 'getMovies']);
         Route::post('/widget/movies', [\App\Http\Controllers\Api\WidgetController::class, 'addMovie']);
+        Route::put('/widget/movies/{id}', [\App\Http\Controllers\Api\WidgetController::class, 'updateMovie']);
         Route::delete('/widget/movies/{id}', [\App\Http\Controllers\Api\WidgetController::class, 'deleteMovie']);
         
         // Preguntas (Minijuego)

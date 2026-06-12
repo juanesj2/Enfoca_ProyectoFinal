@@ -79,6 +79,36 @@ class WidgetController extends Controller
         return response()->json($place);
     }
 
+    public function updateFoodPlace(Request $request, $id)
+    {
+        $couple = $this->getCoupleForUser(Auth::id());
+        if (!$couple) return response()->json(['message' => 'Sin pareja'], 403);
+
+        $place = CoupleFoodPlace::where('couple_id', $couple->id)->find($id);
+        if (!$place) return response()->json(['message' => 'Lugar no encontrado'], 404);
+
+        $request->validate([
+            'name' => 'required|string',
+            'location' => 'nullable|string',
+            'rating' => 'nullable|integer',
+            'description' => 'nullable|string'
+        ]);
+
+        $place->update([
+            'name' => $request->name,
+            'location' => $request->location,
+            'rating' => $request->rating ?? $place->rating,
+            'description' => $request->description
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('food-places', 'public');
+            $place->update(['photo_url' => asset('storage/' . $path)]);
+        }
+
+        return response()->json($place);
+    }
+
     public function deleteFoodPlace($id)
     {
         $couple = $this->getCoupleForUser(Auth::id());
@@ -200,6 +230,36 @@ class WidgetController extends Controller
 
         if ($movie->image_url) {
             $movie->image_url_full = asset('storage/' . $movie->image_url);
+        }
+
+        return response()->json($movie);
+    }
+
+    public function updateMovie(Request $request, $id)
+    {
+        $couple = $this->getCoupleForUser(Auth::id());
+        if (!$couple) return response()->json(['message' => 'Sin pareja'], 403);
+
+        $movie = CoupleMovie::where('couple_id', $couple->id)->find($id);
+        if (!$movie) return response()->json(['message' => 'Película no encontrada'], 404);
+
+        $request->validate([
+            'title' => 'required|string',
+            'rating' => 'nullable|integer',
+            'who_fell_asleep' => 'nullable|string',
+            'favorite_quote' => 'nullable|string'
+        ]);
+
+        $movie->update([
+            'title' => $request->title,
+            'rating' => $request->rating ?? $movie->rating,
+            'who_fell_asleep' => $request->who_fell_asleep,
+            'favorite_quote' => $request->favorite_quote
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('movies', 'public');
+            $movie->update(['photo_url' => asset('storage/' . $path)]);
         }
 
         return response()->json($movie);
