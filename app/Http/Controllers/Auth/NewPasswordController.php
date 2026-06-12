@@ -20,7 +20,13 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        $user = User::where('email', $request->email)->first();
+        $appName = $user ? $user->app : 'enfoca';
+
+        return view('auth.reset-password', [
+            'request' => $request,
+            'appName' => $appName
+        ]);
     }
 
     /**
