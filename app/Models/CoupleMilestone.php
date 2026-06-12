@@ -12,7 +12,9 @@ class CoupleMilestone extends Model
     protected $fillable = [
         'couple_id',
         'title',
-        'date'
+        'date',
+        'image_url',
+        'story'
     ];
 
     public function couple()

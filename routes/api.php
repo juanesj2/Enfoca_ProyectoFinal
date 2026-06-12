@@ -121,6 +121,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Hitos
         Route::get('/milestones', [\App\Http\Controllers\Api\LoveAlbumController::class, 'getMilestones']);
         Route::post('/milestones', [\App\Http\Controllers\Api\LoveAlbumController::class, 'addMilestone']);
+        Route::post('/milestones/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'updateMilestone']);
         Route::delete('/milestones/{id}', [\App\Http\Controllers\Api\LoveAlbumController::class, 'deleteMilestone']);
         
         // Wishes

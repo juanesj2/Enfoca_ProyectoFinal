@@ -638,9 +638,18 @@ class LoveAlbumController extends Controller
     {
         $user = Auth::user();
         $couple = $this->getCoupleForUser($user->id);
-        if (!$couple) return response()->json([], 403);
+        if (!$couple) return response()->json([]);
 
-        $milestones = CoupleMilestone::where('couple_id', $couple->id)->orderBy('date', 'desc')->get();
+        $milestones = CoupleMilestone::where('couple_id', $couple->id)
+            ->orderBy('date', 'desc')
+            ->get()
+            ->map(function ($m) {
+                if ($m->image_url) {
+                    $m->image_url_full = asset('storage/' . $m->image_url);
+                }
+                return $m;
+            });
+
         return response()->json($milestones);
     }
 
@@ -648,10 +657,11 @@ class LoveAlbumController extends Controller
     {
         $user = Auth::user();
         $couple = $this->getCoupleForUser($user->id);
-        if (!$couple) return response()->json([], 403);
+
+        if (!$couple) return response()->json(['message' => 'Sin pareja'], 403);
 
         $request->validate([
-            'title' => 'required|string|max:100',
+            'title' => 'required|string|max:255',
             'date' => 'required|date'
         ]);
 
@@ -661,7 +671,51 @@ class LoveAlbumController extends Controller
             'date' => $request->date
         ]);
 
-        return response()->json($milestone, 201);
+        return response()->json($milestone);
+    }
+
+    public function updateMilestone(Request $request, $id)
+    {
+        $user = Auth::user();
+        $couple = $this->getCoupleForUser($user->id);
+
+        if (!$couple) return response()->json(['message' => 'Sin pareja'], 403);
+
+        $milestone = CoupleMilestone::where('couple_id', $couple->id)->find($id);
+
+        if (!$milestone) {
+            return response()->json(['message' => 'Hito no encontrado'], 404);
+        }
+
+        $request->validate([
+            'image' => 'nullable|file|max:15360',
+            'story' => 'nullable|string|max:1000'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('milestones', $filename, 'public');
+            
+            // Delete old image if exists
+            if ($milestone->image_url && \Storage::disk('public')->exists($milestone->image_url)) {
+                \Storage::disk('public')->delete($milestone->image_url);
+            }
+            
+            $milestone->image_url = $path;
+        }
+
+        if ($request->has('story')) {
+            $milestone->story = $request->story;
+        }
+
+        $milestone->save();
+
+        if ($milestone->image_url) {
+            $milestone->image_url_full = asset('storage/' . $milestone->image_url);
+        }
+
+        return response()->json($milestone);
     }
 
     public function deleteMilestone($id)
