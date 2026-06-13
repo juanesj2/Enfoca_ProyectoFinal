@@ -45,12 +45,12 @@ class GrupoController extends Controller
     {
         $grupo = Grupo::findOrFail($id);
         
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
         ]);
 
-        $grupo->update($request->all());
+        $grupo->update($validated);
 
         return new GrupoResource($grupo);
     }

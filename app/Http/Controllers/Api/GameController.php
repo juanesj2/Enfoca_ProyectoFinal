@@ -132,8 +132,10 @@ class GameController extends Controller
 
         $partnerId = $couple->user1_id === $user->id ? $couple->user2_id : $couple->user1_id;
 
-        $questions = SwipeQuestion::all();
-        $answers = SwipeAnswer::where('couple_id', $couple->id)->get();
+        $questions = SwipeQuestion::paginate(50);
+        $answers = SwipeAnswer::where('couple_id', $couple->id)
+            ->whereIn('swipe_question_id', $questions->pluck('id'))
+            ->get();
 
         $result = [];
         foreach ($questions as $q) {
@@ -154,8 +156,12 @@ class GameController extends Controller
                 'partner_answer' => ($status === 'answered') ? $partnerAnswer->answer : null,
             ];
         }
-
-        return response()->json($result);
+        return response()->json([
+            'data' => $result,
+            'current_page' => $questions->currentPage(),
+            'last_page' => $questions->lastPage(),
+            'total' => $questions->total()
+        ]);
     }
 
     public function getSwipeStats(Request $request)
@@ -343,8 +349,10 @@ class GameController extends Controller
 
         $partnerId = $couple->user1_id === $user->id ? $couple->user2_id : $couple->user1_id;
 
-        $prompts = DrawingPrompt::all();
-        $drawings = Drawing::where('couple_id', $couple->id)->get();
+        $prompts = DrawingPrompt::paginate(50);
+        $drawings = Drawing::where('couple_id', $couple->id)
+            ->whereIn('drawing_prompt_id', $prompts->pluck('id'))
+            ->get();
 
         $result = [];
         foreach ($prompts as $p) {
@@ -366,6 +374,11 @@ class GameController extends Controller
             ];
         }
 
-        return response()->json($result);
+        return response()->json([
+            'data' => $result,
+            'current_page' => $prompts->currentPage(),
+            'last_page' => $prompts->lastPage(),
+            'total' => $prompts->total()
+        ]);
     }
 }

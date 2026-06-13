@@ -38,6 +38,17 @@ class User extends Authenticatable
         'avatar_url',
     ];
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\CustomResetPassword($token));
+    }
+
     protected static function boot()
     {
         parent::boot();

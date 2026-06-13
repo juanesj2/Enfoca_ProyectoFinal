@@ -20,7 +20,7 @@ class UserController extends Controller
             return response()->json(['error' => 'No autorizado'], 403);
         }
 
-        $users = User::all();
+        $users = User::paginate(20);
         return UserResource::collection($users);
     }
 

@@ -14,7 +14,7 @@ class DesafioController extends Controller
      */
     public function index()
     {
-        $desafios = Desafio::all();
+        $desafios = Desafio::paginate(20);
         return DesafioResource::collection($desafios);
     }
 
