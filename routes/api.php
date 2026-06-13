@@ -137,6 +137,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/widget/food-places/{id}', [\App\Http\Controllers\Api\WidgetController::class, 'deleteFoodPlace']);
 
         Route::post('/widget/food-places/{placeId}/dishes', [\App\Http\Controllers\Api\WidgetController::class, 'addFoodDish']);
+        Route::post('/widget/food-places/{placeId}/dishes/{dishId}', [\App\Http\Controllers\Api\WidgetController::class, 'updateFoodDish']);
         Route::delete('/widget/food-places/{placeId}/dishes/{dishId}', [\App\Http\Controllers\Api\WidgetController::class, 'deleteFoodDish']);
 
         Route::get('/widget/movies', [\App\Http\Controllers\Api\WidgetController::class, 'getMovies']);

@@ -170,6 +170,44 @@ class WidgetController extends Controller
         return response()->json($dish);
     }
 
+    public function updateFoodDish(Request $request, $placeId, $dishId)
+    {
+        $couple = $this->getCoupleForUser(Auth::id());
+        if (!$couple) return response()->json([], 403);
+
+        $place = CoupleFoodPlace::where('couple_id', $couple->id)->find($placeId);
+        if (!$place) return response()->json([], 404);
+
+        $dish = CoupleFoodDish::where('food_place_id', $place->id)->find($dishId);
+        if (!$dish) return response()->json([], 404);
+
+        $request->validate([
+            'name' => 'required|string',
+            'rating' => 'nullable|integer',
+            'description' => 'nullable|string'
+        ]);
+
+        $dish->update([
+            'name' => $request->name,
+            'rating' => $request->rating ?? 5,
+            'description' => $request->description
+        ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('food_dishes', $filename, 'public');
+            $dish->image_url = $path;
+            $dish->save();
+        }
+
+        if ($dish->image_url) {
+            $dish->image_url_full = asset('storage/' . $dish->image_url);
+        }
+
+        return response()->json($dish);
+    }
+
     public function deleteFoodDish($placeId, $dishId)
     {
         $couple = $this->getCoupleForUser(Auth::id());
