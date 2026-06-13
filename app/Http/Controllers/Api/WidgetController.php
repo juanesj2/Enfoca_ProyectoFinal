@@ -111,7 +111,7 @@ class WidgetController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('food-places', 'public');
-            $place->update(['photo_url' => asset('storage/' . $path)]);
+            $place->update(['image_url' => $path]);
         }
 
         return response()->json($place);
