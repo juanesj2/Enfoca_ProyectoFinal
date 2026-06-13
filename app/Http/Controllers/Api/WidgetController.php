@@ -316,8 +316,11 @@ class WidgetController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('movies', 'public');
-            $movie->update(['photo_url' => asset('storage/' . $path)]);
+            $path = $request->file('image')->storeAs('movies', time() . '_' . $request->file('image')->getClientOriginalName(), 'public');
+            if ($movie->image_url && \Storage::disk('public')->exists($movie->image_url)) {
+                \Storage::disk('public')->delete($movie->image_url);
+            }
+            $movie->update(['image_url' => $path]);
         }
 
         return response()->json($movie);
