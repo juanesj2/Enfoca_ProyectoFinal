@@ -218,7 +218,9 @@ class WidgetController extends Controller
             'rating' => 'nullable|integer',
             'who_fell_asleep' => 'nullable|string',
             'favorite_quote' => 'nullable|string',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'genre' => 'nullable|string',
+            'is_favorite' => 'nullable|boolean'
         ]);
 
         $movie = CoupleMovie::create([
@@ -227,7 +229,9 @@ class WidgetController extends Controller
             'rating' => $request->rating ?? 5,
             'who_fell_asleep' => $request->who_fell_asleep,
             'favorite_quote' => $request->favorite_quote,
-            'description' => $request->description
+            'description' => $request->description,
+            'genre' => $request->genre,
+            'is_favorite' => filter_var($request->is_favorite, FILTER_VALIDATE_BOOLEAN)
         ]);
 
         if ($request->hasFile('image')) {
@@ -258,7 +262,9 @@ class WidgetController extends Controller
             'rating' => 'nullable|integer',
             'who_fell_asleep' => 'nullable|string',
             'favorite_quote' => 'nullable|string',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'genre' => 'nullable|string',
+            'is_favorite' => 'nullable|boolean'
         ]);
 
         $movie->update([
@@ -266,7 +272,9 @@ class WidgetController extends Controller
             'rating' => $request->rating ?? $movie->rating,
             'who_fell_asleep' => $request->who_fell_asleep,
             'favorite_quote' => $request->favorite_quote,
-            'description' => $request->description
+            'description' => $request->description,
+            'genre' => $request->genre,
+            'is_favorite' => $request->has('is_favorite') ? filter_var($request->is_favorite, FILTER_VALIDATE_BOOLEAN) : $movie->is_favorite
         ]);
 
         if ($request->hasFile('image')) {
