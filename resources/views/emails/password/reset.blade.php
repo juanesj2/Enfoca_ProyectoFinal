@@ -35,7 +35,7 @@
             font-weight: 700;
         }
         /* Estilos dinámicos según app */
-        <?php if($app === 'love-widget'): ?>
+        <?php if($app === 'love_widget'): ?>
             .header {
                 background-color: #FF4D6D;
                 color: #ffffff;
@@ -107,7 +107,7 @@
     <div class="wrapper">
         <div class="container">
             <div class="header">
-                <h1>{{ $app === 'love-widget' ? 'Love Widget' : 'Enfoca' }}</h1>
+                <h1>{{ $app === 'love_widget' ? 'Love Widget' : 'Enfoca' }}</h1>
             </div>
             
             <div class="content">
@@ -122,7 +122,7 @@
                 <p>Si no has solicitado un cambio de contraseña, no es necesario que realices ninguna acción. Tu cuenta está segura.</p>
                 
                 <p>Saludos,<br>
-                El equipo de {{ $app === 'love-widget' ? 'Love Widget' : 'Enfoca' }}</p>
+                El equipo de {{ $app === 'love_widget' ? 'Love Widget' : 'Enfoca' }}</p>
 
                 <div class="small-link">
                     Si tienes problemas haciendo clic en el botón "Restablecer Contraseña", copia y pega la siguiente URL en tu navegador web:<br>
@@ -131,7 +131,7 @@
             </div>
             
             <div class="footer">
-                &copy; {{ date('Y') }} {{ $app === 'love-widget' ? 'Love Widget' : 'Enfoca' }}. Todos los derechos reservados.
+                &copy; {{ date('Y') }} {{ $app === 'love_widget' ? 'Love Widget' : 'Enfoca' }}. Todos los derechos reservados.
             </div>
         </div>
     </div>
