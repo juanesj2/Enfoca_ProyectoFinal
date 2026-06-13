@@ -52,7 +52,9 @@ class WidgetController extends Controller
             'name' => 'required|string',
             'location' => 'nullable|string',
             'rating' => 'nullable|integer',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'category' => 'nullable|string',
+            'is_favorite' => 'nullable|boolean'
         ]);
 
         $place = CoupleFoodPlace::create([
@@ -60,7 +62,9 @@ class WidgetController extends Controller
             'name' => $request->name,
             'location' => $request->location,
             'rating' => $request->rating ?? 5,
-            'description' => $request->description
+            'description' => $request->description,
+            'category' => $request->category,
+            'is_favorite' => filter_var($request->is_favorite, FILTER_VALIDATE_BOOLEAN)
         ]);
 
         if ($request->hasFile('image')) {
@@ -91,14 +95,18 @@ class WidgetController extends Controller
             'name' => 'required|string',
             'location' => 'nullable|string',
             'rating' => 'nullable|integer',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'category' => 'nullable|string',
+            'is_favorite' => 'nullable|boolean'
         ]);
 
         $place->update([
             'name' => $request->name,
             'location' => $request->location,
             'rating' => $request->rating ?? $place->rating,
-            'description' => $request->description
+            'description' => $request->description,
+            'category' => $request->category,
+            'is_favorite' => $request->has('is_favorite') ? filter_var($request->is_favorite, FILTER_VALIDATE_BOOLEAN) : $place->is_favorite
         ]);
 
         if ($request->hasFile('image')) {
