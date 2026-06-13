@@ -209,7 +209,8 @@ class WidgetController extends Controller
             'title' => 'required|string',
             'rating' => 'nullable|integer',
             'who_fell_asleep' => 'nullable|string',
-            'favorite_quote' => 'nullable|string'
+            'favorite_quote' => 'nullable|string',
+            'description' => 'nullable|string'
         ]);
 
         $movie = CoupleMovie::create([
@@ -217,7 +218,8 @@ class WidgetController extends Controller
             'title' => $request->title,
             'rating' => $request->rating ?? 5,
             'who_fell_asleep' => $request->who_fell_asleep,
-            'favorite_quote' => $request->favorite_quote
+            'favorite_quote' => $request->favorite_quote,
+            'description' => $request->description
         ]);
 
         if ($request->hasFile('image')) {
@@ -247,14 +249,16 @@ class WidgetController extends Controller
             'title' => 'required|string',
             'rating' => 'nullable|integer',
             'who_fell_asleep' => 'nullable|string',
-            'favorite_quote' => 'nullable|string'
+            'favorite_quote' => 'nullable|string',
+            'description' => 'nullable|string'
         ]);
 
         $movie->update([
             'title' => $request->title,
             'rating' => $request->rating ?? $movie->rating,
             'who_fell_asleep' => $request->who_fell_asleep,
-            'favorite_quote' => $request->favorite_quote
+            'favorite_quote' => $request->favorite_quote,
+            'description' => $request->description
         ]);
 
         if ($request->hasFile('image')) {
