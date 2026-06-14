@@ -105,6 +105,10 @@ class LoveAlbumController extends Controller
                             ->whereDate('fecha_recuerdo', $dateStr)
                             ->exists();
 
+        $unlockedAchievements = \App\Models\CoupleAchievement::where('couple_id', $couple->id)
+            ->pluck('achievement_id')
+            ->toArray();
+
         return response()->json([
             'my_id' => (string) $user->id,
             'partner_id' => (string) $partnerId,
@@ -119,7 +123,8 @@ class LoveAlbumController extends Controller
             'my_avatar' => $user->avatar_url ? url('storage/' . $user->avatar_url) : null,
             'partner_avatar' => ($partner && $partner->avatar_url) ? url('storage/' . $partner->avatar_url) : null,
             'my_photo_today' => $myPhotoToday,
-            'partner_photo_today' => $partnerPhotoToday
+            'partner_photo_today' => $partnerPhotoToday,
+            'unlocked_achievements' => $unlockedAchievements
         ]);
     }
 
@@ -189,17 +194,35 @@ class LoveAlbumController extends Controller
         $partner = \App\Models\User::find($partnerId);
         if ($partner && $partner->fcm_token) {
             $fcm = new FcmService();
-            $messages = [
-                "{$user->name} te echa de menos 🥰",
-                "{$user->name} está pensando en ti 💭",
-                "¡Alguien reclama tu atención! 👀",
-                "{$user->name} te manda un abracito virtual 🤗",
-                "¡Ring ring! {$user->name} te llama 📞"
-            ];
+
+            // Verificar si tienen el logro Dedo Inquieto
+            $hasSecretSpammer = \App\Models\CoupleAchievement::where('couple_id', $couple->id)
+                ->where('achievement_id', 'secret_spammer')
+                ->exists();
+
+            if ($hasSecretSpammer) {
+                $messages = [
+                    "⚡ ¡SÚPER ZUMBIDO! {$user->name} te ha bombardeado ⚡",
+                    "💥 {$user->name} está golpeando la pantalla por ti 💥",
+                    "💖 ¡ZUMBIDO NIVEL DIOS de {$user->name}! 💖",
+                    "🚀 {$user->name} ha mandado un zumbido supersónico 🚀"
+                ];
+                $title = "⚡ ¡SÚPER ZUMBIDO! ⚡";
+            } else {
+                $messages = [
+                    "{$user->name} te echa de menos 🥺",
+                    "{$user->name} está pensando en ti 💭",
+                    "¡Alguien reclama tu atención! 👀",
+                    "{$user->name} te manda un abracito virtual 🫂",
+                    "¡Ring ring! {$user->name} te llama 📱"
+                ];
+                $title = "🔔 Zumbido de {$user->name}! 🔔";
+            }
+
             $randomMessage = $messages[array_rand($messages)];
             $fcm->sendToToken(
                 $partner->fcm_token,
-                "¡Zumbido de {$user->name}! 🐝",
+                $title,
                 $randomMessage
             );
         }
