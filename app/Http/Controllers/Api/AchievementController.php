@@ -106,14 +106,24 @@ class AchievementController extends Controller
         }
 
         // 1. Check if user already unlocked ANY hint today
-        $hintToday = CoupleUnlockedHint::where('user_id', $user->id)
+        $hintsTodayCount = CoupleUnlockedHint::where('user_id', $user->id)
             ->whereDate('unlocked_at', Carbon::today())
-            ->first();
+            ->count();
 
-        if ($hintToday) {
+        $hasTrophySecret = CoupleAchievement::where('couple_id', $couple->id)
+            ->where('achievement_id', 'trophy_secret')
+            ->exists();
+            
+        $allowedHints = $hasTrophySecret ? 2 : 1;
+
+        if ($hintsTodayCount >= $allowedHints) {
+            $msg = $hasTrophySecret 
+                ? 'Ya has pedido tus 2 pistas de hoy. Vuelve mañana para más.' 
+                : 'Ya has pedido una pista hoy. Vuelve mañana para pedir otra.';
+                
             return response()->json([
                 'success' => false,
-                'message' => 'Ya has pedido una pista hoy. Vuelve mañana para pedir otra.'
+                'message' => $msg
             ], 403);
         }
 
