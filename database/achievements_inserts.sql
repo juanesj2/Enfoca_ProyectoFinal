@@ -3,7 +3,7 @@
 
 INSERT INTO `achievements` (`id`, `title`, `description`, `icon`, `hints`, `created_at`, `updated_at`) VALUES
 ('curious_click', 'Curioso', 'Has entrado a ver la lista de logros por primera vez.', 'search-outline', 
-'["¿Has explorado todos los rincones de la app?", "Hay un botón nuevo en la pestaña Más.", "Dicen que la curiosidad mató al gato, pero aquí da premios.", "Ve a la pestaña \'Más\'.", "Toca el botón \'Logros y Secretos\' en la pestaña Más."]', 
+'["¿Has explorado todos los rincones de la app?", "Hay un botón nuevo en la pestaña Más.", "Dicen que la curiosidad mató al gato, pero aquí da premios.", "Ve a la pestaña ''Más''.", "Toca el botón ''Logros y Secretos'' en la pestaña Más."]', 
 NOW(), NOW()),
 
 ('explorer_poke', 'Explorador', 'Has mandado un zumbido intenso a tu pareja (10 toques).', 'heart-circle-outline', 
