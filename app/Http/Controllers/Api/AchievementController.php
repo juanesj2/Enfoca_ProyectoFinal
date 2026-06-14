@@ -18,8 +18,12 @@ class AchievementController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        if (!$user->couple_id) {
-            return response()->json(['message' => 'Not in a couple'], 400);
+        if (!$user || !$user->couple_id) {
+            return response()->json([
+                'achievements' => [],
+                'unlocked_achievements' => [],
+                'unlocked_hints' => [],
+            ]);
         }
 
         $allAchievements = Achievement::all();
