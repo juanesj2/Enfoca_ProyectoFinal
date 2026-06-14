@@ -162,6 +162,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/chat/{id}', [\App\Http\Controllers\Api\CoupleChatController::class, 'update']);
         Route::delete('/chat/{id}', [\App\Http\Controllers\Api\CoupleChatController::class, 'destroy']);
         Route::post('/chat/{id}/react', [\App\Http\Controllers\Api\CoupleChatController::class, 'react']);
+        // Achievements
+        Route::get('/achievements', [\App\Http\Controllers\Api\AchievementController::class, 'index']);
+        Route::post('/achievements/unlock', [\App\Http\Controllers\Api\AchievementController::class, 'unlock']);
+        
         // Minijuegos
         Route::get('/games/progress', [\App\Http\Controllers\Api\GameController::class, 'getGameProgress']);
         Route::get('/games/swipe/categories', [\App\Http\Controllers\Api\GameController::class, 'getSwipeCategories']);
