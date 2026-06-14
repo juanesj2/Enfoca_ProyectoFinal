@@ -165,6 +165,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Achievements
         Route::get('/achievements', [\App\Http\Controllers\Api\AchievementController::class, 'index']);
         Route::post('/achievements/unlock', [\App\Http\Controllers\Api\AchievementController::class, 'unlock']);
+        Route::post('/achievements/hints/unlock', [\App\Http\Controllers\Api\AchievementController::class, 'unlockHint']);
         
         // Minijuegos
         Route::get('/games/progress', [\App\Http\Controllers\Api\GameController::class, 'getGameProgress']);

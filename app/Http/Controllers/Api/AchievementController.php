@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Achievement;
 use App\Models\CoupleAchievement;
+use App\Models\CoupleUnlockedHint;
+use Carbon\Carbon;
 
 class AchievementController extends Controller
 {
     /**
-     * Get all unlocked achievements for the authenticated user's couple
+     * Get all achievements, unlocked hints and unlocked achievements
      */
     public function index(Request $request)
     {
@@ -19,9 +22,15 @@ class AchievementController extends Controller
             return response()->json(['message' => 'Not in a couple'], 400);
         }
 
-        $achievements = CoupleAchievement::where('couple_id', $user->couple_id)->get();
+        $allAchievements = Achievement::all();
+        $unlockedAchievements = CoupleAchievement::where('couple_id', $user->couple_id)->get();
+        $unlockedHints = CoupleUnlockedHint::where('couple_id', $user->couple_id)->get();
 
-        return response()->json($achievements);
+        return response()->json([
+            'achievements' => $allAchievements,
+            'unlocked_achievements' => $unlockedAchievements,
+            'unlocked_hints' => $unlockedHints,
+        ]);
     }
 
     /**
@@ -62,5 +71,73 @@ class AchievementController extends Controller
             'achievement' => $achievement,
             'newly_unlocked' => true
         ], 201);
+    }
+
+    /**
+     * Unlock a hint for an achievement
+     */
+    public function unlockHint(Request $request)
+    {
+        $request->validate([
+            'achievement_id' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+        if (!$user->couple_id) {
+            return response()->json(['message' => 'Not in a couple'], 400);
+        }
+
+        // 1. Check if user already unlocked ANY hint today
+        $hintToday = CoupleUnlockedHint::where('user_id', $user->id)
+            ->whereDate('unlocked_at', Carbon::today())
+            ->first();
+
+        if ($hintToday) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya has pedido una pista hoy. Vuelve mañana para pedir otra.'
+            ], 403);
+        }
+
+        // 2. Check how many hints exist for this achievement
+        $achievement = Achievement::find($request->achievement_id);
+        if (!$achievement || !$achievement->hints) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Logro no encontrado o sin pistas.'
+            ], 404);
+        }
+        
+        $totalHints = count($achievement->hints);
+
+        // 3. Find current max hint unlocked by the couple for this achievement
+        $lastHint = CoupleUnlockedHint::where('couple_id', $user->couple_id)
+            ->where('achievement_id', $request->achievement_id)
+            ->orderBy('hint_index', 'desc')
+            ->first();
+
+        $nextHintIndex = $lastHint ? $lastHint->hint_index + 1 : 0;
+
+        if ($nextHintIndex >= $totalHints) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya has desbloqueado todas las pistas para este logro.'
+            ], 400);
+        }
+
+        // 4. Unlock the hint
+        $unlockedHint = CoupleUnlockedHint::create([
+            'couple_id' => $user->couple_id,
+            'user_id' => $user->id,
+            'achievement_id' => $request->achievement_id,
+            'hint_index' => $nextHintIndex,
+            'unlocked_at' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pista desbloqueada',
+            'hint' => $unlockedHint
+        ]);
     }
 }
