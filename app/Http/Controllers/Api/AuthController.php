@@ -60,6 +60,33 @@ class AuthController extends Controller
         ]);
     }
 
+    public function googleLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'name' => 'required|string',
+            'uid' => 'required|string',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->uid . '_google_auth'),
+                'app' => 'love_widget',
+            ]);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ]);
+    }
+
     public function forgotPassword(Request $request)
     {
         $request->validate(['email' => 'required|email']);
