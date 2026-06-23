@@ -77,7 +77,7 @@ export default function Fotografias() {
                                 <div className="md:w-1/3 relative group bg-gray-100 dark:bg-gray-800">
                                     <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse"></div>
                                     <img 
-                                        src={foto.ruta.startsWith('http') ? foto.ruta : `${imageBaseUrl}/storage/${foto.ruta}`} 
+                                        src={(foto.direccion_imagen || foto.ruta)?.startsWith('http') ? (foto.direccion_imagen || foto.ruta) : `${imageBaseUrl}/images/${foto.direccion_imagen || foto.ruta}`} 
                                         alt={foto.titulo} 
                                         className="w-full h-48 md:h-full object-cover relative z-10 transition-transform duration-500 group-hover:scale-105"
                                         loading="lazy"
