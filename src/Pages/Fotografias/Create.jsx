@@ -71,7 +71,6 @@ export default function Create() {
                 
                 // Actualizar setData
                 setData({
-                    ...data,
                     latitud: e.latlng.lat,
                     longitud: e.latlng.lng
                 });
