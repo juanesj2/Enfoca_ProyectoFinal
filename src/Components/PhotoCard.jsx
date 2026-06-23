@@ -4,7 +4,7 @@ import axios from '../lib/axios';
 
 export default function PhotoCard({ foto }) {
     // Estado local para los likes
-    const isInitiallyLiked = foto.likes && foto.likes.length > 0;
+    const isInitiallyLiked = foto.likedByUser !== undefined ? foto.likedByUser : (foto.likes && foto.likes.length > 0);
     const [liked, setLiked] = useState(isInitiallyLiked);
     const [likesCount, setLikesCount] = useState(foto.likes_count || 0);
     const [isLiking, setIsLiking] = useState(false);
