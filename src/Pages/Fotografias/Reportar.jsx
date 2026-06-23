@@ -40,6 +40,14 @@ export default function Reportar() {
             onSuccess: () => {
                 alert("Reporte enviado con éxito.");
                 navigate(-1);
+            },
+            onError: (err) => {
+                if (err?.response?.status === 409) {
+                    alert("Ya has reportado esta fotografía previamente.");
+                    navigate(-1);
+                } else {
+                    alert("Hubo un error al enviar el reporte.");
+                }
             }
         });
     };
