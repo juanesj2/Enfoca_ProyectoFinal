@@ -97,7 +97,7 @@ export default function Comentar() {
         setIsSubmitting(true);
         try {
             await axios.post(`/fotografias/${fotografia.id}/comentarios`, {
-                comentario: nuevoComentario
+                contenido: nuevoComentario
             });
             setNuevoComentario('');
             
