@@ -79,7 +79,7 @@ export default function Reportes() {
                                 <div className="sm:w-1/3 shrink-0 relative bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden aspect-w-4 aspect-h-3">
                                     {reporte.foto ? (
                                         <img 
-                                            src={reporte.foto.ruta?.startsWith('http') ? reporte.foto.ruta : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'}/storage/${reporte.foto.ruta}`} 
+                                            src={(reporte.foto.direccion_imagen || reporte.foto.ruta)?.startsWith('http') ? (reporte.foto.direccion_imagen || reporte.foto.ruta) : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'}/images/${reporte.foto.direccion_imagen || reporte.foto.ruta}`} 
                                             alt="Foto reportada" 
                                             className="w-full h-full object-cover" 
                                         />
@@ -90,7 +90,7 @@ export default function Reportes() {
                                 
                                 <div className="flex flex-col flex-grow">
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-tight">
-                                        Reporte por: <span className="text-red-600 dark:text-red-400 font-extrabold">{reporte.motivo || 'Motivo desconocido'}</span>
+                                        Motivo del reporte: <span className="text-red-600 dark:text-red-400 font-extrabold">{reporte.motivo || 'Desconocido'}</span>
                                     </h3>
                                     
                                     <div className="bg-red-50/50 dark:bg-red-900/10 p-3 rounded-xl mb-4 border border-red-100 dark:border-red-900/20">
