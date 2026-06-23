@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 // Obtenemos los datos frescos del usuario
                 const response = await axios.get('/usuario');
-                setUser(response.data);
+                setUser(response.data.data || response.data);
             } catch (error) {
                 console.error("Error cargando el usuario", error);
                 localStorage.removeItem('auth_token');
