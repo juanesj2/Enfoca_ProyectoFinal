@@ -5,10 +5,8 @@ import forms from '@tailwindcss/forms';
 export default {
     darkMode: 'class', // Enable dark mode by class if we want to toggle it manually later
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-        './resources/js/**/*.jsx',
+        './index.html',
+        './src/**/*.{js,ts,jsx,tsx}',
     ],
 
     theme: {
