@@ -15,7 +15,7 @@ export default function FotografiaEdit() {
     const [formData, setFormData] = useState({
         titulo: '',
         descripcion: '',
-        apta: true, // En vez de vetada, la BD original puede tener apta o vetada. Asumimos apta.
+        vetada: false, 
     });
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function FotografiaEdit() {
             setFormData({
                 titulo: data.titulo || '',
                 descripcion: data.descripcion || '',
-                apta: data.apta !== undefined ? data.apta : true,
+                vetada: data.vetada ?? false,
             });
             document.title = `Editar Fotografía: ${data.titulo}`;
         } catch (error) {
@@ -152,16 +152,16 @@ export default function FotografiaEdit() {
                                 <div className="bg-red-50/50 dark:bg-red-900/10 border border-red-200 dark:border-red-900 rounded-xl p-4 flex items-start gap-4 shadow-sm">
                                     <div className="flex items-center h-5 mt-1">
                                         <input 
-                                            id="apta" 
-                                            name="apta" 
+                                            id="vetada" 
+                                            name="vetada" 
                                             type="checkbox" 
-                                            checked={!formData.apta} 
-                                            onChange={(e) => setFormData({...formData, apta: !e.target.checked})}
+                                            checked={formData.vetada} 
+                                            onChange={(e) => setFormData({...formData, vetada: e.target.checked})}
                                             className="focus:ring-red-500 h-5 w-5 text-red-600 border-gray-300 rounded"
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <label htmlFor="apta" className="font-bold text-gray-900 dark:text-gray-200 cursor-pointer">
+                                        <label htmlFor="vetada" className="font-bold text-gray-900 dark:text-gray-200 cursor-pointer">
                                             Ocultar Fotografía (Marcar como No Apta)
                                         </label>
                                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1 leading-relaxed">

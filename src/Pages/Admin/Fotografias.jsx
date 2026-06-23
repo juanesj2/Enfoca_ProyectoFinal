@@ -90,7 +90,7 @@ export default function Fotografias() {
                                                 {foto.reportes.length}
                                             </span>
                                         )}
-                                        {foto.apta === 0 && (
+                                        {foto.vetada && (
                                             <span className="bg-gray-800 text-white font-bold px-2 py-1 rounded shadow text-xs">Oculta</span>
                                         )}
                                     </div>
