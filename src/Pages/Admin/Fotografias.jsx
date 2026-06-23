@@ -99,7 +99,7 @@ export default function Fotografias() {
                                 {/* Info y Controles Moderacion */}
                                 <div className="p-6 md:w-2/3 flex flex-col border-t md:border-t-0 md:border-l border-gray-100 dark:border-gray-800">
                                     <div className="flex justify-between items-start mb-4 gap-4">
-                                        <div>
+                                        <div className="min-w-0 flex-1">
                                             <h2 className="text-xl font-bold text-gray-900 dark:text-white capitalize leading-tight truncate">
                                                 {foto.titulo}
                                             </h2>
