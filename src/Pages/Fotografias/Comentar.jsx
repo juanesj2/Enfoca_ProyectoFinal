@@ -48,13 +48,14 @@ export default function Comentar() {
         const fetchData = async () => {
             try {
                 const resFoto = await axios.get(`/fotografias/${fotografiaId}`);
-                setFotografia(resFoto.data.fotografia || resFoto.data);
+                const dataUnwrapped = resFoto.data.data || resFoto.data.fotografia || resFoto.data;
+                setFotografia(dataUnwrapped);
                 
                 const resComentarios = await axios.get(`/fotografias/${fotografiaId}/comentarios`);
                 setComentarios(resComentarios.data.data || resComentarios.data);
 
-                const fotoData = resFoto.data.fotografia || resFoto.data;
-                setLiked(fotoData.likes && fotoData.likes.length > 0);
+                const fotoData = dataUnwrapped;
+                setLiked(fotoData.likedByUser !== undefined ? fotoData.likedByUser : (fotoData.likes && fotoData.likes.length > 0));
                 setLikesCount(fotoData.likes_count || 0);
 
                 document.title = `Comentarios - ${fotoData.titulo} - Enfoca`;

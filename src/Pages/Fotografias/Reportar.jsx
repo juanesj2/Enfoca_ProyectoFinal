@@ -23,7 +23,8 @@ export default function Reportar() {
         const fetchFoto = async () => {
             try {
                 const res = await axios.get(`/fotografias/${id}`);
-                setFotografia(res.data.fotografia || res.data);
+                const dataUnwrapped = res.data.data || res.data.fotografia || res.data;
+                setFotografia(dataUnwrapped);
             } catch (error) {
                 console.error("Error fetching fotografia para reportar", error);
             } finally {
