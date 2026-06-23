@@ -96,7 +96,7 @@ export default function FotografiaEdit() {
                     <div className="w-full md:w-1/3 bg-gray-100 dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 p-6 flex flex-col items-center justify-center shrink-0">
                         <div className="w-full aspect-w-1 aspect-h-1 rounded-2xl overflow-hidden shadow-inner border border-gray-200 dark:border-gray-800">
                              <img 
-                                src={fotografia.ruta?.startsWith('http') ? fotografia.ruta : `${imageBaseUrl}/storage/${fotografia.ruta}`} 
+                                src={(fotografia.direccion_imagen || fotografia.ruta)?.startsWith('http') ? (fotografia.direccion_imagen || fotografia.ruta) : `${imageBaseUrl}/images/${fotografia.direccion_imagen || fotografia.ruta}`} 
                                 alt="Previsualizacion" 
                                 className="object-cover w-full h-full"
                             />
