@@ -12,7 +12,7 @@ export default function Reportar() {
     const [loading, setLoading] = useState(true);
 
     const { data, setData, post, processing, errors } = useForm({
-        fotografia_id: id,
+        foto_id: id,
         motivo: '',
     });
 

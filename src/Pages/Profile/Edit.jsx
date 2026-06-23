@@ -15,7 +15,7 @@ export default function Edit() {
     const { 
         data: profileData, 
         setData: setProfileData, 
-        patch: patchProfile, 
+        put: putProfile, 
         errors: profileErrors, 
         processing: profileProcessing,
         clearErrors: clearProfileErrors
@@ -28,7 +28,7 @@ export default function Edit() {
 
     const updateProfile = (e) => {
         e.preventDefault();
-        patchProfile('/profile', {
+        putProfile('/usuario', {
             onSuccess: () => {
                 setProfileSuccessful(true);
                 setTimeout(() => setProfileSuccessful(false), 3000);
@@ -57,7 +57,7 @@ export default function Edit() {
 
     const updatePassword = (e) => {
         e.preventDefault();
-        putPassword('/password', {
+        putPassword('/usuario', {
             onSuccess: () => {
                 resetPwd();
                 setPwdSuccessful(true);
@@ -98,7 +98,7 @@ export default function Edit() {
 
     const deleteUser = (e) => {
         e.preventDefault();
-        destroyUser('/profile', {
+        destroyUser('/usuario', {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal();
