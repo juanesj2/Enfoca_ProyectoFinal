@@ -88,7 +88,8 @@ export default function MisFotografias() {
                         {fotos.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in-up">
                                 {fotos.map((foto) => {
-                                    const imageUrl = foto.direccion_imagen.startsWith('http') ? foto.direccion_imagen : `${imageBaseUrl}/images/${foto.direccion_imagen}`;
+                                    const imagePath = foto?.direccion_imagen || foto?.ruta || '';
+                                    const imageUrl = imagePath.startsWith('http') ? imagePath : `${imageBaseUrl}/images/${imagePath}`;
                                     
                                     return (
                                     <div key={foto.id} className="glass-panel group overflow-hidden border border-gray-200 dark:border-gray-800 transition-all hover:shadow-2xl hover-lift flex flex-col">

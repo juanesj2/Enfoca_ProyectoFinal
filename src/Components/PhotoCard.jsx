@@ -35,7 +35,8 @@ export default function PhotoCard({ foto }) {
 
     // La imagen en J2-API es devuelta con un path relativo a storage, o similar. Asumiremos la URL del backend.
     const imageBaseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:8000';
-    const imageUrl = foto.direccion_imagen.startsWith('http') ? foto.direccion_imagen : `${imageBaseUrl}/images/${foto.direccion_imagen}`;
+    const imagePath = foto?.direccion_imagen || foto?.ruta || '';
+    const imageUrl = imagePath.startsWith('http') ? imagePath : `${imageBaseUrl}/images/${imagePath}`;
 
     return (
         <div className="glass-panel overflow-hidden group hover-lift flex flex-col h-full hover:shadow-2xl transition-all duration-300">

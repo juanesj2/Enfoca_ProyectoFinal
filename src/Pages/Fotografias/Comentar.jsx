@@ -134,7 +134,8 @@ export default function Comentar() {
     if (!fotografia) return <MainLayout><p>Fotografía no encontrada</p></MainLayout>;
 
     const imageBaseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:8000';
-    const imageUrl = fotografia.direccion_imagen.startsWith('http') ? fotografia.direccion_imagen : `${imageBaseUrl}/images/${fotografia.direccion_imagen}`;
+    const imagePath = fotografia?.direccion_imagen || fotografia?.ruta || '';
+    const imageUrl = imagePath.startsWith('http') ? imagePath : `${imageBaseUrl}/images/${imagePath}`;
 
     return (
         <MainLayout>
